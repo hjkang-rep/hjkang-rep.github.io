@@ -13,7 +13,7 @@ department: Division of Business Administration
 institution: Dongduk Women's University
 address: Humanities Building Room 406, 60 Hwarang-ro 13-gil, Seongbuk-gu, Seoul 02748, Republic of Korea
 email: hjkang@dongduk.ac.kr
-phone: "+82 10-9770-6275"
+phone: ""          # 공개 사이트·CV에 넣지 않습니다
 # 아직 없으면 빈 문자열로 두세요. 비어 있으면 사이트/CV에서 자동으로 빠집니다.
 scholar: ""
 orcid: "0000-0003-1093-7385"
