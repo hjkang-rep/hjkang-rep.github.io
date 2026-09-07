@@ -1,0 +1,102 @@
+% =====================================================================
+%  Hojun Kang — Curriculum Vitae
+%
+%  내용은 이 파일이 아니라  ../data/profile.yml  과 Notion DB에 있습니다.
+%      python ../scripts/build.py    →  _generated.tex 갱신
+%      latexmk cv.tex                →  cv.pdf   (latexmkrc 가 XeLaTeX 지정)
+%  이 파일은 서식(폰트·여백·레이아웃)만 담당합니다.
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+% ---- 폰트: Times New Roman, 한글은 바탕 --------------------------------
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+
+\usepackage[a4paper,top=0.85in,bottom=0.85in,left=0.9in,right=0.9in,
+            footskip=0.45in]{geometry}
+\usepackage{titlesec}
+\usepackage{needspace}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage[hidelinks]{hyperref}
+
+\hypersetup{colorlinks=false, pdfborder={0 0 0},
+            pdftitle={Hojun Kang -- Curriculum Vitae}, pdfauthor={Hojun Kang}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\linespread{1.0}
+\frenchspacing
+\raggedbottom
+
+% ---- 꼬리말 ------------------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[L]{\footnotesize Hojun Kang}
+\fancyfoot[R]{\footnotesize \thepage\ of \pageref{LastPage}}
+
+% ---- 섹션: 대문자 볼드 + 가는 선 ---------------------------------------
+\titleformat{\section}
+  {\normalsize\bfseries\MakeUppercase}
+  {}{0pt}{}
+  [{\vspace{0.15em}\hrule height 0.4pt}]
+\titlespacing*{\section}{0pt}{1.15em plus 0.25em minus 0.2em}{0.55em}
+
+\titleformat{\subsection}[block]
+  {\needspace{4.5\baselineskip}\normalsize\itshape}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{0.7em}{0.22em}
+
+% =====================================================================
+%  엔트리 매크로
+% =====================================================================
+
+% \entry{기간}{제목}{기관}{비고}
+%  좌우 두 칸 모두 같은 크기로 두고 \strut 으로 첫 줄 baseline 을 맞춘다.
+\newcommand{\entry}[4]{%
+  \needspace{2.4\baselineskip}%
+  \noindent
+  \begin{minipage}[t]{0.235\textwidth}%
+    \raggedright\strut #1%
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[t]{0.745\textwidth}%
+    \raggedright\strut\textbf{#2}%
+    \ifx\relax#3\relax\else\\ #3\fi
+    \ifx\relax#4\relax\else\\[0.1em]{\small #4}\fi
+  \end{minipage}%
+  \par\vspace{0.5em}%
+}
+
+% \pub{...}  — APA 행잉 인덴트 참고문헌 한 건
+\newcommand{\pub}[1]{%
+  \needspace{2\baselineskip}%
+  \par\hangindent=1.4em\hangafter=1
+  #1\par\vspace{0.34em}%
+}
+
+% \me{...}     — 본인 이름 강조
+\newcommand{\me}[1]{\textbf{#1}}
+% \status{...} — 심사 상태. 색·배경 없이 이탤릭 괄호로만 적는다.
+\newcommand{\status}[1]{\textit{(#1)}}
+\newcommand{\statusok}[1]{\textit{(#1)}}
+
+% =====================================================================
+\begin{document}
+
+% ---- 헤더 -------------------------------------------------------------
+\begin{center}
+  {\LARGE\bfseries Hojun Kang}\\[0.2em]
+  {\small Division of Business Administration, Dongduk Women's University}\\[0.15em]
+  {\small Humanities Building Room 406, 60 Hwarang-ro 13-gil, Seongbuk-gu, Seoul 02748, Korea}\\[0.15em]
+  {\small \href{mailto:hjkang@dongduk.ac.kr}{hjkang@dongduk.ac.kr} \quad $\cdot$ \quad +82 10-9770-6275}
+\end{center}
+
+\vspace{0.9em}
+\hrule height 0.4pt
+\vspace{0.4em}
+
+% ---- 자동 생성 본문 ----------------------------------------------------
+\input{_generated.tex}
+
+\end{document}

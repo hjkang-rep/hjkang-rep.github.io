@@ -1,0 +1,29 @@
+---
+title: "Research"
+toc: true
+toc-depth: 2
+---
+
+<!-- 이 페이지의 목록은 data/profile.yml 과 Notion DB에서 자동 생성됩니다.
+     내용을 고치려면 profile.yml 을 수정하고 `python scripts/build.py` 를 실행하세요. -->
+
+My research runs along two tracks that keep meeting. One builds machine learning methods
+for problems where the data resist standard tools — sparse labels on a blockchain graph,
+free text in a permit filing, an agent population with no ground truth. The other uses
+those methods, and conventional econometrics, to ask who bears risk when a market or a
+policy shifts.
+
+Working papers are listed with their current review status. Drafts are available on
+request; email me and I will send the most recent version.
+
+## Journal articles
+
+{{< include _includes/publications.md >}}
+
+## Working papers
+
+{{< include _includes/working-papers.md >}}
+
+## Conference presentations
+
+{{< include _includes/conferences.md >}}

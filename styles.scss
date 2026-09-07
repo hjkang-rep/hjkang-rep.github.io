@@ -1,0 +1,293 @@
+/*-- scss:defaults --*/
+$font-family-sans-serif: "Pretendard", "Inter", -apple-system, BlinkMacSystemFont,
+                         "Segoe UI", "Noto Sans KR", sans-serif !default;
+$font-family-serif: "Source Serif 4", "Iowan Old Style", Georgia, serif !default;
+
+$body-bg:      #FBFAF8 !default;   // 따뜻한 종이색
+$body-color:   #1B1F24 !default;
+$link-color:   #1F3A5F !default;
+$navbar-bg:    #FBFAF8 !default;
+$navbar-fg:    #1B1F24 !default;
+$font-size-root: 16px !default;
+$toc-color:    #6B7280 !default;
+
+/*-- scss:mixins --*/
+
+/*-- scss:rules --*/
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css");
+@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap");
+
+:root {
+  --ink:      #1B1F24;
+  --muted:    #6B7280;
+  --faint:    #9AA1AA;
+  --line:     #E6E3DD;
+  --line-soft:#EFEDE8;
+  --accent:   #1F3A5F;
+  --surface:  #FFFFFF;
+  --tint:     #F4F2ED;
+}
+
+body {
+  line-height: 1.68;
+  letter-spacing: -0.003em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- 내비게이션 ---------- */
+.navbar {
+  border-bottom: 1px solid var(--line);
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+  backdrop-filter: saturate(1.2);
+}
+.navbar-brand {
+  font-family: $font-family-serif;
+  font-size: 1.18rem !important;
+  letter-spacing: 0.01em;
+}
+.navbar .nav-link {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted) !important;
+  padding-left: 0.85rem !important;
+  padding-right: 0.85rem !important;
+  transition: color 0.15s ease;
+}
+.navbar .nav-link:hover { color: var(--ink) !important; }
+.navbar .nav-link.active {
+  color: var(--ink) !important;
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+/* ---------- 제목 ---------- */
+h1, h2, h3, .navbar-brand { font-family: $font-family-serif; }
+
+h1.title {
+  font-size: 2.1rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin-bottom: 0.35rem;
+}
+
+h2 {
+  font-size: 1.32rem !important;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 2.9rem !important;
+  margin-bottom: 1.05rem !important;
+  padding-top: 0.85rem;
+  border-top: none !important;
+  position: relative;
+}
+h2::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 34px; height: 2px;
+  background: var(--accent);
+}
+
+h3 {
+  font-size: 1.02rem !important;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 1.9rem !important;
+  margin-bottom: 0.7rem !important;
+}
+
+/* ---------- 홈 프로필 ---------- */
+.profile-header {
+  display: flex;
+  gap: 2.6rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin: 1.2rem 0 2.6rem;
+}
+.profile-header img {
+  width: 196px;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 3px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(27, 31, 36, 0.09),
+              0 8px 24px -12px rgba(27, 31, 36, 0.22);
+}
+.profile-header .profile-text { flex: 1 1 330px; padding-top: 0.35rem; }
+.profile-header h1 {
+  margin: 0 0 0.55rem;
+  font-size: 2.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.profile-header .affil {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin: 0 0 0.7rem;
+  line-height: 1.6;
+}
+.profile-header .affil a { color: var(--accent); text-decoration: none; }
+.profile-header .affil a:hover { text-decoration: underline; }
+
+/* 연락처 링크 줄 */
+.linkrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1rem;
+}
+.linkrow a {
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 0.24rem 0.66rem;
+  background: var(--surface);
+  transition: all 0.15s ease;
+}
+.linkrow a:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ---------- 연구 관심 ---------- */
+.interests { margin: 0.4rem 0 0; }
+.interest {
+  padding: 0.62rem 0 0.62rem 1rem;
+  border-left: 2px solid var(--line);
+  margin-bottom: 0.4rem;
+  transition: border-color 0.15s ease;
+}
+.interest:hover { border-left-color: var(--accent); }
+.interest .k { font-weight: 600; display: block; }
+.interest .v { color: var(--muted); font-size: 0.92rem; }
+
+/* ---------- 논문 목록 (APA 행잉 인덴트) ---------- */
+.pub {
+  padding: 0.72rem 0.7rem 0.72rem calc(1.5em + 0.7rem);
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 0.95rem;
+  text-indent: -1.5em;
+  line-height: 1.6;
+  border-radius: 3px;
+  transition: background 0.15s ease;
+}
+.pub:hover { background: var(--tint); }
+.pub:last-child { border-bottom: none; }
+.pub .me { font-weight: 600; }
+.pub em { color: #38414b; }
+.pub .venue { color: var(--muted); }
+.pub .pub-summary {
+  display: block;
+  text-indent: 0;
+  color: var(--muted);
+  font-size: 0.885rem;
+  margin-top: 0.3rem;
+  line-height: 1.55;
+}
+
+.badge-status {
+  display: inline-block;
+  text-indent: 0;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+  padding: 0.12rem 0.42rem;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: var(--muted);
+  background: var(--surface);
+  vertical-align: 1.5px;
+  white-space: nowrap;
+}
+.b-accept { border-color: #C8CFC8; color: #3D5A46; background: #F3F7F3; }
+
+/* ---------- 표 (강의·프로젝트) ---------- */
+table {
+  font-size: 0.92rem;
+  border-collapse: collapse;
+  width: 100%;
+}
+thead th {
+  font-weight: 600;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line) !important;
+  padding: 0.5rem 0.7rem !important;
+}
+tbody td {
+  border-bottom: 1px solid var(--line-soft) !important;
+  padding: 0.62rem 0.7rem !important;
+  vertical-align: top;
+}
+tbody tr:hover { background: var(--tint); }
+
+/* ---------- 이력 타임라인 ---------- */
+.cv-row {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.72rem 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.cv-row:last-child { border-bottom: none; }
+.cv-row .when {
+  flex: 0 0 155px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  padding-top: 0.12rem;
+}
+.cv-row .what { flex: 1; }
+.cv-row .what .sub { color: var(--muted); font-size: 0.92rem; }
+
+/* ---------- 소식 ---------- */
+.news { margin-top: 0.3rem; }
+.news-item {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 0.94rem;
+}
+.news-item:last-child { border-bottom: none; }
+.news-item .when {
+  flex: 0 0 92px;
+  color: var(--accent);
+  font-size: 0.79rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding-top: 0.22rem;
+}
+
+/* ---------- 본문 링크 ---------- */
+.quarto-title-block .description { color: var(--muted); }
+main a { text-underline-offset: 0.18em; text-decoration-thickness: 0.5px; }
+
+/* ---------- 목차 ---------- */
+#TOC, .sidebar { font-size: 0.85rem; }
+#TOC .nav-link { color: var(--muted); }
+#TOC .nav-link.active { color: var(--accent); font-weight: 500; }
+
+/* ---------- 꼬리말 ---------- */
+.nav-footer {
+  border-top: 1px solid var(--line);
+  color: var(--faint);
+  font-size: 0.82rem;
+  margin-top: 3.5rem;
+  padding-top: 1.4rem;
+}
+
+/* ---------- 좁은 화면 ---------- */
+@media (max-width: 620px) {
+  .cv-row, .news-item { flex-direction: column; gap: 0.2rem; }
+  .cv-row .when, .news-item .when { flex: none; }
+  .profile-header { gap: 1.6rem; }
+  .profile-header img { width: 150px; }
+  .profile-header h1 { font-size: 1.9rem; }
+}

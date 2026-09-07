@@ -1,0 +1,462 @@
+# ============================================================
+#  단일 소스 (Single source of truth)
+#  이 파일 하나만 고치면 홈페이지와 LaTeX CV가 함께 갱신됩니다.
+#      python scripts/build.py     ← 실행
+#  진행 중인 논문(working papers)은 여기 적지 않습니다.
+#  Notion "논문프로세스" DB에서 자동으로 가져옵니다.
+# ============================================================
+
+name: Hojun Kang
+name_ko: 강호준
+title: Assistant Professor
+department: Division of Business Administration
+institution: Dongduk Women's University
+address: Humanities Building Room 406, 60 Hwarang-ro 13-gil, Seongbuk-gu, Seoul 02748, Republic of Korea
+email: hjkang@dongduk.ac.kr
+phone: "+82 10-9770-6275"
+# 아직 없으면 빈 문자열로 두세요. 비어 있으면 사이트/CV에서 자동으로 빠집니다.
+scholar: ""
+orcid: "0000-0003-1093-7385"
+github: ""
+linkedin: ""
+
+bio: >
+  Hojun Kang is an Assistant Professor in the Division of Business Administration at
+  Dongduk Women's University. His research asks how AI systems are governed, where they
+  can be trusted as instruments of measurement and simulation, and what they reveal about
+  risk in financial and housing markets. He previously served as a Senior Researcher in
+  the AI Policy Research Division of the Software Policy & Research Institute (SPRI),
+  leading analysis of AI regulatory trends, impact assessment of high-impact AI systems,
+  and measurement of the AI industry. He holds a Ph.D. and M.A. in Management Information
+  Systems from Sogang University.
+
+interests:
+  - name: AI policy and governance
+    detail: regulatory impact assessment, high-impact AI systems, AI industry measurement
+  - name: LLM agents for economic and social science
+    detail: validity boundaries of agent-based simulation, LLM-based measurement from text
+  - name: Graph learning for financial security
+    detail: GNN and Transformer architectures for fraud and phishing detection on blockchains
+  - name: Machine learning in finance and real estate
+    detail: deep learning for asset valuation, machine reading of administrative records
+
+education:
+  - degree: Ph.D., Management Information Systems
+    institution: Sogang University
+    location: Seoul, Korea
+    period: Mar 2020 – Aug 2023
+    note: >-
+      Dissertation: Cryptocurrency, Brave New Realm or Mere Dream? Using the Dunning-Kruger
+      Effect and Size Effect for Empirical Analysis
+  - degree: M.A., Management Information Systems
+    institution: Sogang University
+    location: Seoul, Korea
+    period: Mar 2018 – Feb 2020
+    note: >-
+      Thesis: Information Efficiency in the Cryptocurrency Market: The Efficient Market Hypothesis
+  - degree: B.A., French Language and Literature; Finance Engineering
+    institution: Hannam University
+    location: Daejeon, Korea
+    period: Mar 2011 – Feb 2018
+    note: ""
+
+appointments:
+  - role: Assistant Professor, Division of Business Administration
+    org: Dongduk Women's University
+    period: Sep 2026 – Present
+    detail:
+      - Teaching and research in management information systems, with emphasis on AI applications to business and financial-market analysis
+      - Research program spanning AI governance, graph-based financial risk detection, and the economics of digital assets
+  - role: Senior Researcher, AI Policy Research Division
+    org: Software Policy & Research Institute (SPRI)
+    period: Apr 2025 – Aug 2026
+    detail:
+      - Ethical AI implementation and policy framework development
+      - Lead analyst of AI regulatory trends, industry impact assessment, and sustainable AI ecosystem policy recommendations
+  - role: Research Professor, BK21 Business Education Research Group
+    org: Sogang University
+    period: Sep 2024 – Apr 2025
+    detail:
+      - Research report writing, teaching, and project monitoring for the BK21 program
+  - role: Researcher, BK21 Business Education Research Group
+    org: Sogang University
+    period: May 2024 – Aug 2024
+    detail:
+      - BK21 project proposal development and progress reporting
+  - role: Honorary Professor, Business School
+    org: Sogang University
+    period: Sep 2023 – Aug 2024
+    detail:
+      - Development and submission of the BK21 project proposal; overall management and coordination
+  - role: Research Assistant, ITRC Intelligent Blockchain Research Center
+    org: Sogang University
+    period: Mar 2018 – Dec 2022
+    detail:
+      - Economic research and analysis of blockchain technology
+
+# ------------------------------------------------------------
+# 게재 논문. 새 논문이 억셉되면 여기 맨 위에 추가하세요.
+#   authors: 이름을 그대로 쓰고, 본인은 "Hojun Kang" 으로 적으면 자동 강조됩니다.
+#   role:    first / corresponding / coauthor
+# ------------------------------------------------------------
+publications:
+  - title: "TRACE: Transaction Representation Learning for Large-Scale Ethereum Phishing Detection under Limited Labels"
+    authors: [Hojun Kang, Sang-Gun Lee]
+    venue: Decision Support Systems
+    publisher: Elsevier
+    index: SCIE Q1
+    year: 2026
+    role: first
+    summary: >-
+      A transaction-learning framework for efficient pattern embedding that improves
+      large-scale Ethereum phishing detection under limited-label settings.
+  - title: "Quieter Markets, Unchanged Risks: Frequency Connectedness and the Spot Bitcoin ETF"
+    authors: [Hojun Kang, Sang-Gun Lee]
+    venue: International Review of Economics and Finance
+    publisher: Elsevier
+    index: SSCI Q1
+    year: 2026
+    role: first
+    summary: >-
+      Frequency-decomposed connectedness shows weaker short-term transmission after the spot
+      Bitcoin ETF, but largely unchanged medium- and long-horizon risk spillovers.
+  - title: "Declining Connectedness, Rising Influence: TVP-VAR Evidence from the Magnificent Seven"
+    authors: [Hojun Kang, Minjeong Kwon, Sang-Gun Lee]
+    venue: Finance Research Letters
+    publisher: Elsevier
+    index: SSCI Q1
+    year: 2026
+    role: first
+    summary: >-
+      A connectedness paradox around the launch of ChatGPT: lower overall connectedness
+      alongside stronger influence on benchmark assets.
+  - title: "FORTRESS: Fraud-oriented Transformer with Random Traversal for Ethereum Security Surveillance"
+    authors: [Hojun Kang, Kyuyeon Hwang]
+    venue: Information Sciences
+    publisher: Elsevier
+    index: SCIE Q1
+    year: 2025
+    role: first
+    summary: >-
+      Random walks combined with a structural Transformer detect fraudulent Ethereum
+      accounts with AUC up to 0.9573.
+  - title: "Unleashing STO Potential: An AHP-Based Analysis of Critical Success Factors"
+    authors: [Sunhee Lee, Sang-Gun Lee, Hojun Kang]
+    venue: "Blockchain: Research and Applications"
+    publisher: ""
+    index: SCIE Q1
+    year: 2025
+    role: corresponding
+    summary: >-
+      AHP-based structuring of STO platform success factors from an investor perspective.
+  - title: "Market Phases and Price Discovery in NFTs: A Deep Learning Approach to Digital Asset Valuation"
+    authors: [Hojun Kang, Sang-Gun Lee]
+    venue: Journal of Theoretical and Applied Electronic Commerce Research
+    publisher: ""
+    index: SSCI Q1
+    year: 2025
+    role: first
+    summary: >-
+      The CARD model, using channel-wise attention and relative distance, reduces error
+      versus LSTM and Transformer baselines and identifies regime-dependent drivers.
+  - title: "The Role of Household Savings in Fiscal and Monetary Policy: A DSGE Analysis of China"
+    authors: [Kyuyeon Hwang, Hojun Kang]
+    venue: Asian and African Studies
+    publisher: ""
+    index: SSCI Q2
+    year: 2025
+    role: corresponding
+    summary: >-
+      DSGE evidence that shifts in the saving rate act as an important constraint on the
+      effectiveness and stability of policy.
+  - title: "Graph-based Phishing Detection on Ethereum: A Comparative Analysis of GNN and Traditional Embedding Methods"
+    authors: [Liu Hui, Sang-Gun Lee, Hojun Kang]
+    venue: Journal of Information Systems
+    publisher: ""
+    index: KCI
+    year: 2025
+    role: coauthor
+    summary: ""
+  - title: "Information Efficiency in the Cryptocurrency Market: The Efficient-Market Hypothesis"
+    authors: [Hojun Kang, Sang-Gun Lee, Soo-Yong Park]
+    venue: Journal of Computer Information Systems
+    publisher: ""
+    index: SCIE Q2
+    year: 2022
+    role: first
+    summary: >-
+      Identifies limits to information incorporation and crypto-specific market inefficiencies
+      under the efficient-market hypothesis.
+  - title: "A Comparative Study on ICT Industries over South Korea, the US, and Japan Using Industry Relations Table"
+    authors: [Hojun Kang, Sang-Gun Lee, Soo-Yong Park, Hong-hee Lee]
+    venue: The Korean Academy of Business History
+    publisher: ""
+    index: KCI
+    year: 2019
+    pages: 34(2), 89–107
+    role: first
+    summary: ""
+  - title: "An Analysis on Customers' Perception of Korean Food in the US Using Text Mining"
+    authors: [Hojun Kang, Byeonghwa Park]
+    venue: Logos Management Review
+    publisher: ""
+    index: KCI
+    year: 2018
+    pages: 16(4), 155–168
+    role: first
+    summary: ""
+
+books:
+  - title: Data Analytics Methodology That Anyone Can Use
+    authors: [Sang-Gun Lee, Yong Jeong Kim, Ahyun Kim, Hojun Kang]
+    venue: Sigma Press
+    year: 2021
+
+conferences:
+  - title: "MATE: Multi-Actor Graph Neural Networks for Corporate Delisting Prediction"
+    authors: [Hojun Kang, Sang-Gun Lee]
+    venue: KMIS
+    location: Gyeongju, Korea
+    date: Jun 2026
+  - title: "The Collision of Technology and Reputation: Information Asymmetry and Investor Bias in Cryptocurrency Markets"
+    authors: [Hojun Kang, Sang-Gun Lee, Dong Won Lee]
+    venue: KMIS
+    location: Seoul, Korea
+    date: Jun 2025
+  - title: "Unmasking the Hidden Threat: Detecting Ethereum Phishing Nodes with Graph-Based Node2Vec-Transformer for Scam Detection Model"
+    authors: [Hojun Kang, Sang-Gun Lee]
+    venue: DSI
+    location: Arizona, USA
+    date: Oct 2024
+  - title: Gas Price Stabilization in Ethereum 2.0
+    authors: [Hojun Kang, Sang-Gun Lee]
+    venue: KMIS
+    location: Seoul, Korea
+    date: Nov 2024
+  - title: Detecting Ethereum Phishing Nodes in NT4SD
+    authors: [Hojun Kang, Sang-Gun Lee]
+    venue: E-Bridge
+    location: Seoul, Korea
+    date: Oct 2024
+  - title: Scanning Ethereum Phishing Node
+    authors: [Hojun Kang, Sang-Gun Lee]
+    venue: KASBA
+    location: Gyeongju, Korea
+    date: Aug 2024
+  - title: "Information Asymmetry in Cryptocurrency Markets: Evidence from the Dunning-Kruger Effect"
+    authors: [Hojun Kang, Sang-Gun Lee]
+    venue: KMIS
+    location: Seoul, Korea
+    date: May 2024
+  - title: The Dunning-Kruger Effect and Information Disparities in Cryptocurrency Trading Behavior
+    authors: [Hojun Kang, Sang-Gun Lee]
+    venue: KMIS
+    location: Jeju, Korea
+    date: Jun 2023
+  - title: "Covid-19 Simulation Study with Beacon System: Through Bayesian Methods and Epidemic Models"
+    authors: [Hojun Kang, Soo-Yong Park, Sang-Gun Lee]
+    venue: KMIS
+    location: Yeosu, Korea
+    date: Jul 2021
+  - title: "Information Efficiency in the Cryptocurrency Market: The Efficient Market Hypothesis"
+    authors: [Hojun Kang, Soo-Yong Park, Sang-Gun Lee]
+    venue: KMIS
+    location: Seoul, Korea
+    date: Dec 2020
+  - title: "Analysis of Success Factors of FPS Games: Using Text Mining Analysis"
+    authors: [Hojun Kang, Sunbin Park, Jisu Kim, Byeonghwa Park]
+    venue: Korean Intelligent Information Systems Society
+    location: Seoul, Korea
+    date: Dec 2017
+  - title: An Analysis on Customers' Perception of Korean Food in the US Using Text Mining
+    authors: [Hojun Kang, Yeongju Ko, Hyunwoo Park, Jooyeon Yoo, Byeonghwa Park]
+    venue: Korea Society of Electronic Commerce
+    location: Mokpo, Korea
+    date: Nov 2017
+
+projects:
+  - title: High-Impact AI Impact Assessment Project
+    funder: Software Policy & Research Institute (SPRI)
+    period: Apr 2026 – Present
+  - title: MSIT-based AI Trend Monitoring
+    funder: Software Policy & Research Institute (SPRI)
+    period: Apr 2025 – Present
+  - title: Survey on the Status of the AI Industry
+    funder: Software Policy & Research Institute (SPRI)
+    period: Apr 2025 – Present
+  - title: Research on Improving the AI Industry Classification System
+    funder: Software Policy & Research Institute (SPRI)
+    period: Apr 2025 – Mar 2026
+  - title: Research on AI Adoption in SMEs
+    funder: Software Policy & Research Institute (SPRI)
+    period: Apr 2025 – Mar 2026
+  - title: Strategies for Promoting Data Interoperability and the Right to Data Portability in the Age of AI
+    funder: Software Policy & Research Institute (SPRI)
+    period: Apr 2025 – Mar 2026
+  - title: ITRC Web3.0 Technology Research Center
+    funder: Sogang University
+    period: Oct 2023 – Apr 2025
+  - title: "Forecasting NFT Market Dynamics using Transformer-based Deep Learning: A Predictive Analysis"
+    funder: Korea Association of Game Industry (KGames)
+    period: Oct 2024 – Feb 2025
+  - title: "Global Digital Talent Attraction: Policy Development and Implementation Strategies"
+    funder: Software Policy & Research Institute (SPRI)
+    period: Sep 2024 – Dec 2024
+  - title: Development and Implementation of Distributed Storage Systems for Energy Big Data Analytics
+    funder: Ministry of Trade, Industry and Energy (MOTIE)
+    period: Jan 2024 – Jul 2024
+  - title: Chungnam Digital & Game Industry Development Feasibility Study and Operation Strategy
+    funder: Chungnam Information & Culture Industry Promotion Agency (CTIA)
+    period: Feb 2023 – Jul 2023
+  - title: Virtual Power Plant (VPP) Economic Feasibility Study
+    funder: Korea Energy Agency (KEA)
+    period: Sep 2022 – Dec 2022
+  - title: Central Bank Digital Currency (CBDC) and Tax Administration Research
+    funder: Korea Institute of Public Finance (KIPF)
+    period: Sep 2021 – Jan 2022
+  - title: Digital New Deal — Busan City
+    funder: Office of National Assembly Member Byeong-su Seo
+    period: Oct 2020 – Dec 2020
+
+honors:
+  - name: Best Paper Award
+    org: E-Bridge Fall Conference
+    date: Oct 2024
+  - name: Outstanding Case Study Award
+    org: Korea Society of Management Information Systems (KMIS) Spring Conference
+    date: Jun 2021
+  - name: Best Paper Award
+    org: KMIS Fall Conference
+    date: Dec 2020
+  - name: Best Paper Award
+    org: Korea Society of Electronic Commerce Fall Conference
+    date: Nov 2017
+
+teaching:
+  - course: Introduction to Programming with Python
+    course_ko: 파이썬을 활용한 프로그래밍 기초
+    term: 2026 Fall
+    schedule: Mon, Wed · Period 5
+    room: Humanities Hall C0302
+    syllabus: ""
+  - course: Big Data and Business Intelligence
+    course_ko: 빅데이터와 비즈니스 인텔리전스
+    term: 2026 Fall
+    schedule: Mon, Wed · Period 4
+    room: Humanities Hall C0302
+    syllabus: ""
+  - course: R Programming
+    course_ko: R 프로그래밍
+    term: 2026 Fall
+    schedule: Tue · Periods 5–6
+    room: Indeok Hall 0304
+    syllabus: ""
+
+# ------------------------------------------------------------
+# Notion 보완용 오버라이드. 키는 Notion "프로젝트" 코드명.
+#
+#   authors : Notion "공저자"가 비어 있거나 순서가 틀렸을 때 전체 저자를 순서대로 적습니다.
+#             (본인 이름 "Hojun Kang" 을 반드시 포함하세요.)
+#   title   : Notion 제목의 오타를 덮어씁니다.
+#   journal : Notion 목표저널의 오타를 덮어씁니다.
+# ------------------------------------------------------------
+# Under review 는 전부 싣지 않고 아래 프로젝트만 싣습니다 (Notion "프로젝트" 코드명).
+# 비우면 심사 중인 논문 전체가 나옵니다.
+featured_under_review:
+  - CBDC-Freeze        # Journal of Finance
+  - Vote Market        # The Review of Financial Studies
+  - MISQ-Vote          # Management Science
+  - GEN-AI             # Information Systems Research
+
+notion_overrides:
+  SCAM-HMGCN:                       # 1
+    authors: [Hojun Kang, Sang-Gun Lee, Silvana Trimi]
+    journal: Information Sciences
+  EOA-ETH:                          # 9  (목표 저널은 확인 후 조정 예정)
+    authors: [Hojun Kang, Sang-Gun Lee]
+  Census-RE:                        # 11
+    authors: [Hojun Kang, Sang-Gun Lee]
+    journal: Journal of Real Estate Finance and Economics
+  GEN-AI:                           # 13
+    authors: [Hojun Kang, Sang-Gun Lee]
+  Crypto+RE+Market:                 # 14  (교신저자 → 본인 마지막)
+    authors: [Hanna Kim, Sang-Gun Lee, Hojun Kang]
+  Vote Market:                      # 15
+    authors: [Hojun Kang, Sang-Gun Lee]
+  NYC-Renovation:                   # 17
+    title: "Renovation or Renoviction? Permit Text, Tenant Displacement, and the Incentives of Rent Regulation"
+    journal: Journal of Urban Economics
+  MISQ-Vote:                        # 20
+    authors: [Hojun Kang, Sang-Gun Lee]
+  Stranded Dollars:                 # 22
+    authors: [Hojun Kang, Sang-Gun Lee]
+  Detroit-Enforcement:              # 25
+    authors: [Hojun Kang, Sang-Gun Lee]
+  Disposition-Token:                # 26
+    authors: [Hojun Kang, Sang-Gun Lee]
+  박완희:                            # 27  (교신저자 → 본인 마지막)
+    authors: [WanHee Park, Sang-Gun Lee, Hojun Kang]
+
+# 이름 → APA 이니셜 예외. 성이 앞에 오는 표기 등 자동 변환이 틀릴 때만 적습니다.
+apa_name_overrides:
+  Liu Hui: "Liu, H."
+
+# ------------------------------------------------------------
+# Notion에서 가져온 working paper의 한 줄 요약.
+# 키는 Notion의 "프로젝트" 코드명입니다. 비워두면 요약 없이 제목만 나옵니다.
+# ------------------------------------------------------------
+working_paper_summaries:
+  Vote Market: >-
+    What an openly traded market in governance votes costs, captures, and changes: control is
+    priced competitively yet captured by a paying minority, financed by diluting non-voting holders.
+  MISQ-Vote: >-
+    Betrayed principals exit no more than others, so the binding constraint on accountability
+    is attention rather than the cost of exit.
+  GEN-AI: >-
+    A capability-dependent validity boundary for LLM-agent testbeds that appears only once the
+    mechanism's constraint binds.
+  CBDC-Freeze: >-
+    What the ability to freeze digital dollars captures, and what it costs the holders who
+    never trip it.
+  Census-Climate: >-
+    No aggregate effect but a large denial gap in manufactured housing — a regressive and
+    otherwise invisible incidence of climate credit risk.
+  NYC-Renovation: >-
+    An inverse dose-response in which the smallest permitted works displace the most tenants,
+    strengthened after rent-regulation reform.
+  Census-RE: >-
+    Illiquidity forecasts lower future returns, the opposite of the financial illiquidity
+    premium, and diffuses spatially across neighborhoods.
+  EOA-ETH: >-
+    The standard run-risk estimator holds where intermediation is thin but is dominated by
+    wrapper mechanics otherwise.
+  Crypto ETF: >-
+    A positive integration effect only for Ethereum, with an integration-headroom decomposition
+    explaining the Bitcoin and Solana nulls.
+  Audit GNN: >-
+    Parity with the strongest tabular learner, with the graph's value residing in
+    relation-level explanation of accounting-risk contagion.
+  BTC-ETF: >-
+    Evidence too fragile to support or refute the venue channel, with effects reversing across
+    plausible venue proxies.
+  Crypto-Efficiency: >-
+    Segmented blocs at the median fuse in the tails, with crypto a net receiver rather than a
+    shock source.
+  Crypto+RE+Market: >-
+    Segmented blocs at the median fuse in the tails, with crypto a net receiver rather than a
+    shock source.
+  강태영: >-
+    A delayed contraction of housing starts that turns violent in cost-surge regimes and
+    concentrates in demand-weak regions.
+  홍남주: >-
+    The redevelopment premium attaches at assignment and to ownership alone, forming before
+    the winners are announced.
+  변호균: >-
+    Valuation compression outside the capital region but no anchored response in Seoul,
+    widening the regional gap.
+  Walk2Attn: >-
+    Dual encoding pairing Node2Vec random walks with Transformer self-attention; ablations
+    confirm the two encoders are synergistic.
+  TVP-QVAR Mortgage: >-
+    Daily pass-through and time-varying quantile connectedness reveal two distinct speeds at
+    which a rate shock reaches US mortgage markets.

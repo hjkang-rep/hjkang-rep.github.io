@@ -1,0 +1,2 @@
+# XeLaTeX 로 빌드 (한글 이름 + Libertinus 시스템 폰트 사용)
+$pdf_mode = 5;

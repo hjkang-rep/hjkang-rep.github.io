@@ -1,0 +1,112 @@
+---
+title: ""
+page-layout: article
+toc: false
+---
+
+::: {.profile-header}
+![](assets/profile.jpg)
+
+::: {.profile-text}
+# Hojun Kang
+
+::: {.affil}
+Assistant Professor, Division of Business Administration<br>
+Dongduk Women's University
+:::
+
+::: {.affil}
+Humanities Building Room 406, 60 Hwarang-ro 13-gil, Seongbuk-gu, Seoul 02748, Korea
+:::
+
+::: {.linkrow}
+[hjkang@dongduk.ac.kr](mailto:hjkang@dongduk.ac.kr)
+[ORCID](https://orcid.org/0000-0003-1093-7385)
+[CV](assets/CV_HojunKang.pdf)
+:::
+:::
+:::
+
+## About
+
+I am an Assistant Professor in the Division of Business Administration at Dongduk
+Women's University. Three questions organise my work: how AI systems should be governed,
+how far they can be trusted as instruments of measurement and simulation, and what the
+digital records they produce reveal about risk in financial and housing markets.
+
+Much of what I do begins with a record that was never meant for research — a blockchain
+ledger, a municipal permit filing, a mortgage application file — and asks what can be
+credibly recovered from it. That commitment runs in both directions: machine learning
+lets me read sources that were previously unreadable at scale, and the same scrutiny I
+apply to an administrative record I apply to the models themselves, asking where their
+answers stop being trustworthy.
+
+Before joining Dongduk, I was a Senior Researcher in the AI Policy Research Division of
+the [Software Policy & Research Institute (SPRI)](https://spri.kr), where I led analysis
+of AI regulatory trends, impact assessment of high-impact AI systems, and measurement of
+the AI industry. I hold a Ph.D. and M.A. in Management Information Systems from Sogang
+University.
+
+## Research interests
+
+::: {.interests}
+::: {.interest}
+[AI policy and governance]{.k}
+[How regulators should assess the impact of high-impact AI systems, and how an AI industry that resists conventional classification can be measured at all.]{.v}
+:::
+
+::: {.interest}
+[LLM agents for economic and social science]{.k}
+[When an LLM-agent testbed can be trusted to answer a mechanism-design question, and how language models can read administrative text into research-grade measures.]{.v}
+:::
+
+::: {.interest}
+[Graph learning for financial security]{.k}
+[Graph neural networks and Transformer architectures that detect fraud and phishing on blockchain transaction networks, under the label scarcity and extreme imbalance that real deployments face.]{.v}
+:::
+
+::: {.interest}
+[Machine learning in finance and real estate]{.k}
+[Deep learning for asset valuation, and machine reading of public records to measure liquidity, displacement, and credit access in housing markets.]{.v}
+:::
+:::
+
+## Selected work
+
+::: {.pub}
+[[Kang, H.]{.me}, & Lee, S.-G. (in press). Frozen Markets, Falling Prices: Illiquidity and Bounded Price Discovery in U.S. Neighborhood Housing Markets.]{.apa} *Journal of Real Estate Finance and Economics*. [Forthcoming]{.badge-status .b-accept}
+:::
+
+::: {.pub}
+[[Kang, H.]{.me}, & Lee, S.-G. (2026). TRACE: Transaction Representation Learning for Large-Scale Ethereum Phishing Detection under Limited Labels.]{.apa} *Decision Support Systems*.
+:::
+
+::: {.pub}
+[[Kang, H.]{.me}, & Lee, S.-G. (2026). Quieter Markets, Unchanged Risks: Frequency Connectedness and the Spot Bitcoin ETF.]{.apa} *International Review of Economics and Finance*.
+:::
+
+[See all publications and working papers →](research.qmd)
+
+## News
+
+::: {.news}
+::: {.news-item}
+[Sep 2026]{.when}
+Joined Dongduk Women's University as Assistant Professor.
+:::
+
+::: {.news-item}
+[Aug 2026]{.when}
+*Freezing Digital Dollars* under review at the *Journal of Finance*.
+:::
+
+::: {.news-item}
+[Jul 2026]{.when}
+*The Market for Governance Votes* under review at the *Review of Financial Studies*.
+:::
+
+::: {.news-item}
+[Jun 2026]{.when}
+Presented *MATE: Multi-Actor Graph Neural Networks for Corporate Delisting Prediction* at KMIS, Gyeongju.
+:::
+:::

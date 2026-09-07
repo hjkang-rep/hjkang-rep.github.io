@@ -1,0 +1,18 @@
+---
+title: "Curriculum Vitae"
+toc: false
+page-layout: article
+---
+
+<!-- CV의 원본은 cv/cv.tex 입니다.
+     내용 수정: data/profile.yml  →  python scripts/build.py  →  ./publish.sh -->
+
+[Download PDF](assets/CV_HojunKang.pdf){.btn .btn-outline-primary .btn-sm}
+
+```{=html}
+<object data="assets/CV_HojunKang.pdf" type="application/pdf"
+        width="100%" style="height:1150px; border:1px solid #e0e0e0; border-radius:6px; margin-top:1rem;">
+  <p>브라우저가 PDF 미리보기를 지원하지 않습니다.
+     <a href="assets/CV_HojunKang.pdf">여기서 내려받으세요</a>.</p>
+</object>
+```

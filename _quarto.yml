@@ -1,0 +1,38 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Hojun Kang"
+  description: "AI policy, blockchain analytics, and empirical finance."
+  favicon: assets/profile.jpg
+  navbar:
+    left:
+      - href: index.qmd
+        text: About
+      - href: research.qmd
+        text: Research
+      - href: teaching.qmd
+        text: Teaching
+      - href: cv.qmd
+        text: CV
+    right:
+      - icon: envelope
+        href: mailto:hjkang@dongduk.ac.kr
+        aria-label: Email
+      - icon: person-badge
+        href: https://orcid.org/0000-0003-1093-7385
+        aria-label: ORCID
+  page-footer:
+    center: "Hojun Kang · Division of Business Administration, Dongduk Women's University"
+  reader-mode: false
+
+format:
+  html:
+    theme: [cosmo, styles.scss]
+    toc: true
+    toc-depth: 2
+    anchor-sections: true
+    link-external-newwindow: true
+    grid:
+      body-width: 900px

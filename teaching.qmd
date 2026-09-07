@@ -1,0 +1,40 @@
+---
+title: "Teaching"
+toc: false
+---
+
+<!-- 학기가 바뀌면 이 표와 data/profile.yml 의 teaching 항목을 함께 고쳐주세요.
+     강의계획서 PDF는 assets/ 에 넣고 링크를 걸면 됩니다. -->
+
+I teach the computing and analytics sequence in the Division of Business Administration —
+students arrive with no programming background and leave able to pull data, model it, and
+defend what the model says. All three courses are taught in a computer lab, and every
+session is built around code that students run themselves.
+
+## 2026 Fall
+
+| Course | Schedule | Room | Syllabus |
+|--------|----------|------|----------|
+| **Introduction to Programming with Python** | Mon, Wed · Period 5 | Humanities Hall C0302 | — |
+| **Big Data and Business Intelligence** | Mon, Wed · Period 4 | Humanities Hall C0302 | — |
+| **R Programming** | Tue · Periods 5–6 | Indeok Hall 0304 | — |
+
+: {tbl-colwidths="[40,23,25,12]"}
+
+## Office hours
+
+By appointment. Email me at [hjkang@dongduk.ac.kr](mailto:hjkang@dongduk.ac.kr) with a
+couple of times that work, and please say briefly what you would like to discuss so I can
+come prepared.
+
+## Advising
+
+I supervise undergraduate research in AI policy, applied machine learning, blockchain and
+on-chain data analysis, and empirical finance. The projects I enjoy most start from a
+dataset nobody has looked at carefully yet — a public ledger, a permit filing, an
+administrative record — and ask what it can be made to reveal.
+
+If you would like to work with me, send a short note describing the question you want to
+answer and any coursework or tools you have already picked up. Prior programming
+experience helps but is not a prerequisite; curiosity about where the data came from
+matters more.

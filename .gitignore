@@ -1,0 +1,21 @@
+_site/
+.quarto/
+_freeze/
+
+# LaTeX 중간 산출물
+cv/*.aux
+cv/*.log
+cv/*.out
+cv/*.fls
+cv/*.fdb_latexmk
+cv/*.synctex.gz
+
+# Notion 캐시 (논문 제목/상태가 들어있음 — 공개 저장소면 커밋하지 마세요)
+data/notion_cache.json
+
+.DS_Store
+Thumbs.db
+
+/.quarto/
+**/*.quarto_ipynb
+cv/*.xdv
