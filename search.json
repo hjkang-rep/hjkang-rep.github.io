@@ -1,0 +1,100 @@
+[
+  {
+    "objectID": "teaching.html",
+    "href": "teaching.html",
+    "title": "Teaching",
+    "section": "",
+    "text": "I teach the computing and analytics sequence in the Division of Business Administration — students arrive with no programming background and leave able to pull data, model it, and defend what the model says. All three courses are taught in a computer lab, and every session is built around code that students run themselves."
+  },
+  {
+    "objectID": "teaching.html#fall",
+    "href": "teaching.html#fall",
+    "title": "Teaching",
+    "section": "2026 Fall",
+    "text": "2026 Fall\n\n\n\n\n\n\n\n\n\nCourse\nSchedule\nRoom\nSyllabus\n\n\n\n\nIntroduction to Programming with Python\nMon, Wed · Period 5\nHumanities Hall C0302\n—\n\n\nBig Data and Business Intelligence\nMon, Wed · Period 4\nHumanities Hall C0302\n—\n\n\nR Programming\nTue · Periods 5–6\nIndeok Hall 0304\n—"
+  },
+  {
+    "objectID": "teaching.html#office-hours",
+    "href": "teaching.html#office-hours",
+    "title": "Teaching",
+    "section": "Office hours",
+    "text": "Office hours\nBy appointment. Email me at hjkang@dongduk.ac.kr with a couple of times that work, and please say briefly what you would like to discuss so I can come prepared."
+  },
+  {
+    "objectID": "teaching.html#advising",
+    "href": "teaching.html#advising",
+    "title": "Teaching",
+    "section": "Advising",
+    "text": "Advising\nI supervise undergraduate research in AI policy, applied machine learning, blockchain and on-chain data analysis, and empirical finance. The projects I enjoy most start from a dataset nobody has looked at carefully yet — a public ledger, a permit filing, an administrative record — and ask what it can be made to reveal.\nIf you would like to work with me, send a short note describing the question you want to answer and any coursework or tools you have already picked up. Prior programming experience helps but is not a prerequisite; curiosity about where the data came from matters more."
+  },
+  {
+    "objectID": "research.html",
+    "href": "research.html",
+    "title": "Research",
+    "section": "",
+    "text": "My research runs along two tracks that keep meeting. One builds machine learning methods for problems where the data resist standard tools — sparse labels on a blockchain graph, free text in a permit filing, an agent population with no ground truth. The other uses those methods, and conventional econometrics, to ask who bears risk when a market or a policy shifts.\nWorking papers are listed with their current review status. Drafts are available on request; email me and I will send the most recent version."
+  },
+  {
+    "objectID": "research.html#journal-articles",
+    "href": "research.html#journal-articles",
+    "title": "Research",
+    "section": "Journal articles",
+    "text": "Journal articles\n\nKang, H., & Lee, S.-G. (in press). Frozen Markets, Falling Prices: Illiquidity and Bounded Price Discovery in U.S. Neighborhood Housing Markets. Journal of Real Estate Finance and Economics. Forthcoming Illiquidity forecasts lower future returns, the opposite of the financial illiquidity premium, and diffuses spatially across neighborhoods.\n\n\nKang, H., & Lee, S.-G. (2026). TRACE: Transaction Representation Learning for Large-Scale Ethereum Phishing Detection under Limited Labels. Decision Support Systems. SCIE Q1 A transaction-learning framework for efficient pattern embedding that improves large-scale Ethereum phishing detection under limited-label settings.\n\n\nKang, H., & Lee, S.-G. (2026). Quieter Markets, Unchanged Risks: Frequency Connectedness and the Spot Bitcoin ETF. International Review of Economics and Finance. SSCI Q1 Frequency-decomposed connectedness shows weaker short-term transmission after the spot Bitcoin ETF, but largely unchanged medium- and long-horizon risk spillovers.\n\n\nKang, H., Kwon, M., & Lee, S.-G. (2026). Declining Connectedness, Rising Influence: TVP-VAR Evidence from the Magnificent Seven. Finance Research Letters. SSCI Q1 A connectedness paradox around the launch of ChatGPT: lower overall connectedness alongside stronger influence on benchmark assets.\n\n\nKang, H., & Hwang, K. (2025). FORTRESS: Fraud-oriented Transformer with Random Traversal for Ethereum Security Surveillance. Information Sciences. SCIE Q1 Random walks combined with a structural Transformer detect fraudulent Ethereum accounts with AUC up to 0.9573.\n\n\nLee, S., Lee, S.-G., & Kang, H. (2025). Unleashing STO Potential: An AHP-Based Analysis of Critical Success Factors. Blockchain: Research and Applications. SCIE Q1 AHP-based structuring of STO platform success factors from an investor perspective.\n\n\nKang, H., & Lee, S.-G. (2025). Market Phases and Price Discovery in NFTs: A Deep Learning Approach to Digital Asset Valuation. Journal of Theoretical and Applied Electronic Commerce Research. SSCI Q1 The CARD model, using channel-wise attention and relative distance, reduces error versus LSTM and Transformer baselines and identifies regime-dependent drivers.\n\n\nHwang, K., & Kang, H. (2025). The Role of Household Savings in Fiscal and Monetary Policy: A DSGE Analysis of China. Asian and African Studies. SSCI Q2 DSGE evidence that shifts in the saving rate act as an important constraint on the effectiveness and stability of policy.\n\n\nLiu, H., Lee, S.-G., & Kang, H. (2025). Graph-based Phishing Detection on Ethereum: A Comparative Analysis of GNN and Traditional Embedding Methods. Journal of Information Systems. KCI\n\n\nKang, H., Lee, S.-G., & Park, S.-Y. (2022). Information Efficiency in the Cryptocurrency Market: The Efficient-Market Hypothesis. Journal of Computer Information Systems. SCIE Q2 Identifies limits to information incorporation and crypto-specific market inefficiencies under the efficient-market hypothesis.\n\n\nKang, H., Lee, S.-G., Park, S.-Y., & Lee, H.-H. (2019). A Comparative Study on ICT Industries over South Korea, the US, and Japan Using Industry Relations Table. The Korean Academy of Business History, 34(2), 89–107. KCI\n\n\nKang, H., & Park, B. (2018). An Analysis on Customers’ Perception of Korean Food in the US Using Text Mining. Logos Management Review, 16(4), 155–168. KCI\n\n\nBooks\n\nLee, S.-G., Kim, Y. J., Kim, A., & Kang, H. (2021). Data Analytics Methodology That Anyone Can Use. Sigma Press."
+  },
+  {
+    "objectID": "research.html#working-papers",
+    "href": "research.html#working-papers",
+    "title": "Research",
+    "section": "Working papers",
+    "text": "Working papers\n\nRevise and resubmit\n\nKang, H., Hwang, K., Lee, Y.-K., & Lee, S.-G. (2026). Do Spot Bitcoin and Ether ETF Approvals Reallocate Liquidity Across Crypto Trading Venues? Fragile Evidence. Finance Research Letters. Minor revision Evidence too fragile to support or refute the venue channel, with effects reversing across plausible venue proxies.\n\n\nKang, H., Lee, H.-J., & Lee, S.-G. (2026). The Asymmetric Effect of Spot Crypto ETP Approvals on Equity-Market Integration: Synthetic Difference-in-Differences Evidence. International Review of Financial Analysis. Major revision A positive integration effect only for Ethereum, with an integration-headroom decomposition explaining the Bitcoin and Solana nulls.\n\n\nKang, H., & Lee, S.-G. (2026). Guilt by Association: Interpretable Multiplex Graph Learning of Accounting-Risk Contagion. Information Sciences. Resubmitted after minor revision Parity with the strongest tabular learner, with the graph’s value residing in relation-level explanation of accounting-risk contagion.\n\n\nByun, H., Lee, S.-G., & Kang, H. (2026). The Paradox of Regulation: Why Does Housing Supply Fail to Respond to Price Signals? Journal of Real Estate Research. Resubmitted after major revision\n\n\nKang, H., & Lee, S.-G. (2025). Structural-Relational Dual Encoding for Blockchain Fraud Detection: The Walk2Attn Framework. Journal of Supercomputing. Major revision\n\n\nKang, H., Lee, S.-G., & Trimi, S. (2026). Unmasking the Hidden Threat: A Hierarchical Multi-Scale Graph Convolutional Network for Detecting Ethereum Phishing. Information Sciences. Minor revision\n\n\n\nUnder review\n\nKang, H., & Lee, S.-G. (2026). Freezing Digital Dollars: What the Stop Button Captures and What It Costs. Journal of Finance. What the ability to freeze digital dollars captures, and what it costs the holders who never trip it.\n\n\nKang, H., & Lee, S.-G. (2026). Exit Without Discipline: Delegation, Attention, and Accountability in Blockchain Governance. Management Science. Betrayed principals exit no more than others, so the binding constraint on accountability is attention rather than the cost of exit.\n\n\nKang, H., & Lee, S.-G. (2026). The Market for Governance Votes. The Review of Financial Studies. What an openly traded market in governance votes costs, captures, and changes: control is priced competitively yet captured by a paying minority, financed by diluting non-voting holders.\n\n\nKang, H., & Lee, S.-G. (2026). Mechanism, Agent, or Harness? A Validity Boundary for LLM-Agent Economic Simulation. Information Systems Research. A capability-dependent validity boundary for LLM-agent testbeds that appears only once the mechanism’s constraint binds.\n\n\n\nWork in progress\n\nPark, W., Lee, S.-G., & Kang, H.. Who Bears the Repricing? Segmented Incidence of a Capital-Driven Cycle in Korean Logistics Real Estate.\n\n\nKang, H., & Lee, S.-G. Selective realization in tokenized real estate: portfolio-level evidence.\n\n\nKang, H., & Lee, S.-G. The Production of Market Efficiency. Segmented blocs at the median fuse in the tails, with crypto a net receiver rather than a shock source.\n\n\nKang, H., & Lee, S.-G. Stranded Dollars: The Private Production of Transferability.\n\n\nKang, H., & Lee, S.-G. (2026). Priced Out at the Threshold: Mandatory Insurance Costs, Debt-to-Income Limits, and Access to Mortgage Credit."
+  },
+  {
+    "objectID": "research.html#conference-presentations",
+    "href": "research.html#conference-presentations",
+    "title": "Research",
+    "section": "Conference presentations",
+    "text": "Conference presentations\n\nKang, H., & Lee, S.-G. (Jun 2026). MATE: Multi-Actor Graph Neural Networks for Corporate Delisting Prediction KMIS, Gyeongju, Korea.\n\n\nKang, H., Lee, S.-G., & Lee, D. W. (Jun 2025). The Collision of Technology and Reputation: Information Asymmetry and Investor Bias in Cryptocurrency Markets KMIS, Seoul, Korea.\n\n\nKang, H., & Lee, S.-G. (Oct 2024). Unmasking the Hidden Threat: Detecting Ethereum Phishing Nodes with Graph-Based Node2Vec-Transformer for Scam Detection Model DSI, Arizona, USA.\n\n\nKang, H., & Lee, S.-G. (Nov 2024). Gas Price Stabilization in Ethereum 2.0 KMIS, Seoul, Korea.\n\n\nKang, H., & Lee, S.-G. (Oct 2024). Detecting Ethereum Phishing Nodes in NT4SD E-Bridge, Seoul, Korea.\n\n\nKang, H., & Lee, S.-G. (Aug 2024). Scanning Ethereum Phishing Node KASBA, Gyeongju, Korea.\n\n\nKang, H., & Lee, S.-G. (May 2024). Information Asymmetry in Cryptocurrency Markets: Evidence from the Dunning-Kruger Effect KMIS, Seoul, Korea.\n\n\nKang, H., & Lee, S.-G. (Jun 2023). The Dunning-Kruger Effect and Information Disparities in Cryptocurrency Trading Behavior KMIS, Jeju, Korea.\n\n\nKang, H., Park, S.-Y., & Lee, S.-G. (Jul 2021). Covid-19 Simulation Study with Beacon System: Through Bayesian Methods and Epidemic Models KMIS, Yeosu, Korea.\n\n\nKang, H., Park, S.-Y., & Lee, S.-G. (Dec 2020). Information Efficiency in the Cryptocurrency Market: The Efficient Market Hypothesis KMIS, Seoul, Korea.\n\n\nKang, H., Park, S., Kim, J., & Park, B. (Dec 2017). Analysis of Success Factors of FPS Games: Using Text Mining Analysis Korean Intelligent Information Systems Society, Seoul, Korea.\n\n\nKang, H., Ko, Y., Park, H., Yoo, J., & Park, B. (Nov 2017). An Analysis on Customers’ Perception of Korean Food in the US Using Text Mining Korea Society of Electronic Commerce, Mokpo, Korea."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Hojun Kang",
+    "section": "",
+    "text": "Assistant Professor, Division of Business Administration Dongduk Women’s University\n\n\nHumanities Building Room 406, 60 Hwarang-ro 13-gil, Seongbuk-gu, Seoul 02748, Korea\n\n\nhjkang@dongduk.ac.kr ORCID CV"
+  },
+  {
+    "objectID": "index.html#about",
+    "href": "index.html#about",
+    "title": "Hojun Kang",
+    "section": "About",
+    "text": "About\nI am an Assistant Professor in the Division of Business Administration at Dongduk Women’s University. Three questions organise my work: how AI systems should be governed, how far they can be trusted as instruments of measurement and simulation, and what the digital records they produce reveal about risk in financial and housing markets.\nMuch of what I do begins with a record that was never meant for research — a blockchain ledger, a municipal permit filing, a mortgage application file — and asks what can be credibly recovered from it. That commitment runs in both directions: machine learning lets me read sources that were previously unreadable at scale, and the same scrutiny I apply to an administrative record I apply to the models themselves, asking where their answers stop being trustworthy.\nBefore joining Dongduk, I was a Senior Researcher in the AI Policy Research Division of the Software Policy & Research Institute (SPRI), where I led analysis of AI regulatory trends, impact assessment of high-impact AI systems, and measurement of the AI industry. I hold a Ph.D. and M.A. in Management Information Systems from Sogang University."
+  },
+  {
+    "objectID": "index.html#research-interests",
+    "href": "index.html#research-interests",
+    "title": "Hojun Kang",
+    "section": "Research interests",
+    "text": "Research interests\n\n\nAI policy and governance How regulators should assess the impact of high-impact AI systems, and how an AI industry that resists conventional classification can be measured at all.\n\n\nLLM agents for economic and social science When an LLM-agent testbed can be trusted to answer a mechanism-design question, and how language models can read administrative text into research-grade measures.\n\n\nGraph learning for financial security Graph neural networks and Transformer architectures that detect fraud and phishing on blockchain transaction networks, under the label scarcity and extreme imbalance that real deployments face.\n\n\nMachine learning in finance and real estate Deep learning for asset valuation, and machine reading of public records to measure liquidity, displacement, and credit access in housing markets."
+  },
+  {
+    "objectID": "index.html#selected-work",
+    "href": "index.html#selected-work",
+    "title": "Hojun Kang",
+    "section": "Selected work",
+    "text": "Selected work\n\nKang, H., & Lee, S.-G. (in press). Frozen Markets, Falling Prices: Illiquidity and Bounded Price Discovery in U.S. Neighborhood Housing Markets. Journal of Real Estate Finance and Economics. Forthcoming\n\n\nKang, H., & Lee, S.-G. (2026). TRACE: Transaction Representation Learning for Large-Scale Ethereum Phishing Detection under Limited Labels. Decision Support Systems.\n\n\nKang, H., & Lee, S.-G. (2026). Quieter Markets, Unchanged Risks: Frequency Connectedness and the Spot Bitcoin ETF. International Review of Economics and Finance.\n\nSee all publications and working papers →"
+  },
+  {
+    "objectID": "index.html#news",
+    "href": "index.html#news",
+    "title": "Hojun Kang",
+    "section": "News",
+    "text": "News\n\n\nSep 2026 Joined Dongduk Women’s University as Assistant Professor.\n\n\nAug 2026 Freezing Digital Dollars under review at the Journal of Finance.\n\n\nJul 2026 The Market for Governance Votes under review at the Review of Financial Studies.\n\n\nJun 2026 Presented MATE: Multi-Actor Graph Neural Networks for Corporate Delisting Prediction at KMIS, Gyeongju."
+  },
+  {
+    "objectID": "cv.html",
+    "href": "cv.html",
+    "title": "Curriculum Vitae",
+    "section": "",
+    "text": "Download PDF\n\n  브라우저가 PDF 미리보기를 지원하지 않습니다.\n     여기서 내려받으세요."
+  }
+]
