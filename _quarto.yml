@@ -4,8 +4,7 @@ project:
 
 website:
   title: "Hojun Kang"
-  # 저장소 이름이 바뀌면 이 주소도 함께 고쳐주세요.
-  site-url: "https://GITHUB_USER.github.io/homepage/"
+  site-url: "https://hjkang-rep.github.io/"
   description: "AI policy, blockchain analytics, and empirical finance."
   favicon: assets/profile.jpg
   navbar:
