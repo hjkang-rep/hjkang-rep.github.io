@@ -1,12 +1,6 @@
 ### Revise and resubmit
 
 ::: {.pub}
-[[Kang, H.]{.me}, Hwang, K., Lee, Y.-K., & Lee, S.-G. (2026). Do Spot Bitcoin and Ether ETF Approvals Reallocate Liquidity Across Crypto Trading Venues? Fragile Evidence.]{.apa} *Finance Research Letters*.
-[Minor revision]{.badge-status .b-rev}
-<br>[Evidence too fragile to support or refute the venue channel, with effects reversing across plausible venue proxies.]{.pub-summary}
-:::
-
-::: {.pub}
 [[Kang, H.]{.me}, Lee, H.-J., & Lee, S.-G. (2026). The Asymmetric Effect of Spot Crypto ETP Approvals on Equity-Market Integration: Synthetic Difference-in-Differences Evidence.]{.apa} *International Review of Financial Analysis*.
 [Major revision]{.badge-status .b-rev}
 <br>[A positive integration effect only for Ethereum, with an integration-headroom decomposition explaining the Bitcoin and Solana nulls.]{.pub-summary}

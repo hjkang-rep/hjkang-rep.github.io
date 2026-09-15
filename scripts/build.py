@@ -137,8 +137,11 @@ def working_papers(rows: list[dict], cfg: dict) -> dict[str, list[dict]]:
     buckets: dict[str, list[dict]] = {
         "forthcoming": [], "revision": [], "under_review": [], "in_progress": []}
 
+    published = {clean(x) for x in (cfg.get("published_projects") or [])}
     for r in rows:
         if r.get("프로세스") in ("Reject", "Withdrawn"):
+            continue
+        if clean(r.get("프로젝트")) in published:
             continue
 
         project = clean(r.get("프로젝트"))

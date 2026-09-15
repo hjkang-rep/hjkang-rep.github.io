@@ -1,7 +1,13 @@
 ::: {.pub}
-[[Kang, H.]{.me}, & Lee, S.-G. (in press). Frozen Markets, Falling Prices: Illiquidity and Bounded Price Discovery in U.S. Neighborhood Housing Markets.]{.apa} *Journal of Real Estate Finance and Economics*.
-[Forthcoming]{.badge-status .b-accept}
+[[Kang, H.]{.me}, & Lee, S.-G. (2026). Frozen Markets, Falling Prices: Illiquidity and Bounded Price Discovery in U.S. Neighborhood Housing Markets.]{.apa} *The Journal of Real Estate Finance and Economics*.
+[SSCI]{.badge-status .b-q1}
 <br>[Illiquidity forecasts lower future returns, the opposite of the financial illiquidity premium, and diffuses spatially across neighborhoods.]{.pub-summary}
+:::
+
+::: {.pub}
+[[Kang, H.]{.me}, Hwang, K., Lee, Y.-K., & Lee, S.-G. (2026). Did Spot Crypto ETFs Reallocate Venue Liquidity? Fragile Evidence.]{.apa} *Finance Research Letters*, 111, 110744.
+[SSCI Q1]{.badge-status .b-q1}
+<br>[Evidence too fragile to support or refute the venue channel, with effects reversing across plausible venue proxies.]{.pub-summary}
 :::
 
 ::: {.pub}

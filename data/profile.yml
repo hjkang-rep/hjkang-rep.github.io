@@ -90,6 +90,29 @@ appointments:
 #   role:    first / corresponding / coauthor
 # ------------------------------------------------------------
 publications:
+  - title: "Frozen Markets, Falling Prices: Illiquidity and Bounded Price Discovery in U.S. Neighborhood Housing Markets"
+    authors: [Hojun Kang, Sang-Gun Lee]
+    venue: The Journal of Real Estate Finance and Economics
+    publisher: Springer
+    index: SSCI
+    year: 2026
+    role: first
+    doi: 10.1007/s11146-026-10080-9
+    summary: >-
+      Illiquidity forecasts lower future returns, the opposite of the financial illiquidity
+      premium, and diffuses spatially across neighborhoods.
+  - title: "Did Spot Crypto ETFs Reallocate Venue Liquidity? Fragile Evidence"
+    authors: [Hojun Kang, Kyuyeon Hwang, Yong-Ki Lee, Sang-Gun Lee]
+    venue: Finance Research Letters
+    publisher: Elsevier
+    index: SSCI Q1
+    year: 2026
+    pages: "111, 110744"
+    role: first
+    doi: 10.1016/j.frl.2026.110744
+    summary: >-
+      Evidence too fragile to support or refute the venue channel, with effects reversing across
+      plausible venue proxies.
   - title: "TRACE: Transaction Representation Learning for Large-Scale Ethereum Phishing Detection under Limited Labels"
     authors: [Hojun Kang, Sang-Gun Lee]
     venue: Decision Support Systems
@@ -352,6 +375,11 @@ teaching:
 # ------------------------------------------------------------
 # Under review 는 전부 싣지 않고 아래 프로젝트만 싣습니다 (Notion "프로젝트" 코드명).
 # 비우면 심사 중인 논문 전체가 나옵니다.
+# 게재가 끝나 위 publications 로 옮긴 논문. Notion 행을 working paper/forthcoming 에서 뺍니다.
+published_projects:
+  - Census-RE          # JREFE 2026
+  - BTC-ETF            # FRL 2026
+
 featured_under_review:
   - CBDC-Freeze        # Journal of Finance
   - Vote Market        # The Review of Financial Studies
