@@ -1,6 +1,6 @@
 ::: {.pub}
 [[Kang, H.]{.me}, & Lee, S.-G. (2026). Frozen Markets, Falling Prices: Illiquidity and Bounded Price Discovery in U.S. Neighborhood Housing Markets.]{.apa} *The Journal of Real Estate Finance and Economics*.
-[SSCI]{.badge-status .b-q1}
+[SSCI Q1]{.badge-status .b-q1}
 <br>[Illiquidity forecasts lower future returns, the opposite of the financial illiquidity premium, and diffuses spatially across neighborhoods.]{.pub-summary}
 :::
 
