@@ -44,7 +44,7 @@ answers stop being trustworthy.
 Before joining Dongduk, I was a Senior Researcher in the AI Policy Research Division of
 the [Software Policy & Research Institute (SPRI)](https://spri.kr), where I led analysis
 of AI regulatory trends, impact assessment of high-impact AI systems, and measurement of
-the AI industry. I hold a Ph.D. and M.A. in Management Information Systems from Sogang
+the AI industry. I hold a Ph.D. in Management Information Systems from Sogang
 University.
 
 ## Research interests

@@ -281,10 +281,15 @@ def write_cv_tex(cfg: dict, buckets: dict) -> str:
 
     L.append(r"\section{Education}")
     for e in cfg["education"]:
-        note = clean(e.get("note", ""))
+        lines = []
+        if e.get("advisor"):
+            lines.append(tex_escape("Advisor: " + clean(e["advisor"])))
+        if clean(e.get("note", "")):
+            lines.append(tex_escape(clean(e["note"])))
+        detail = r"\newline ".join(lines)
         L.append(rf"\entry{{{tex_escape(e['period'])}}}{{{tex_escape(e['degree'])}}}"
                  rf"{{{tex_escape(e['institution'] + ', ' + e['location'])}}}"
-                 rf"{{{tex_escape(note)}}}")
+                 rf"{{{detail}}}")
     L.append("")
 
     L.append(r"\section{Academic Appointments}")

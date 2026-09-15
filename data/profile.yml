@@ -27,7 +27,7 @@ bio: >
   risk in financial and housing markets. He previously served as a Senior Researcher in
   the AI Policy Research Division of the Software Policy & Research Institute (SPRI),
   leading analysis of AI regulatory trends, impact assessment of high-impact AI systems,
-  and measurement of the AI industry. He holds a Ph.D. and M.A. in Management Information
+  and measurement of the AI industry. He holds a Ph.D. in Management Information
   Systems from Sogang University.
 
 interests:
@@ -45,20 +45,10 @@ education:
     institution: Sogang University
     location: Seoul, Korea
     period: Mar 2020 – Aug 2023
+    advisor: Sang-Gun Lee
     note: >-
       Dissertation: Cryptocurrency, Brave New Realm or Mere Dream? Using the Dunning-Kruger
       Effect and Size Effect for Empirical Analysis
-  - degree: M.A., Management Information Systems
-    institution: Sogang University
-    location: Seoul, Korea
-    period: Mar 2018 – Feb 2020
-    note: >-
-      Thesis: Information Efficiency in the Cryptocurrency Market: The Efficient Market Hypothesis
-  - degree: B.A., French Language and Literature; Finance Engineering
-    institution: Hannam University
-    location: Daejeon, Korea
-    period: Mar 2011 – Feb 2018
-    note: ""
 
 appointments:
   - role: Assistant Professor, Division of Business Administration
