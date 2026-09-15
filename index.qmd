@@ -74,7 +74,7 @@ University.
 ## Selected work
 
 ::: {.pub}
-[[Kang, H.]{.me}, & Lee, S.-G. (in press). Frozen Markets, Falling Prices: Illiquidity and Bounded Price Discovery in U.S. Neighborhood Housing Markets.]{.apa} *Journal of Real Estate Finance and Economics*. [Forthcoming]{.badge-status .b-accept}
+[[Kang, H.]{.me}, & Hwang, K. (2025). FORTRESS: Fraud-oriented Transformer with Random Traversal for Ethereum Security Surveillance.]{.apa} *Information Sciences*.
 :::
 
 ::: {.pub}
@@ -82,7 +82,7 @@ University.
 :::
 
 ::: {.pub}
-[[Kang, H.]{.me}, & Lee, S.-G. (2026). Quieter Markets, Unchanged Risks: Frequency Connectedness and the Spot Bitcoin ETF.]{.apa} *International Review of Economics and Finance*.
+[[Kang, H.]{.me}, & Lee, S.-G. (2026). Frozen Markets, Falling Prices: Illiquidity and Bounded Price Discovery in U.S. Neighborhood Housing Markets.]{.apa} *The Journal of Real Estate Finance and Economics*.
 :::
 
 [See all publications and working papers →](research.qmd)
