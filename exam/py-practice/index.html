@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>파이썬 중간고사 체험판</title>
+<style>
+  :root {
+    --red: #6F263D; --red-soft: #f6eef1; --ink: #1f242b; --gray: #5b6570; --line: #d9dce0;
+    --box: #f6f5f4; --bg: #ffffff; --ok: #1f6f43; --warn: #9a6200; --err: #a32020;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: 70px; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font-family: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; font-size: 15px; line-height: 1.55; }
+  code, .mono, textarea.code, pre { font-family: Consolas, "D2Coding", "Malgun Gothic", monospace; }
+  code { background: var(--box); padding: 0 4px; border-radius: 3px; font-size: 0.92em; }
+  button { font: inherit; border: 1px solid var(--red); background: var(--red); color: #fff; border-radius: 4px; padding: 6px 14px; cursor: pointer; }
+  button.ghost { background: #fff; color: var(--red); }
+  button:disabled { opacity: .45; cursor: default; }
+  input[type=text], input[type=password], select, textarea { font: inherit; border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; background: #fff; color: var(--ink); }
+  input:disabled, select:disabled, textarea:disabled { background: var(--box); color: var(--gray); }
+  .hint { color: var(--gray); font-size: 13px; }
+
+  /* 시작 화면 */
+  #login { max-width: 520px; margin: 8vh auto; padding: 28px 30px; border: 1px solid var(--line); border-radius: 8px; }
+  #login h1 { font-size: 20px; margin: 0 0 4px; color: var(--red); }
+  #login .row { display: grid; grid-template-columns: 110px 1fr; gap: 10px; align-items: center; margin: 12px 0; }
+  #login .err { color: var(--err); min-height: 1.4em; font-size: 14px; }
+  #login ul { padding-left: 18px; font-size: 14px; }
+  #l-wait { text-align: center; padding: 18px 0 6px; }
+  .wait-who { font-weight: 600; }
+  .wait-big { font-size: 44px; font-weight: 700; color: var(--red); font-variant-numeric: tabular-nums; margin: 8px 0; }
+  .emg-link { margin-top: 18px; font-size: 12px; text-align: right; }
+  .emg-link a { color: var(--gray); }
+  #l-emg { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
+
+  /* 시험 화면 */
+  header.top { position: sticky; top: 0; z-index: 10; background: var(--red); color: #fff; padding: 8px 16px;
+               display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  header.top .who { font-weight: 600; }
+  header.top .timer { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 18px; margin-left: auto; }
+  header.top .timer.low { color: #ffd166; }
+  header.top .save { font-size: 13px; opacity: .95; }
+  header.top button { background: #fff; color: var(--red); border-color: #fff; padding: 4px 10px; font-size: 13px; }
+  nav.sec { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 16px; border-bottom: 1px solid var(--line); background: #fff; }
+  nav.sec a { color: var(--red); text-decoration: none; border: 1px solid var(--line); border-radius: 14px; padding: 2px 12px; font-size: 14px; }
+  body { overflow-x: hidden; }
+  main { max-width: 1000px; margin: 0 auto; padding: 16px; }
+  .notice { background: var(--box); border-radius: 6px; padding: 10px 16px; margin-bottom: 18px; font-size: 14px; }
+  .notice ul { margin: 4px 0; padding-left: 18px; }
+  details.schema { background: var(--box); border-radius: 6px; padding: 8px 14px; margin-bottom: 18px; font-size: 13px; }
+  details.schema summary { cursor: pointer; font-weight: 600; color: var(--red); }
+  .schema-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px 18px; margin-top: 6px; }
+  .schema-grid ul { margin: 2px 0; padding-left: 16px; color: var(--gray); font-family: Consolas, monospace; }
+  section.part { margin: 26px 0 10px; }
+  section.part > h2 { font-size: 18px; color: var(--red); border-bottom: 2px solid var(--red); padding-bottom: 4px; }
+  .item { border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; margin: 14px 0; }
+  .item.locked-gate { opacity: .5; }
+  .item h3 { font-size: 15px; margin: 0 0 6px; }
+  .item h3 .pts { color: var(--gray); font-weight: 400; font-size: 13px; }
+  .prompt { margin-bottom: 8px; }
+  .prompt ul { margin: 4px 0; }
+  .cols { display: inline-block; margin-top: 4px; color: var(--gray); font-size: 13px; }
+  .part-row { margin: 8px 0; }
+  .part-row > label.lbl { display: block; font-size: 14px; margin-bottom: 3px; }
+  .grid2 { display: grid; grid-template-columns: minmax(200px, 1fr) 280px; gap: 6px 12px; align-items: center; }
+  .grid2 label.lbl { margin: 0; }
+  .radio-list label { display: block; padding: 3px 0; cursor: pointer; }
+  .radio-inline { display: flex; gap: 18px; align-items: center; }
+  .radio-inline .k { width: 40px; font-weight: 600; }
+  textarea { width: 100%; resize: vertical; }
+  input[type=text].wide { width: 100%; }
+  textarea.code { min-height: 170px; font-size: 14px; tab-size: 4; white-space: pre; overflow-wrap: normal; overflow-x: auto; }
+  textarea.stdin { min-height: 44px; font-size: 13px; font-family: Consolas, "D2Coding", monospace; }
+  .io { display: grid; grid-template-columns: 1fr 260px; gap: 8px; }
+  @media (max-width: 800px) { .io { grid-template-columns: 1fr; } }
+  pre.out { background: #1f242b; color: #e8eaed; border-radius: 4px; padding: 8px 12px; font-size: 13px; margin: 4px 0; white-space: pre-wrap; max-height: 280px; overflow: auto; }
+  pre.out:empty { display: none; }
+  pre.out .e { color: #ff9b9b; }
+  .lockbox { margin-top: 14px; padding: 12px 14px; border: 2px dashed var(--red); border-radius: 6px; background: var(--red-soft); }
+  pre.show { background: var(--box); border-radius: 4px; padding: 10px 12px; font-size: 13px; overflow-x: auto; margin: 4px 0; white-space: pre; }
+  .bar { display: flex; gap: 8px; align-items: center; margin: 6px 0; flex-wrap: wrap; }
+  .msg { font-size: 13px; margin: 4px 0; }
+  .msg.ok { color: var(--ok); } .msg.err { color: var(--err); white-space: pre-wrap; }
+  .result { overflow: auto; max-height: 300px; border: 1px solid var(--line); border-radius: 4px; }
+  .result:empty { display: none; }
+  table.res, table.data, table.card { border-collapse: collapse; font-size: 13px; }
+  table.res th, table.res td, table.data th, table.data td { border-bottom: 1px solid var(--line); padding: 4px 10px; text-align: left; white-space: nowrap; }
+  table.res th, table.data th { background: var(--box); position: sticky; top: 0; }
+  table.res td.num { text-align: right; }
+  td.null { color: #9aa0a6; font-style: italic; }
+  table.data { margin: 8px 0; display: block; max-width: 100%; overflow-x: auto; }
+  table.data td { white-space: normal; }
+  table.card th { text-align: left; background: var(--box); padding: 5px 12px; width: 90px; border: 1px solid var(--line); }
+  table.card td { padding: 5px 12px; border: 1px solid var(--line); }
+  .request { background: var(--red-soft); border-left: 4px solid var(--red); padding: 8px 12px; margin: 6px 0 10px; }
+  .gatebox { margin-top: 10px; }
+  .submit-area { border: 2px solid var(--red); border-radius: 8px; padding: 16px; margin: 30px 0 60px; text-align: center; }
+  .submit-area .receipt { margin-top: 8px; font-size: 14px; }
+  .banner { padding: 10px 16px; text-align: center; font-weight: 600; }
+  .banner.end { background: #fff3cd; color: #6b4e00; }
+  .feedback { margin-top: 10px; padding: 8px 12px; background: #f3f8f4; border-left: 4px solid var(--ok); font-size: 14px; }
+  .feedback > div { margin: 3px 0; }
+  .fb-ok { color: var(--ok); font-weight: 700; } .fb-no { color: var(--err); font-weight: 700; }
+  .fb-key pre { margin: 4px 0 0; white-space: pre-wrap; }
+  .hidden { display: none !important; }
+  @media (max-width: 700px) { .grid2 { grid-template-columns: 1fr; } #login .row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div id="login">
+  <h1 id="l-title">중간고사</h1>
+  <div class="hint" id="l-sub"></div>
+  <div id="l-form">
+    <ul>
+      <li>학번 · 이름을 정확히 입력. 채점과 성적 처리에 그대로 쓰임</li>
+      <li>입장해 두면 <b>시작 시각에 문제가 자동으로 열림</b>. 미리 들어와 기다릴 것</li>
+      <li>시험 중 새로고침하거나 창을 닫아도, 같은 컴퓨터에서 다시 들어오면 쓰던 답안이 남아 있음</li>
+    </ul>
+    <div class="row"><label for="sid">학번</label><input id="sid" type="text" inputmode="numeric" autocomplete="off"></div>
+    <div class="row"><label for="sname">이름</label><input id="sname" type="text" autocomplete="off"></div>
+    <div class="err" id="l-err"></div>
+    <button id="l-go">입장</button>
+  </div>
+  <div id="l-wait" class="hidden">
+    <div class="wait-who" id="w-who"></div>
+    <div class="wait-big" id="w-count">--:--</div>
+    <div class="hint" id="w-msg">시작 시각에 자동으로 열림. 창을 닫지 말고 기다릴 것</div>
+    <div class="err" id="w-err"></div>
+  </div>
+  <div id="l-emg" class="hidden">
+    <div class="row"><label for="pw">비상 비밀번호</label><input id="pw" type="password" autocomplete="off"></div>
+    <button id="pw-go" class="ghost">비상 비밀번호로 열기</button>
+  </div>
+  <div class="emg-link"><a href="#" id="emg-toggle">서버 연결 문제로 감독자가 비상 비밀번호를 알려 준 경우</a></div>
+</div>
+
+<div id="app" class="hidden">
+  <header class="top">
+    <span class="who" id="who"></span>
+    <span class="save" id="save-status">저장 대기</span>
+    <button id="btn-download" title="서버 저장이 안 될 때 답안을 파일로 받아 둠">답안 파일 저장</button>
+    <span class="timer" id="timer">--:--</span>
+  </header>
+  <div class="banner end hidden" id="end-banner">시험 시간이 끝남. 답안을 더 고칠 수 없음</div>
+  <nav class="sec" id="secnav"></nav>
+  <main>
+    <div class="notice" id="notice"></div>
+    <details class="schema" id="files-box"><summary>제공 파일 (open()으로 읽을 수 있음 · 클릭해서 펼치기)</summary><div id="schema"></div></details>
+    <div id="exam"></div>
+    <div class="submit-area">
+      <div>다 풀었으면 최종 제출. 마감 전까지 다시 제출할 수 있고 <b>마지막 제출</b>이 채점됨</div>
+      <div class="bar" style="justify-content:center; margin-top:10px">
+        <button id="btn-final">최종 제출</button>
+      </div>
+      <div class="receipt" id="receipt"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+/* 빌드할 때 build.mjs 가 아래 값을 채움. 문제와 제공 파일은 enc 안에 암호화되어 있고, 여는 열쇠는 이 파일에 없음 */
+const CONFIG = {"endpoint":"","practice":{"key":"TZfepszWlk8Sne/2qolzKhLD+txdLc3mCECTMstn+Os=","delaySec":10,"durationMin":20},"startISO":"","endISO":"","enc":{"iv":"cG2lqCMom4tpeJRy","data":"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"},"wrap":null};
+</script>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const MAX_ROWS = 200;
+
+const state = {
+  sid: "", name: "", exam: null, files: {},
+  answers: {}, tabLeaves: 0, dirty: false, ended: false,
+  serverOffset: 0, startMs: 0, endMs: 0, lastSavedJSON: "", saving: false, finalDone: false
+};
+const PRACTICE = !!CONFIG.practice;
+const PFX = PRACTICE ? "py-mid-2026-practice" : "py-mid-2026";   // BI 시험과 같은 PC · 같은 날이라 이름을 나눔
+const storeKey = () => `${PFX}-${state.sid}`;
+
+/* ---------- 복호화 ----------
+   문제는 무작위 열쇠(K)로 암호화되어 있음. K는 두 곳에서만 얻을 수 있음
+   1) 서버: 시작 시각이 지나야 내줌 (평소 경로)
+   2) 비상 비밀번호: 서버가 응답하지 않을 때 감독자가 알려 줌 */
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function openPayload(rawKeyB64) {
+  const key = await crypto.subtle.importKey("raw", b64(rawKeyB64), "AES-GCM", false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(CONFIG.enc.iv) }, key, b64(CONFIG.enc.data));
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+async function unwrapWithPassword(password) {
+  const w = CONFIG.wrap;
+  const keyMat = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]);
+  const kek = await crypto.subtle.deriveKey({ name: "PBKDF2", salt: b64(w.salt), iterations: w.iter, hash: "SHA-256" },
+    keyMat, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+  const raw = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(w.iv) }, kek, b64(w.data));
+  return btoa(String.fromCharCode(...new Uint8Array(raw)));
+}
+
+/* ---------- 서버 ---------- */
+async function api(payload) {
+  if (!CONFIG.endpoint) throw new Error("서버 주소 미설정");
+  const r = await fetch(CONFIG.endpoint, { method: "POST", body: JSON.stringify(payload) });
+  const j = await r.json();
+  if (!j.ok) { const e = new Error(j.msg || "서버 거부"); e.data = j; throw e; }
+  return j;
+}
+async function syncTime() {
+  state.startMs = Date.parse(CONFIG.startISO);
+  state.endMs = Date.parse(CONFIG.endISO);
+  if (!CONFIG.endpoint) return;
+  try {
+    const t0 = Date.now();
+    const j = await api({ action: "time" });
+    const t1 = Date.now();
+    state.serverOffset = j.serverMs - (t0 + t1) / 2;
+    if (j.startMs) state.startMs = j.startMs;
+    if (j.endMs) state.endMs = j.endMs;
+  } catch (e) { /* 서버 시각을 못 받으면 이 컴퓨터 시계로 진행 */ }
+}
+const now = () => Date.now() + state.serverOffset;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const mmss = ms => { const s = Math.max(0, Math.ceil(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
+
+/* ---------- 입장 · 대기 · 자동 열림 ---------- */
+/* 파이썬은 Web Worker 안의 Pyodide(브라우저용 파이썬 3.12)로 실행.
+   무한 반복이면 정해진 시간 뒤 Worker를 통째로 끄고 새로 띄움 (다시 준비되기까지 1~2초) */
+const PY_BASE = CONFIG.pyBase || "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/";
+const RUN_LIMIT_MS = 6000;
+const WORKER_SRC = `
+importScripts("${PY_BASE}pyodide.js");
+let py = null, n = 0;
+self.onmessage = async (e) => {
+  const { id, code, stdin, files } = e.data;
+  try {
+    if (!py) py = await loadPyodide({ indexURL: "${PY_BASE}" });
+    if (code === null) { self.postMessage({ id, ready: true }); return; }
+    const out = [];
+    const lines = (stdin || "").split(/\\r?\\n/); let li = 0;
+    py.setStdout({ raw: c => out.push(c) });
+    py.setStderr({ raw: c => out.push(c) });
+    py.setStdin({ stdin: () => {
+      if (li >= lines.length || (li === lines.length - 1 && lines[li] === "")) return null;
+      const s = lines[li++];
+      for (const ch of new TextEncoder().encode(s + "\\n")) out.push(ch);
+      return s + "\\n";
+    }});
+    const dir = "/run" + (++n); py.FS.mkdir(dir); py.FS.chdir(dir);
+    for (const [name, text] of Object.entries(files || {})) py.FS.writeFile(name, text, { encoding: "utf8" });
+    const g = py.globals.get("dict")(); g.set("__name__", "__main__");
+    let err = null;
+    try { await py.runPythonAsync(code, { globals: g, filename: "<답안>" }); }
+    catch (ex) { err = String(ex.message || ex); }
+    g.destroy();
+    self.postMessage({ id, out: new TextDecoder().decode(new Uint8Array(out)), err });
+  } catch (ex) { self.postMessage({ id, out: "", err: "ENGINE: " + ex }); }
+};`;
+let worker = null, seq = 0, pending = null, enginePromise = null;
+function makeWorker() {
+  worker = new Worker(URL.createObjectURL(new Blob([WORKER_SRC], { type: "text/javascript" })));
+  worker.onmessage = e => { if (pending && pending.id === e.data.id) { clearTimeout(pending.t); const p = pending; pending = null; p.res(e.data); } };
+  worker.onerror = () => {};
+}
+function callWorker(msg, limitMs) {
+  return new Promise(res => {
+    if (pending) { res({ out: "", err: "BUSY" }); return; }
+    const id = ++seq;
+    const t = setTimeout(() => { worker.terminate(); makeWorker(); enginePromise = null; pending = null; res({ id, out: "", err: "TIMEOUT" }); }, limitMs);
+    pending = { id, res, t };
+    worker.postMessage(Object.assign({ id }, msg));
+  });
+}
+function loadEngine() {                    // 기다리는 동안 미리 받아 둠. 처음 한 번 10MB 정도
+  if (!worker) makeWorker();
+  if (!enginePromise) enginePromise = callWorker({ code: null }, 120000).then(r => { if (!r.ready) { enginePromise = null; throw new Error(r.err || "준비 실패"); } return true; });
+  return enginePromise;
+}
+async function runPython(code, stdin, force) {
+  if (!force && !state.answers["__gate"]) return { out: "", err: "LOCKED" };   // 1부 확정 전에는 실행하지 않음
+  await loadEngine();
+  return callWorker({ code, stdin, files: state.files || {} }, RUN_LIMIT_MS);
+}
+function initLogin() {
+  $("l-title").textContent = PRACTICE ? "파이썬 프로그래밍 중간고사 체험판" : "파이썬 프로그래밍 중간고사";
+  $("l-sub").textContent = PRACTICE ? "연습용 · 점수에 들어가지 않음 · 학번은 아무 숫자, 이름은 아무 글자나 넣어도 됨"
+                                    : "2026학년도 2학기 · 담당교수 강호준 · 75분 · AI 사용 불가";
+  if (PRACTICE) {
+    document.querySelector(".emg-link").classList.add("hidden"); document.title = "파이썬 중간고사 체험판";
+    document.querySelector("#l-form li").textContent = "실제 시험에서는 학번 · 이름을 정확히 입력해야 함 (채점과 성적 처리에 그대로 쓰임)";
+  }
+  try {
+    const last = JSON.parse(localStorage.getItem(`${PFX}-last`) || "null");
+    if (last) { $("sid").value = last.sid; $("sname").value = last.name; }
+  } catch (e) {}
+  $("l-go").onclick = enter;
+  $("sname").addEventListener("keydown", e => { if (e.key === "Enter") enter(); });
+  $("emg-toggle").onclick = e => { e.preventDefault(); $("l-emg").classList.toggle("hidden"); };
+  $("pw-go").onclick = openWithPassword;
+  $("pw").addEventListener("keydown", e => { if (e.key === "Enter") openWithPassword(); });
+  loadEngine().catch(() => {});      // 기다리는 동안 파이썬 엔진을 미리 받아 둠
+}
+function readIdentity() {
+  const sid = $("sid").value.trim(), name = $("sname").value.trim();
+  if (PRACTICE) {                                        // 체험판: 아무 숫자 · 아무 이름이나 통과
+    if (!/^\d+$/.test(sid)) return "학번 칸에는 숫자만 넣을 것 (체험판은 아무 숫자나 됨)";
+    if (!name) return "이름을 입력하시오. (체험판은 아무 이름이나 됨)";
+  } else {
+    if (!/^\d{7,10}$/.test(sid)) return "학번을 숫자로 정확히 입력하시오.";
+    if (name.length < 2) return "이름을 입력하시오.";
+  }
+  state.sid = sid; state.name = name;
+  try { localStorage.setItem(`${PFX}-last`, JSON.stringify({ sid, name })); } catch (e) {}
+  return "";
+}
+async function enter() {
+  const msg = readIdentity(); $("l-err").textContent = msg; if (msg) return;
+  $("l-go").disabled = true;
+  if (PRACTICE) {
+    state.startMs = Date.now() + CONFIG.practice.delaySec * 1000;
+    state.endMs = state.startMs + CONFIG.practice.durationMin * 60000;
+    try { const old = JSON.parse(localStorage.getItem(storeKey()) || "null"); if (old && old.endMs > Date.now()) { state.startMs = Date.now(); state.endMs = old.endMs; } } catch (e) {}
+    $("w-msg").textContent = "체험판은 입장하고 10초 뒤 열림. 실제 시험은 13:30에 이렇게 열림";
+  } else {
+    await syncTime();
+  }
+  $("l-form").classList.add("hidden"); $("l-wait").classList.remove("hidden");
+  $("w-who").textContent = `${state.sid} ${state.name}`;
+  // 같은 창에서 이미 열었던 시험이면 서버를 다시 거치지 않음 (새로고침 대비)
+  let cached = null; try { cached = sessionStorage.getItem(`${PFX}-k`); } catch (e) {}
+  if (cached) { try { return await start(cached); } catch (e) {} }
+  waitAndOpen();
+}
+async function waitAndOpen() {
+  while (now() < state.startMs) {                       // 시작 전: 남은 시간만 보여 줌
+    $("w-count").textContent = mmss(state.startMs - now());
+    await sleep(250);
+  }
+  $("w-count").textContent = "여는 중";
+  if (PRACTICE) return start(CONFIG.practice.key);
+  $("w-msg").textContent = "문제를 받는 중. 잠시 기다릴 것";
+  await sleep(Math.random() * 8000);                    // 100명이 같은 순간에 몰리지 않게 0~8초 흩뜨림
+  const t0 = Date.now();
+  for (let i = 0; ; i++) {
+    try {
+      const j = await api({ action: "key", studentId: state.sid });
+      return await start(j.key);
+    } catch (e) {
+      const d = e.data || {};
+      if (d.msg === "not_yet" && d.startMs) { state.serverOffset = d.serverMs - Date.now(); state.startMs = d.startMs; return waitAndOpen(); }
+      if (d.msg === "closed") { $("w-err").textContent = "시험 시간이 끝남"; return; }
+      if (Date.now() - t0 > 45000) {
+        $("w-err").textContent = "서버에 연결되지 않음. 손을 들어 감독자에게 알릴 것";
+        $("l-emg").classList.remove("hidden");
+      }
+      await sleep(Math.min(8000, 1500 * 1.5 ** i) + Math.random() * 1500);
+    }
+  }
+}
+async function openWithPassword() {
+  if (!state.sid) { const msg = readIdentity(); if (msg) { $("l-err").textContent = msg; return; } await syncTime(); }
+  try { await start(await unwrapWithPassword($("pw").value.trim())); }
+  catch (e) { $("w-err").textContent = ""; $("l-err").textContent = "비상 비밀번호가 맞지 않음"; }
+}
+async function start(rawKey) {
+  const payload = await openPayload(rawKey);            // 열쇠가 틀리면 여기서 오류
+  try { sessionStorage.setItem(`${PFX}-k`, rawKey); } catch (e) {}
+  state.exam = payload.exam;
+  state.files = payload.files || {};
+  state.p1ids = new Set(state.exam.sections.flatMap(s => s.items).filter(i => i.group === "P1").map(i => i.id));
+  buildFiles(state.files);
+  loadEngine().catch(e => setStatus("파이썬 엔진을 불러오지 못함. 손을 들어 알릴 것"));
+  loadLocal();
+  render();
+  $("login").classList.add("hidden"); $("app").classList.remove("hidden");
+  startLoops();
+}
+
+/* ---------- 답안 저장 ---------- */
+function loadLocal() {
+  try {
+    const s = JSON.parse(localStorage.getItem(storeKey()) || "null");
+    if (s) { state.answers = s.answers || {}; state.tabLeaves = s.tabLeaves || 0; }
+  } catch (e) {}
+}
+function saveLocal() {
+  try { localStorage.setItem(storeKey(), JSON.stringify({ answers: state.answers, tabLeaves: state.tabLeaves, at: now(), endMs: state.endMs })); } catch (e) {}
+}
+function p1Key(k) { return state.p1ids && state.p1ids.has(k.split(".")[0]); }
+function setAnswer(k, v) {
+  if (state.ended) return;
+  if (state.answers["__gate"] && p1Key(k)) return;     // 1부 확정 뒤에는 1부 답을 바꿀 수 없음 (화면을 조작해도 저장되지 않음)
+  state.answers[k] = v; state.dirty = true; saveLocal();
+  setStatus("이 컴퓨터에 저장됨 · 서버 저장 대기");
+}
+function setStatus(t) { $("save-status").textContent = t; }
+function payload(kind) {
+  return { action: "submit", kind, studentId: state.sid, name: state.name,
+           answers: state.answers, tabLeaves: state.tabLeaves, clientMs: Date.now() };
+}
+async function serverSave(kind, tries = 1) {
+  const body = payload(kind), json = JSON.stringify(body.answers);
+  if (kind === "draft" && json === state.lastSavedJSON) return true;
+  if (PRACTICE) {
+    state.lastSavedJSON = json; state.dirty = false;
+    setStatus("체험판 · 이 컴퓨터에만 저장됨 " + new Date().toLocaleTimeString("ko-KR"));
+    return { serverMs: Date.now() };
+  }
+  for (let i = 0; i < tries; i++) {
+    try {
+      const j = await api(body);
+      state.lastSavedJSON = json; state.dirty = false;
+      const t = new Date(j.serverMs).toLocaleTimeString("ko-KR");
+      setStatus((kind === "final" ? "최종 제출됨 " : "서버 저장됨 ") + t);
+      return j;
+    } catch (e) {
+      setStatus(`서버 저장 실패 (${e.message}) · 이 컴퓨터에는 저장됨`);
+      if (i < tries - 1) await new Promise(r => setTimeout(r, 1500 * 2 ** i + Math.random() * 1000));
+    }
+  }
+  return false;
+}
+function downloadAnswers() {
+  const blob = new Blob([JSON.stringify(payload("file"), null, 1)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = `파이썬중간고사_${state.sid}_${state.name}.json`; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+/* ---------- 타이머 · 주기 저장 ---------- */
+function startLoops() {
+  const tick = () => {
+    const left = Math.max(0, state.endMs - now());
+    const m = Math.floor(left / 60000), s = Math.floor(left / 1000) % 60;
+    $("timer").textContent = `남은 시간 ${m}:${String(s).padStart(2, "0")}`;
+    $("timer").classList.toggle("low", left < 5 * 60000);
+    if (left <= 0 && !state.ended) endExam();
+  };
+  tick(); setInterval(tick, 1000);
+  const loop = async () => {               // 학생마다 저장 시점이 겹치지 않게 90~150초 사이로 흩뜨림
+    if (!state.ended && state.dirty) await serverSave("draft");
+    setTimeout(loop, 90000 + Math.random() * 60000);
+  };
+  setTimeout(loop, 20000 + Math.random() * 60000);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && !state.ended) { state.tabLeaves++; saveLocal(); state.dirty = true; }
+  });
+  window.addEventListener("beforeunload", e => { if (!state.ended && state.dirty) { e.preventDefault(); e.returnValue = ""; } });
+}
+async function endExam() {
+  state.ended = true;
+  document.querySelectorAll("#exam input, #exam select, #exam textarea, #btn-final").forEach(el => el.disabled = true);
+  $("end-banner").classList.remove("hidden");
+  setStatus("자동 제출 중…");
+  const ok = await serverSave("final", 5);
+  if (PRACTICE) { await showFeedback(); return; }
+  if (ok) $("receipt").textContent = "시간 종료로 자동 제출됨. 수고했습니다.";
+  else { $("receipt").innerHTML = "<b>자동 제출 실패.</b> 손을 들고 위의 <b>답안 파일 저장</b> 버튼으로 파일을 받으시오."; }
+}
+
+/* ---------- 파이썬 실행 ---------- */
+const HINTS = [
+  [/^SyntaxError/, "문법 오류. 콜론(:) · 괄호 · 따옴표 · 연산자를 확인"],
+  [/^IndentationError|^TabError/, "들여쓰기 오류. 같은 블록은 같은 칸만큼 들여 씀"],
+  [/^NameError/, "정의되지 않은 이름. 오타 · 변수를 만들기 전에 쓴 것 · 따옴표 빠진 문자열을 확인"],
+  [/^TypeError/, "자료형이 맞지 않음. 문자열과 숫자를 섞어 계산했는지, int() · float() · str() 변환을 확인"],
+  [/^ValueError/, "값의 형식이 맞지 않음. 예: int('3.5'), int('') 처럼 바꿀 수 없는 문자열"],
+  [/^ZeroDivisionError/, "0으로 나눔"],
+  [/^IndexError/, "리스트 · 문자열의 범위를 벗어난 위치"],
+  [/^KeyError/, "딕셔너리에 없는 키"],
+  [/^FileNotFoundError/, "파일이 없음. 파일 이름 · 확장자를 확인 (위의 제공 파일 목록)"],
+  [/^AttributeError/, "그 자료형에 없는 메서드 · 속성"],
+  [/^EOFError/, "input()이 읽을 입력이 없음. 오른쪽 '입력값' 칸에 한 줄에 하나씩 적을 것"]
+];
+function cleanError(err) {
+  if (err === "TIMEOUT") return `${RUN_LIMIT_MS / 1000}초 안에 끝나지 않아 멈춤. 무한 반복이 아닌지 확인 (while 조건이 바뀌는지)`;
+  if (err === "BUSY") return "앞의 실행이 아직 끝나지 않음";
+  if (err === "LOCKED") return "1부를 확정해야 실행할 수 있음";
+  if (err.startsWith("ENGINE")) return "파이썬 엔진 오류. 다시 실행해 보고, 계속되면 손을 들 것";
+  const lines = err.trim().split("\n");
+  const i = lines.findIndex(l => l.includes('"<답안>"'));
+  const body = i >= 0 ? lines.slice(i).join("\n") : lines.slice(-3).join("\n");
+  const last = lines[lines.length - 1] || "";
+  const hint = (HINTS.find(([re]) => re.test(last)) || [null, ""])[1];
+  return body.replace(/File "<답안>", /g, "") + (hint ? `\n→ ${hint}` : "");
+}
+async function runCode(code, stdin, outEl, btn) {
+  if (!code.trim()) { outEl.innerHTML = "<span class='e'>코드를 입력하시오.</span>"; return; }
+  if (btn) { btn.disabled = true; btn.textContent = "실행 중…"; }
+  outEl.textContent = "";
+  const r = await runPython(code, stdin);
+  outEl.innerHTML = esc(r.out) + (r.err ? `<span class="e">${esc((r.out && !r.out.endsWith("\n") ? "\n" : "") + cleanError(r.err))}</span>` : (r.out ? "" : "<span class='e'>(출력 없음)</span>"));
+  if (btn) { btn.disabled = false; btn.textContent = "실행"; }
+}
+function buildFiles(files) {
+  const names = Object.keys(files);
+  if (!names.length) { $("files-box").classList.add("hidden"); return; }
+  $("schema").innerHTML = names.map(n => {
+    const lines = files[n].split("\n");
+    return `<div style="margin:6px 0"><b class="mono">${esc(n)}</b> <span class="hint">${lines.filter(l => l).length}줄 · UTF-8</span>
+      <pre class="show">${esc(lines.slice(0, 8).join("\n"))}${lines.length > 9 ? "\n…" : ""}</pre></div>`;
+  }).join("");
+}
+
+/* ---------- 화면 그리기 ---------- */
+function choicesOf(p) { return p.choices === "@errtypes" ? state.exam.errtypes : p.choices; }
+function codeBlock(id, k, initial, stdinInit) {
+  return `<div class="io"><textarea class="code" id="${id}" data-k="${k}" spellcheck="false" autocomplete="off" placeholder="# 여기에 코드를 쓰고 실행">${esc(initial || "")}</textarea>
+    <div><label class="hint" for="${id}-in">입력값 (input()에 들어갈 값, 한 줄에 하나)</label>
+    <textarea class="stdin" id="${id}-in" data-k="${k}#stdin" spellcheck="false" rows="4">${esc(stdinInit || "")}</textarea></div></div>
+    <div class="bar"><button type="button" data-run="${id}">실행</button><span class="hint">Ctrl + Enter 로도 실행 · Tab은 공백 4칸</span></div>
+    <pre class="out" id="${id}-out"></pre>`;
+}
+function renderPart(item, p) {
+  const k = `${item.id}.${p.key}`, v = state.answers[k], did = "f-" + k.replace(/[^\w]/g, "_");
+  const lbl = p.label ? `<label class="lbl" for="${did}">${p.label}</label>` : "";
+  switch (p.type) {
+    case "radio": {
+      const cs = choicesOf(p);
+      if (p.inline) return `<div class="part-row radio-inline"><span class="k">${p.label}</span>` +
+        cs.map(c => `<label><input type="radio" name="${did}" data-k="${k}" value="${esc(c)}" ${v === c ? "checked" : ""}> ${esc(c)}</label>`).join("") + "</div>";
+      return `<div class="part-row radio-list">${lbl}` + cs.map((c, i) =>
+        `<label><input type="radio" name="${did}" data-k="${k}" value="${esc(c)}" ${v === c ? "checked" : ""}> ${i + 1}. ${p.code ? "<code>" + esc(c) + "</code>" : esc(c)}</label>`).join("") + "</div>";
+    }
+    case "select":
+      return `<div class="part-row grid2">${lbl}<select id="${did}" data-k="${k}"><option value="">(선택)</option>` +
+        choicesOf(p).map(c => `<option ${v === c ? "selected" : ""}>${esc(c)}</option>`).join("") + "</select></div>";
+    case "text":
+      return `<div class="part-row">${lbl}<input type="text" class="wide" id="${did}" data-k="${k}" value="${esc(v || "")}" autocomplete="off"></div>`;
+    case "textarea":
+      return `<div class="part-row">${lbl}<textarea id="${did}" data-k="${k}" rows="${p.rows || 3}">${esc(v || "")}</textarea></div>`;
+    case "code":
+      return `<div class="part-row">${lbl}${codeBlock(did, k, v ?? p.starter, state.answers[k + "#stdin"] ?? p.stdin)}</div>`;
+    case "showcode":
+      return `<div class="part-row">${p.label ? `<label class="lbl"><b>${p.label}</b></label>` : ""}<pre class="show" id="${did}">${esc(p.code)}</pre>
+        ${p.stdin !== undefined ? `<div class="hint">입력값: ${p.stdin ? esc(p.stdin).replace(/\n/g, " ⏎ ") : "(없음)"}</div>` : ""}
+        ${p.runnable ? `<div class="bar"><button type="button" class="ghost" data-runshow="${did}" data-stdin="${esc(p.stdin || "")}">실행해 보기</button></div><pre class="out" id="${did}-out"></pre>` : ""}</div>`;
+  }
+  return "";
+}
+function render() {
+  const ex = state.exam;
+  $("who").textContent = (PRACTICE ? "체험판 · " : "") + `${state.sid} ${state.name}`;
+  $("notice").innerHTML = "<b>안내</b><ul>" + ex.notice.map(n => `<li>${n}</li>`).join("") + "</ul>";
+  $("secnav").innerHTML = ex.sections.map(s => `<a href="#sec-${s.id}">${esc(s.title.split(" (")[0])}</a>`).join("") + `<a href="#btn-final">최종 제출</a>`;
+  const gateOpen = !!state.answers["__gate"];
+  $("exam").innerHTML = ex.sections.map(s => `
+    <section class="part" id="sec-${s.id}"><h2>${esc(s.title)}</h2>${s.intro || ""}
+    ${s.items.map(it => {
+      const hide = it.gated && !gateOpen;
+      return `<div class="item ${hide ? "hidden" : ""}" data-item="${it.id}" ${it.gated ? "data-gated='1'" : ""} ${it.group ? `data-group="${it.group}"` : ""}>
+        <h3>${esc(it.id)} ${it.pts ? `<span class="pts">(${it.pts}점)</span>` : ""}</h3>
+        <div class="prompt">${it.prompt}</div>
+        ${it.parts.map(p => renderPart(it, p)).join("")}
+        ${it.gateOpener ? `<div class="lockbox"><div>${it.gateText || ""}</div><div class="bar"><button type="button" id="gate-btn" ${gateOpen ? "disabled" : ""}>${gateOpen ? "1부 확정됨" : "1부 확정하고 2부 열기"}</button> <span class="hint" id="gate-msg"></span></div></div>` : ""}
+      </div>`; }).join("")}
+    </section>`).join("");
+  wire();
+  if (gateOpen) lockGate();
+  if (now() >= state.endMs) endExam();
+}
+function wire() {
+  document.querySelectorAll("#exam [data-k]").forEach(el => {
+    const ev = (el.tagName === "SELECT" || el.type === "radio") ? "change" : "input";
+    el.addEventListener(ev, () => setAnswer(el.dataset.k, el.value));
+    if (el.classList.contains("code")) el.addEventListener("keydown", e => {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); runCode(el.value, $(el.id + "-in").value, $(el.id + "-out"), document.querySelector(`[data-run="${el.id}"]`)); }
+      if (e.key === "Tab") { e.preventDefault(); const s = el.selectionStart;
+        el.value = el.value.slice(0, s) + "    " + el.value.slice(el.selectionEnd); el.selectionStart = el.selectionEnd = s + 4; setAnswer(el.dataset.k, el.value); }
+    });
+  });
+  document.querySelectorAll("[data-run]").forEach(b => b.onclick = () => { const id = b.dataset.run; runCode($(id).value, $(id + "-in").value, $(id + "-out"), b); });
+  document.querySelectorAll("[data-runshow]").forEach(b => b.onclick = () => { const id = b.dataset.runshow; runCode($(id).textContent, b.dataset.stdin, $(id + "-out"), null); });
+  const gb = $("gate-btn");
+  if (gb) gb.onclick = () => {
+    const p1 = state.exam.sections.flatMap(s => s.items).filter(i => i.group === "P1");
+    const blanks = p1.flatMap(i => i.parts.filter(p => !["showcode"].includes(p.type) && !state.answers[`${i.id}.${p.key}`]).map(() => i.id));
+    const warn = blanks.length ? `아직 비어 있는 칸이 ${blanks.length}개 있음 (${[...new Set(blanks)].join(", ")}).\n` : "";
+    if (!confirm(warn + "1부를 확정하면 1부 답은 더 고칠 수 없고, 2부(코드 실행)가 열림. 확정할까요?")) return;
+    setAnswer("__gateAt", now()); setAnswer("__gate", true); lockGate();
+  };
+  $("btn-download").onclick = downloadAnswers;
+  $("btn-final").onclick = async () => {
+    if (!confirm(PRACTICE ? "체험판: 제출하면 칸마다 맞음 · 다름이 표시됨. 제출할까요?" : "최종 제출할까요? 마감 전까지는 다시 제출할 수 있음.")) return;
+    if (PRACTICE) { await serverSave("final"); $("receipt").textContent = "채점 중…"; await showFeedback(); return; }
+    $("btn-final").disabled = true;
+    const j = await serverSave("final", 3);
+    $("btn-final").disabled = state.ended;
+    $("receipt").innerHTML = j ? `제출 완료 · 서버 접수 시각 ${new Date(j.serverMs).toLocaleTimeString("ko-KR")}` :
+      "<b>제출 실패.</b> 잠시 뒤 다시 누르고, 계속 실패하면 손을 들고 <b>답안 파일 저장</b>으로 파일을 받으시오.";
+  };
+}
+/* ---------- 체험판: 제출 뒤 칸마다 맞음 · 다름만 표시 (정답 · 해설은 보여 주지 않음) ---------- */
+const normOut = s => (s || "").replace(/\r/g, "").split("\n").map(l => l.replace(/\s+$/, "")).join("\n").trim();
+async function sameAsKey(code, p) {          // 정답 코드와 같은 입력 · 같은 덧붙임 코드로 돌려 출력이 같은지
+  for (const c of p.cases) {
+    const mine = await runPython((code || "") + "\n" + (c.append || ""), c.stdin || "", true);
+    const key = await runPython(p.keyCode + "\n" + (c.append || ""), c.stdin || "", true);
+    if (mine.err || normOut(mine.out) !== normOut(key.out)) return false;
+  }
+  return true;
+}
+async function showFeedback() {
+  document.querySelectorAll(".feedback").forEach(d => d.remove());
+  document.querySelectorAll("[data-gated]").forEach(d => d.classList.remove("hidden"));
+  let got = 0, total = 0;
+  for (const it of state.exam.sections.flatMap(s => s.items)) {
+    const lines = [];
+    for (const p of it.parts) {
+      const v = state.answers[`${it.id}.${p.key}`];
+      const mark = ok => { total++; if (ok) got++; return ok ? "<span class='fb-ok'>맞음</span>" : "<span class='fb-no'>다름</span>"; };
+      if (p.answer !== undefined) {
+        const ok = v === p.answer;
+        lines.push(`${mark(ok)} ${p.label ? p.label.replace(/<[^>]+>/g, "") : "답"}`);
+      }
+      if (p.answerText !== undefined) {
+        const ok = normOut(v) === normOut(p.answerText);
+        lines.push(`${mark(ok)} ${p.label ? p.label.replace(/<[^>]+>/g, "") : "답"}`);
+      }
+      if (p.answerNum !== undefined) {
+        const n = parseFloat(String(v || "").replace(/[^\d.]/g, ""));
+        const ok = Math.abs(n - p.answerNum) < 0.5;
+        lines.push(`${mark(ok)} ${esc(p.label || "값")}`);
+      }
+      if (p.keyCode) {
+        const ok = !!v && await sameAsKey(v, p);
+        lines.push(`${mark(ok)} 시험용 입력 ${p.cases.length}가지로 실행한 결과${ok ? "가 모두 맞음" : (v ? "가 정답과 다름 (또는 오류)" : " · 답안 없음")}`);
+      }
+    }
+    if (it.model) lines.push(`<b>모범 답안</b> ${esc(it.model)}`);
+    if (it.explain) lines.push(`<b>해설</b> ${esc(it.explain)}`);
+    if (!lines.length) continue;
+    const box = document.querySelector(`[data-item="${it.id}"]`);
+    if (box) box.insertAdjacentHTML("beforeend", `<div class="feedback">${lines.map(l => `<div>${l}</div>`).join("")}</div>`);
+  }
+  $("receipt").innerHTML = `체험판: <b>${got} / ${total}</b>칸 맞음. 칸마다 맞음 · 다름만 표시함. 답을 고쳐 다시 제출해 볼 수 있음.<br>` +
+    "실제 시험에서는 제출해도 아무것도 표시되지 않고, 서술형은 교수가 채점함.";
+  document.querySelector(".feedback")?.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+function lockGate() {
+  document.querySelectorAll("[data-group='P1'] input, [data-group='P1'] select, [data-group='P1'] textarea").forEach(el => el.disabled = true);
+  const gb = $("gate-btn"); if (gb) { gb.disabled = true; gb.textContent = "1부 확정됨"; }
+  document.querySelectorAll("[data-gated]").forEach(d => d.classList.remove("hidden"));
+  document.querySelectorAll("nav.sec a[data-gated]").forEach(a => a.classList.remove("hidden"));
+}
+
+initLogin();
+</script>
+</body>
+</html>
