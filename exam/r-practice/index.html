@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>R 중간고사 체험판 · R 期中考试 练习版</title>
+<style>
+  :root {
+    --red: #6F263D; --red-soft: #f6eef1; --ink: #1f242b; --gray: #5b6570; --line: #d9dce0;
+    --box: #f6f5f4; --bg: #ffffff; --ok: #1f6f43; --warn: #9a6200; --err: #a32020; --zh: #34506b;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: 70px; }
+  body { margin: 0; background: var(--bg); color: var(--ink); overflow-x: hidden;
+         font-family: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif;
+         font-size: 15px; line-height: 1.55; }
+  [lang="zh-CN"] { font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", "Malgun Gothic", sans-serif; }
+  .zh { color: var(--zh); font-size: 14.5px; }
+  .ko + .zh { margin-top: 1px; }
+  code, .mono, textarea.code, pre { font-family: Consolas, "D2Coding", "Malgun Gothic", monospace; }
+  code { background: var(--box); padding: 0 4px; border-radius: 3px; font-size: 0.92em; }
+  button { font: inherit; border: 1px solid var(--red); background: var(--red); color: #fff; border-radius: 4px; padding: 6px 14px; cursor: pointer; }
+  button.ghost { background: #fff; color: var(--red); }
+  button:disabled { opacity: .45; cursor: default; }
+  input[type=text], input[type=password], select, textarea { font: inherit; border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; background: #fff; color: var(--ink); }
+  input:disabled, select:disabled, textarea:disabled { background: var(--box); color: var(--gray); }
+  .hint { color: var(--gray); font-size: 13px; }
+
+  #login { max-width: 560px; margin: 6vh auto; padding: 26px 30px; border: 1px solid var(--line); border-radius: 8px; }
+  #login h1 { font-size: 20px; margin: 0 0 4px; color: var(--red); }
+  #login .row { display: grid; grid-template-columns: 150px 1fr; gap: 10px; align-items: center; margin: 12px 0; }
+  #login .err { color: var(--err); min-height: 1.4em; font-size: 14px; white-space: pre-line; }
+  #login ul { padding-left: 18px; font-size: 14px; }
+  #login li { margin: 4px 0; }
+  #l-wait { text-align: center; padding: 18px 0 6px; }
+  .wait-who { font-weight: 600; }
+  .wait-big { font-size: 44px; font-weight: 700; color: var(--red); font-variant-numeric: tabular-nums; margin: 8px 0; }
+  .engine { margin-top: 10px; font-size: 13px; }
+  .engine.ok { color: var(--ok); } .engine.bad { color: var(--err); }
+  .emg-link { margin-top: 18px; font-size: 12px; text-align: right; }
+  .emg-link a { color: var(--gray); }
+  #l-emg { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
+
+  header.top { position: sticky; top: 0; z-index: 10; background: var(--red); color: #fff; padding: 8px 16px;
+               display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  header.top .who { font-weight: 600; }
+  header.top .timer { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 18px; margin-left: auto; }
+  header.top .timer.low { color: #ffd166; }
+  header.top .save { font-size: 13px; opacity: .95; }
+  header.top button { background: #fff; color: var(--red); border-color: #fff; padding: 4px 10px; font-size: 13px; }
+  nav.sec { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 16px; border-bottom: 1px solid var(--line); background: #fff; }
+  nav.sec a { color: var(--red); text-decoration: none; border: 1px solid var(--line); border-radius: 14px; padding: 2px 12px; font-size: 14px; }
+  main { max-width: 1000px; margin: 0 auto; padding: 16px; }
+  .notice { background: var(--box); border-radius: 6px; padding: 10px 16px; margin-bottom: 18px; font-size: 14px; }
+  .notice ul { margin: 4px 0; padding-left: 18px; }
+  .notice li { margin: 6px 0; }
+  section.part { margin: 26px 0 10px; }
+  section.part > h2 { font-size: 18px; color: var(--red); border-bottom: 2px solid var(--red); padding-bottom: 4px; }
+  .intro { margin-bottom: 10px; font-size: 14px; }
+  details.data { background: var(--box); border-radius: 6px; padding: 8px 14px; margin: 10px 0 16px; }
+  details.data summary { cursor: pointer; font-weight: 600; color: var(--red); }
+  .item { border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; margin: 14px 0; }
+  .item h3 { font-size: 15px; margin: 0 0 6px; }
+  .item h3 .pts { color: var(--gray); font-weight: 400; font-size: 13px; }
+  .prompt { margin-bottom: 8px; }
+  .part-row { margin: 8px 0; }
+  .part-row > label.lbl { display: block; font-size: 14px; margin-bottom: 3px; }
+  .grid2 { display: grid; grid-template-columns: minmax(200px, 1fr) 160px; gap: 6px 12px; align-items: center; }
+  .grid2 label.lbl { margin: 0; }
+  .radio-list label { display: flex; gap: 8px; align-items: flex-start; padding: 4px 6px; cursor: pointer; border-radius: 4px; }
+  .radio-list label:hover { background: var(--box); }
+  .radio-list pre.choice { margin: 0; padding: 4px 10px; background: var(--box); border-radius: 4px; font-size: 13px; white-space: pre; overflow-x: auto; }
+  .radio-list input { margin-top: 6px; }
+  .imgs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 8px 0; }
+  @media (max-width: 900px) { .imgs { grid-template-columns: repeat(2, 1fr); } }
+  .imgs figure { margin: 0; border: 1px solid var(--line); border-radius: 4px; padding: 4px; text-align: center; }
+  .imgs figcaption { font-weight: 700; color: var(--red); font-size: 18px; }
+  .imgs img { max-width: 100%; height: auto; }
+  input[type=text].num { width: 160px; }
+  textarea { width: 100%; resize: vertical; }
+  textarea.code { min-height: 160px; font-size: 14px; tab-size: 2; white-space: pre; overflow-wrap: normal; overflow-x: auto; }
+  pre.out { background: #1f242b; color: #e8eaed; border-radius: 4px; padding: 8px 12px; font-size: 13px; margin: 4px 0; white-space: pre; max-height: 320px; overflow: auto; }
+  pre.out:empty { display: none; }
+  pre.out .e { color: #ff9b9b; } pre.out .h { color: #ffd166; }
+  .lockbox { margin-top: 10px; padding: 12px 14px; border: 2px dashed var(--red); border-radius: 6px; background: var(--red-soft); }
+  pre.show { background: var(--box); border-radius: 4px; padding: 10px 12px; font-size: 13px; overflow-x: auto; margin: 4px 0; white-space: pre; }
+  .bar { display: flex; gap: 8px; align-items: center; margin: 6px 0; flex-wrap: wrap; }
+  .submit-area { border: 2px solid var(--red); border-radius: 8px; padding: 16px; margin: 30px 0 60px; text-align: center; }
+  .submit-area .receipt { margin-top: 8px; font-size: 14px; }
+  .banner { padding: 10px 16px; text-align: center; font-weight: 600; }
+  .banner.end { background: #fff3cd; color: #6b4e00; }
+  .feedback { margin-top: 10px; padding: 8px 12px; background: #f3f8f4; border-left: 4px solid var(--ok); font-size: 14px; }
+  .feedback > div { margin: 3px 0; }
+  .fb-ok { color: var(--ok); font-weight: 700; } .fb-no { color: var(--err); font-weight: 700; }
+  .hidden { display: none !important; }
+  @media (max-width: 700px) { .grid2 { grid-template-columns: 1fr; } #login .row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div id="login">
+  <h1 id="l-title">R프로그래밍 중간고사 · R 程序设计 期中考试</h1>
+  <div class="hint" id="l-sub"></div>
+  <div id="l-form">
+    <ul>
+      <li>학번 · 이름을 정확히 입력. 채점에 그대로 쓰임<br><span class="zh" lang="zh-CN">请准确输入学号和姓名，评分时直接使用</span></li>
+      <li>입장해 두면 <b>시작 시각에 문제가 자동으로 열림</b><br><span class="zh" lang="zh-CN">进入后等待，<b>到开始时间题目会自动打开</b></span></li>
+      <li>새로고침하거나 창을 닫아도, 같은 노트북에서 다시 들어오면 답이 남아 있음<br><span class="zh" lang="zh-CN">刷新或关闭窗口后，用同一台电脑重新进入，答案仍然保留</span></li>
+    </ul>
+    <div class="row"><label for="sid">학번 · 学号</label><input id="sid" type="text" inputmode="numeric" autocomplete="off"></div>
+    <div class="row"><label for="sname">이름 · 姓名</label><input id="sname" type="text" autocomplete="off"></div>
+    <div class="err" id="l-err"></div>
+    <button id="l-go">입장 · 进入</button>
+    <div class="engine hint" id="engine-msg">R 준비 중 · 正在准备 R …</div>
+  </div>
+  <div id="l-wait" class="hidden">
+    <div class="wait-who" id="w-who"></div>
+    <div class="wait-big" id="w-count">--:--</div>
+    <div class="hint" id="w-msg"></div>
+    <div class="engine hint" id="engine-msg2"></div>
+    <div class="err" id="w-err"></div>
+  </div>
+  <div id="l-emg" class="hidden">
+    <div class="row"><label for="pw">비상 비밀번호 · 备用密码</label><input id="pw" type="password" autocomplete="off"></div>
+    <button id="pw-go" class="ghost">비상 비밀번호로 열기 · 用备用密码打开</button>
+  </div>
+  <div class="emg-link"><a href="#" id="emg-toggle">감독자가 비상 비밀번호를 알려 준 경우 · 监考老师公布备用密码时</a></div>
+</div>
+
+<div id="app" class="hidden">
+  <header class="top">
+    <span class="who" id="who"></span>
+    <span class="save" id="save-status">저장 대기 · 等待保存</span>
+    <button id="btn-download" title="서버 저장이 안 될 때 · 无法保存到服务器时">답안 파일 저장 · 下载答案文件</button>
+    <span class="timer" id="timer">--:--</span>
+  </header>
+  <div class="banner end hidden" id="end-banner">시험 시간이 끝남. 답을 더 고칠 수 없음 · 考试时间结束，不能再修改答案</div>
+  <nav class="sec" id="secnav"></nav>
+  <main>
+    <div class="notice" id="notice"></div>
+    <div id="exam"></div>
+    <div class="submit-area">
+      <div>다 풀었으면 최종 제출. 마감 전까지 다시 제출할 수 있고 <b>마지막 제출</b>이 채점됨</div>
+      <div class="zh" lang="zh-CN">做完后点击最终提交。截止前可以重新提交，以<b>最后一次提交</b>为准</div>
+      <div class="bar" style="justify-content:center; margin-top:10px">
+        <button id="btn-final">최종 제출 · 最终提交</button>
+      </div>
+      <div class="receipt" id="receipt"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+/* 빌드할 때 build.mjs 가 채움. 문제는 enc 안에 암호화되어 있고 여는 열쇠는 이 파일에 없음 */
+const CONFIG = {"endpoint":"","webrBase":"https://webr.r-wasm.org/v0.6.0/","practice":{"key":"qIE87eG02TPjW1fehzyytsraHzqQnhhL4XG2Is6GmeU=","delaySec":10,"durationMin":20},"startISO":"","endISO":"","enc":{"iv":"YU3U6YK+PkTiPnRP","data":"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"},"wrap":null};
+</script>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const KZ = (ko, zh) => `${ko}<br><span class="zh" lang="zh-CN">${zh}</span>`;      // 두 줄 병기
+const KZ1 = (ko, zh) => `${ko} · <span lang="zh-CN">${zh}</span>`;                    // 한 줄 병기
+
+const state = {
+  sid: "", name: "", exam: null, answers: {}, tabLeaves: 0, dirty: false, ended: false,
+  serverOffset: 0, startMs: 0, endMs: 0, lastSavedJSON: "", p1ids: new Set()
+};
+const PRACTICE = !!CONFIG.practice;
+const PFX = PRACTICE ? "r-mid-2026-practice" : "r-mid-2026";
+const storeKey = () => `${PFX}-${state.sid}`;
+
+/* ---------- 복호화 ---------- */
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function openPayload(rawKeyB64) {
+  const key = await crypto.subtle.importKey("raw", b64(rawKeyB64), "AES-GCM", false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(CONFIG.enc.iv) }, key, b64(CONFIG.enc.data));
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+async function unwrapWithPassword(password) {
+  const w = CONFIG.wrap;
+  const keyMat = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]);
+  const kek = await crypto.subtle.deriveKey({ name: "PBKDF2", salt: b64(w.salt), iterations: w.iter, hash: "SHA-256" },
+    keyMat, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+  const raw = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(w.iv) }, kek, b64(w.data));
+  return btoa(String.fromCharCode(...new Uint8Array(raw)));
+}
+
+/* ---------- 서버 ---------- */
+async function api(payload) {
+  if (!CONFIG.endpoint) throw new Error("no server");
+  const r = await fetch(CONFIG.endpoint, { method: "POST", body: JSON.stringify(payload) });
+  const j = await r.json();
+  if (!j.ok) { const e = new Error(j.msg || "server refused"); e.data = j; throw e; }
+  return j;
+}
+async function syncTime() {
+  state.startMs = Date.parse(CONFIG.startISO);
+  state.endMs = Date.parse(CONFIG.endISO);
+  if (!CONFIG.endpoint) return;
+  try {
+    const t0 = Date.now(); const j = await api({ action: "time" }); const t1 = Date.now();
+    state.serverOffset = j.serverMs - (t0 + t1) / 2;
+    if (j.startMs) state.startMs = j.startMs;
+    if (j.endMs) state.endMs = j.endMs;
+  } catch (e) {}
+}
+const now = () => Date.now() + state.serverOffset;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const mmss = ms => { const s = Math.max(0, Math.ceil(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
+function waitText(ms) {
+  if (ms <= 3600000) return mmss(ms);
+  const m = Math.floor(ms / 60000), d = Math.floor(m / 1440), h = Math.floor(m % 1440 / 60);
+  return (d ? `${d}d ` : "") + `${h}h ${m % 60}m`;
+}
+
+/* ---------- R 엔진 (webR: 브라우저 안의 R) ----------
+   처음 한 번 R과 dplyr를 받음(노트북 · 인터넷에 따라 10~60초). 받은 뒤에는 브라우저에 남아 빨라짐.
+   실행마다 전역 환경을 비우고 준비 코드(setup)로 표를 다시 만든 뒤 학생 코드를 실행. */
+const WEBR_BASE = CONFIG.webrBase || "https://webr.r-wasm.org/v0.6.0/";
+const RUN_LIMIT_MS = 15000;
+const R_PRELUDE = `
+options(cli.unicode = FALSE, width = 90, pillar.bold = FALSE, cli.num_colors = 1, warn = 1)
+suppressPackageStartupMessages(library(dplyr, warn.conflicts = FALSE))
+.exam_run <- function(.setup, .code) {
+  rm(list = ls(globalenv()), envir = globalenv())
+  eval(parse(text = .setup), envir = globalenv())
+  .err <- function(prefix, m) cat(prefix, m, "\\n", sep = "", file = stderr())
+  tryCatch(withCallingHandlers({
+      .ex <- parse(text = .code, keep.source = FALSE)
+      for (.e in .ex) { .r <- withVisible(eval(.e, envir = globalenv())); if (.r$visible) print(.r$value) }
+    },
+    warning = function(w) { .err("Warning: ", conditionMessage(w)); invokeRestart("muffleWarning") },
+    message = function(m) { cat(sub("\\n?$", "\\n", conditionMessage(m)), file = stderr()); invokeRestart("muffleMessage") }),
+  error = function(e) .err("Error: ", conditionMessage(e)))
+  invisible(NULL)
+}
+.norm <- function(x) { if (is.data.frame(x)) { x <- as.data.frame(dplyr::ungroup(x)); rownames(x) <- NULL }; x }
+.rowkeys <- function(d, cols) do.call(paste, c(lapply(d[, cols, drop = FALSE], function(v)
+  if (is.numeric(v)) format(round(v, 6), scientific = FALSE, trim = TRUE) else as.character(v)), sep = "\\r"))
+.first_num <- function(x) {
+  if (is.data.frame(x)) { nc <- which(vapply(x, is.numeric, TRUE)); if (!length(nc) || !nrow(x)) return(NA); return(x[[nc[1]]][1]) }
+  if (is.numeric(x) && length(x)) return(x[1]); NA }
+.score <- function(st, key, mode, by = "") {
+  st <- .norm(st); key <- .norm(key)
+  if (mode == "number") { a <- .first_num(st); b <- .first_num(key); return(if (!is.na(a) && abs(a - b) < 1e-6) 1 else 0) }
+  if (!is.data.frame(st) || !setequal(names(st), names(key)) || nrow(st) != nrow(key)) return(0)
+  if (!identical(sort(.rowkeys(st, names(key))), sort(.rowkeys(key, names(key))))) return(0)
+  if (mode == "rows_sorted") return(if (all(diff(st[[by]]) <= 0)) 1 else 0.5)
+  1 }
+.practice_check <- function(.setup, .code, .key, .mode, .by) {
+  get_res <- function(code) { env <- new.env(); eval(parse(text = .setup), envir = env)
+    tryCatch({ capture.output(eval(parse(text = code), envir = env)); get("result", envir = env, inherits = FALSE) }, error = function(e) NULL) }
+  .score(get_res(.code), get_res(.key), .mode, .by) }
+`;
+let webR = null, enginePromise = null, busy = false;
+function engineMsg(t, cls) {
+  for (const id of ["engine-msg", "engine-msg2"]) { const el = $(id); if (el) { el.innerHTML = t; el.className = "engine " + (cls || "hint"); } }
+}
+function loadEngine() {
+  if (enginePromise) return enginePromise;
+  engineMsg(KZ1("R 준비 중 (처음 한 번 10~60초)", "正在准备 R（第一次需要 10~60 秒）"));
+  enginePromise = (async () => {
+    const { WebR } = await import(WEBR_BASE + "webr.mjs");
+    webR = new WebR({ baseUrl: WEBR_BASE });
+    await webR.init();
+    await webR.installPackages(["dplyr"], { quiet: true });
+    await webR.evalRVoid(R_PRELUDE);
+    engineMsg(KZ1("R 준비 완료", "R 已准备好") + " ✓", "ok");
+    return true;
+  })().catch(e => {
+    enginePromise = null; webR = null;
+    engineMsg(KZ1("R을 불러오지 못함. 인터넷 연결을 확인하고 새로고침", "无法载入 R，请检查网络后刷新页面") + ` (${esc(e.message || e)})`, "bad");
+    throw e;
+  });
+  return enginePromise;
+}
+async function rawRun(setup, code) {
+  const shelter = await new webR.Shelter();
+  try {
+    await webR.objs.globalEnv.bind(".setup_txt", setup);
+    await webR.objs.globalEnv.bind(".code_txt", code);
+    const r = await shelter.captureR(".exam_run(.setup_txt, .code_txt)", { captureStreams: true, captureConditions: false, captureGraphics: false });
+    return r.output.map(o => ({ err: o.type === "stderr", text: String(o.data) }));
+  } finally { await shelter.purge(); }
+}
+async function runR(code, force) {
+  if (!force && !state.answers["__gate"]) return { lines: [], err: "LOCKED" };
+  try { await loadEngine(); } catch (e) { return { lines: [], err: "ENGINE" }; }
+  if (busy) return { lines: [], err: "BUSY" };
+  busy = true;
+  const setup = (state.exam && state.exam.setup) || "";
+  let timer;
+  const timeout = new Promise(res => { timer = setTimeout(() => res("TIMEOUT"), RUN_LIMIT_MS); });
+  try {
+    const r = await Promise.race([rawRun(setup, code), timeout]);
+    if (r === "TIMEOUT") {                         // 끝나지 않으면 R을 끄고 다시 띄움
+      try { webR.close(); } catch (e) {}
+      webR = null; enginePromise = null; loadEngine().catch(() => {});
+      return { lines: [], err: "TIMEOUT" };
+    }
+    return { lines: r, err: null };
+  } catch (e) {
+    return { lines: [], err: "ENGINE" };
+  } finally { clearTimeout(timer); busy = false; }
+}
+
+const HINTS = [
+  [/object '___' not found/, "빈칸 ___ 을 아직 채우지 않음", "还有空白 ___ 没有填写"],
+  [/object '.*' not found/, "없는 이름. 오타 · 대소문자 · 따옴표를 확인", "找不到这个名字。检查拼写、大小写和引号"],
+  [/could not find function/, "없는 함수. 함수 이름의 오타 · 대소문자를 확인", "找不到函数。检查函数名的拼写和大小写"],
+  [/unexpected|<text>/, "문법 오류. 괄호 · 따옴표 · 쉼표 · |> 를 확인", "语法错误。检查括号、引号、逗号和 |>"],
+  [/used `=` instead of `==`/, "비교는 = 가 아니라 ==", "比较要用 ==，不是 ="],
+  [/non-numeric argument/, "문자에 산술 계산을 함. 열의 타입을 확인", "对字符做了算术运算。检查列的类型"],
+  [/doesn't exist|Column `.*` not found/, "없는 열 이름. 위의 데이터에서 열 이름을 확인", "列名不存在。请对照上面的数据检查列名"],
+  [/longer object length is not a multiple/, "길이가 다른 벡터를 == 로 비교함 (재활용)", "用 == 比较了长度不同的向量（循环补齐）"]
+];
+function errText(err) {
+  if (err === "TIMEOUT") return KZ1(`${RUN_LIMIT_MS / 1000}초 안에 끝나지 않아 멈춤. R을 다시 준비함`, `${RUN_LIMIT_MS / 1000} 秒内没有结束，已停止。正在重新准备 R`);
+  if (err === "BUSY") return KZ1("앞의 실행이 아직 끝나지 않음", "上一次运行还没有结束");
+  if (err === "LOCKED") return KZ1("1부를 확정해야 실행할 수 있음", "确认第 1 部分后才能运行");
+  if (err === "ENGINE") return KZ1("R을 불러오지 못함. 새로고침해 보고, 계속되면 손을 들 것", "无法载入 R。请刷新页面，若仍不行请举手");
+  return esc(err);
+}
+async function runCode(code, outEl, btn) {
+  if (!code.trim()) { outEl.innerHTML = `<span class='e'>${KZ1("코드를 입력하시오", "请输入代码")}</span>`; return; }
+  if (btn) { btn.disabled = true; btn.textContent = "실행 중 · 运行中…"; }
+  outEl.textContent = "";
+  const r = await runR(code);
+  if (r.err) outEl.innerHTML = `<span class="e">${errText(r.err)}</span>`;
+  else {
+    const all = r.lines.map(l => l.text).join("\n");
+    const hint = (code.includes("___") && /Error/.test(all)) ? HINTS[0] : HINTS.find(([re]) => re.test(all));
+    outEl.innerHTML = r.lines.map(l => l.err ? `<span class="e">${esc(l.text)}</span>` : esc(l.text)).join("\n")
+      + (hint ? `\n<span class="h">→ ${esc(hint[1])} · <span lang="zh-CN">${esc(hint[2])}</span></span>` : "")
+      + (r.lines.length ? "" : `<span class='e'>${KZ1("(출력 없음)", "（没有输出）")}</span>`);
+  }
+  if (btn) { btn.disabled = false; btn.textContent = "실행 · 运行"; }
+}
+
+/* ---------- 입장 · 대기 · 자동 열림 ---------- */
+function initLogin() {
+  $("l-sub").innerHTML = PRACTICE
+    ? KZ("체험판 · 점수에 들어가지 않음 · 학번 · 이름은 아무것이나", "练习版 · 不计分 · 学号和姓名可以随便填")
+    : KZ("2026학년도 2학기 · 담당교수 강호준 · 75분 · AI 사용 불가", "2026 学年第 2 学期 · 任课教授 강호준 · 75 分钟 · 禁止使用 AI");
+  if (PRACTICE) { document.querySelector(".emg-link").classList.add("hidden"); document.title = "R 중간고사 체험판 · R 期中考试 练习版"; }
+  try { const last = JSON.parse(localStorage.getItem(`${PFX}-last`) || "null"); if (last) { $("sid").value = last.sid; $("sname").value = last.name; } } catch (e) {}
+  $("l-go").onclick = enter;
+  $("sname").addEventListener("keydown", e => { if (e.key === "Enter") enter(); });
+  $("emg-toggle").onclick = e => { e.preventDefault(); $("l-emg").classList.toggle("hidden"); };
+  $("pw-go").onclick = openWithPassword;
+  $("pw").addEventListener("keydown", e => { if (e.key === "Enter") openWithPassword(); });
+  loadEngine().catch(() => {});                 // 기다리는 동안 R을 미리 받아 둠
+}
+function readIdentity() {
+  const sid = $("sid").value.trim(), name = $("sname").value.trim();
+  if (PRACTICE) {
+    if (!/^\d+$/.test(sid)) return "학번 칸에는 숫자만 · 学号只能填数字";
+    if (!name) return "이름을 입력 · 请输入姓名";
+  } else {
+    if (!/^\d{7,10}$/.test(sid)) return "학번을 숫자로 정확히 입력 · 请准确输入学号（数字）";
+    if (name.length < 2) return "이름을 입력 · 请输入姓名";
+  }
+  state.sid = sid; state.name = name;
+  try { localStorage.setItem(`${PFX}-last`, JSON.stringify({ sid, name })); } catch (e) {}
+  return "";
+}
+async function enter() {
+  const msg = readIdentity(); $("l-err").textContent = msg; if (msg) return;
+  $("l-go").disabled = true;
+  if (PRACTICE) {
+    state.startMs = Date.now() + CONFIG.practice.delaySec * 1000;
+    state.endMs = state.startMs + CONFIG.practice.durationMin * 60000;
+    try { const old = JSON.parse(localStorage.getItem(storeKey()) || "null"); if (old && old.endMs > Date.now()) { state.startMs = Date.now(); state.endMs = old.endMs; } } catch (e) {}
+    $("w-msg").innerHTML = KZ("체험판은 입장 10초 뒤 열림. 실제 시험은 시작 시각에 이렇게 열림", "练习版在进入 10 秒后打开。正式考试会在开始时间这样打开");
+  } else {
+    await syncTime();
+    const t = new Date(state.startMs);
+    const hm = `${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`;
+    $("w-msg").innerHTML = KZ(`${t.getMonth() + 1}월 ${t.getDate()}일 ${hm}에 자동으로 열림. 창을 닫지 말고 기다릴 것`,
+                              `${t.getMonth() + 1} 月 ${t.getDate()} 日 ${hm} 自动打开。请不要关闭窗口，耐心等待`);
+  }
+  $("l-form").classList.add("hidden"); $("l-wait").classList.remove("hidden");
+  $("w-who").textContent = `${state.sid} ${state.name}`;
+  if (enginePromise) enginePromise.then(() => engineMsg(KZ1("R 준비 완료", "R 已准备好") + " ✓", "ok")).catch(() => {});
+  let cached = null; try { cached = sessionStorage.getItem(`${PFX}-k`); } catch (e) {}
+  if (cached) { try { return await start(cached); } catch (e) {} }
+  waitAndOpen();
+}
+async function waitAndOpen() {
+  while (now() < state.startMs) { $("w-count").textContent = waitText(state.startMs - now()); await sleep(250); }
+  $("w-count").textContent = "…";
+  if (PRACTICE) return start(CONFIG.practice.key);
+  await sleep(Math.random() * 8000);             // 학생들이 같은 순간에 몰리지 않게
+  const t0 = Date.now();
+  for (let i = 0; ; i++) {
+    try { const j = await api({ action: "key", studentId: state.sid }); console.log("[exam] key"); return await start(j.key); }
+    catch (e) {
+      console.log("[exam] key/start error", e && e.message);
+      const d = e.data || {};
+      if (d.msg === "not_yet" && d.startMs) { state.serverOffset = d.serverMs - Date.now(); state.startMs = d.startMs; return waitAndOpen(); }
+      if (d.msg === "closed") { $("w-err").textContent = "시험 시간이 끝남 · 考试时间已结束"; return; }
+      if (Date.now() - t0 > 45000) {
+        $("w-err").textContent = "서버에 연결되지 않음. 손을 들어 감독자에게 알릴 것 · 无法连接服务器，请举手告诉监考老师";
+        $("l-emg").classList.remove("hidden");
+      }
+      await sleep(Math.min(8000, 1500 * 1.5 ** i) + Math.random() * 1500);
+    }
+  }
+}
+async function openWithPassword() {
+  if (!state.sid) { const msg = readIdentity(); if (msg) { $("l-err").textContent = msg; return; } await syncTime(); }
+  try { await start(await unwrapWithPassword($("pw").value.trim())); }
+  catch (e) { $("l-err").textContent = "비상 비밀번호가 맞지 않음 · 备用密码不正确"; }
+}
+async function start(rawKey) {
+  console.log("[exam] start");
+  const payload = await openPayload(rawKey);
+  console.log("[exam] decrypted");
+  try { sessionStorage.setItem(`${PFX}-k`, rawKey); } catch (e) {}
+  state.exam = payload.exam;
+  state.p1ids = new Set(state.exam.sections.flatMap(s => s.items).filter(i => i.group === "P1").map(i => i.id));
+  loadEngine().catch(() => setStatus("R 오류 · R 错误: 새로고침 · 请刷新"));
+  loadLocal(); render();
+  console.log("[exam] rendered");
+  $("login").classList.add("hidden"); $("app").classList.remove("hidden");
+  startLoops();
+}
+
+/* ---------- 답안 저장 ---------- */
+function loadLocal() {
+  try { const s = JSON.parse(localStorage.getItem(storeKey()) || "null"); if (s) { state.answers = s.answers || {}; state.tabLeaves = s.tabLeaves || 0; } } catch (e) {}
+}
+function saveLocal() {
+  try { localStorage.setItem(storeKey(), JSON.stringify({ answers: state.answers, tabLeaves: state.tabLeaves, at: now(), endMs: state.endMs })); } catch (e) {}
+}
+const p1Key = k => state.p1ids.has(k.split(".")[0]);
+function setAnswer(k, v) {
+  if (state.ended) return;
+  if (state.answers["__gate"] && p1Key(k)) return;      // 1부 확정 뒤에는 1부 답이 바뀌지 않음
+  state.answers[k] = v; state.dirty = true; saveLocal();
+  setStatus("이 노트북에 저장됨 · 已保存在本机");
+}
+function setStatus(t) { $("save-status").textContent = t; }
+function payload(kind) {
+  return { action: "submit", kind, studentId: state.sid, name: state.name, answers: state.answers, tabLeaves: state.tabLeaves, clientMs: Date.now() };
+}
+async function serverSave(kind, tries = 1) {
+  const body = payload(kind), json = JSON.stringify(body.answers);
+  if (kind === "draft" && json === state.lastSavedJSON) return true;
+  if (PRACTICE) { state.lastSavedJSON = json; state.dirty = false; setStatus("체험판 · 练习版 " + new Date().toLocaleTimeString("ko-KR")); return { serverMs: Date.now() }; }
+  for (let i = 0; i < tries; i++) {
+    try {
+      const j = await api(body);
+      state.lastSavedJSON = json; state.dirty = false;
+      const t = new Date(j.serverMs).toLocaleTimeString("ko-KR");
+      setStatus((kind === "final" ? "최종 제출됨 · 已提交 " : "서버 저장됨 · 已保存到服务器 ") + t);
+      return j;
+    } catch (e) {
+      setStatus("서버 저장 실패 · 服务器保存失败 (이 노트북에는 저장됨 · 本机已保存)");
+      if (i < tries - 1) await sleep(1500 * 2 ** i + Math.random() * 1000);
+    }
+  }
+  return false;
+}
+function downloadAnswers() {
+  const blob = new Blob([JSON.stringify(payload("file"), null, 1)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = `R_midterm_${state.sid}_${state.name}.json`; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+/* ---------- 타이머 · 주기 저장 ---------- */
+function startLoops() {
+  const tick = () => {
+    const left = Math.max(0, state.endMs - now());
+    $("timer").textContent = `남은 시간 · 剩余 ${mmss(left)}`;
+    $("timer").classList.toggle("low", left < 5 * 60000);
+    if (left <= 0 && !state.ended) endExam();
+  };
+  tick(); setInterval(tick, 1000);
+  const loop = async () => { if (!state.ended && state.dirty) await serverSave("draft"); setTimeout(loop, 60000 + Math.random() * 60000); };
+  setTimeout(loop, 20000 + Math.random() * 40000);
+  document.addEventListener("visibilitychange", () => { if (document.hidden && !state.ended) { state.tabLeaves++; saveLocal(); state.dirty = true; } });
+  window.addEventListener("beforeunload", e => { if (!state.ended && state.dirty) { e.preventDefault(); e.returnValue = ""; } });
+}
+async function endExam() {
+  state.ended = true;
+  document.querySelectorAll("#exam input, #exam select, #exam textarea, #btn-final").forEach(el => el.disabled = true);
+  $("end-banner").classList.remove("hidden");
+  setStatus("자동 제출 중 · 正在自动提交…");
+  const ok = await serverSave("final", 5);
+  if (PRACTICE) { await showFeedback(); return; }
+  $("receipt").innerHTML = ok ? KZ("시간 종료로 자동 제출됨. 수고했습니다.", "时间到，已自动提交。辛苦了。")
+    : KZ("<b>자동 제출 실패.</b> 손을 들고 위의 <b>답안 파일 저장</b>을 누르시오.", "<b>自动提交失败。</b>请举手，并点击上方的 <b>下载答案文件</b>。");
+}
+
+/* ---------- 화면 그리기 ---------- */
+function renderPart(item, p) {
+  const k = `${item.id}.${p.key}`, v = state.answers[k], did = "f-" + k.replace(/[^\w]/g, "_");
+  switch (p.type) {
+    case "showcode":
+      return `<div class="part-row"><pre class="show">${esc(p.code)}</pre></div>`;
+    case "images":
+      return `<div class="imgs">${p.images.map(im => `<figure><figcaption>${esc(im.label)}</figcaption><img src="${im.src}" alt="${esc(im.label)}"></figure>`).join("")}</div>`;
+    case "radio":
+      return `<div class="part-row radio-list">${p.choices.map((c, i) =>
+        `<label><input type="radio" name="${did}" data-k="${k}" value="${esc(c)}" ${v === c ? "checked" : ""}> <span>${i + 1}.</span> ${p.pre ? `<pre class="choice">${esc(c)}</pre>` : esc(c)}</label>`).join("")}</div>`;
+    case "select":
+      return `<div class="part-row grid2"><label class="lbl" for="${did}">${p.label}</label><select id="${did}" data-k="${k}"><option value="">(선택 · 选择)</option>` +
+        p.choices.map(c => `<option ${v === c ? "selected" : ""}>${esc(c)}</option>`).join("") + "</select></div>";
+    case "text":
+      return `<div class="part-row grid2"><label class="lbl" for="${did}">${p.label}</label><input type="text" class="num" id="${did}" data-k="${k}" value="${esc(v || "")}" autocomplete="off" inputmode="numeric"></div>`;
+    case "code":
+      return `<div class="part-row"><textarea class="code" id="${did}" data-k="${k}" spellcheck="false" autocomplete="off">${esc(v ?? p.starter ?? "")}</textarea>
+        <div class="bar"><button type="button" data-run="${did}">실행 · 运行</button>
+        <button type="button" class="ghost" data-reset="${did}" data-starter="${esc(p.starter || "")}">처음 코드로 · 恢复初始代码</button>
+        <span class="hint">Ctrl + Enter = 실행 · 运行</span></div>
+        <pre class="out" id="${did}-out"></pre></div>`;
+  }
+  return "";
+}
+function render() {
+  const ex = state.exam, gateOpen = !!state.answers["__gate"];
+  $("who").textContent = (PRACTICE ? "체험판 · 练习版 · " : "") + `${state.sid} ${state.name}`;
+  $("notice").innerHTML = "<b>안내 · 说明</b><ul>" + ex.notice.map(n => `<li>${n}</li>`).join("") + "</ul>";
+  $("secnav").innerHTML = ex.sections.map(s => `<a href="#sec-${s.id}" ${s.gated ? "data-gated='1'" : ""} class="${s.gated && !gateOpen ? "hidden" : ""}">${esc(s.title.split(" (")[0])}</a>`).join("")
+    + `<a href="#btn-final">최종 제출 · 最终提交</a>`;
+  $("exam").innerHTML = ex.sections.map(s => `
+    <section class="part ${s.gated && !gateOpen ? "hidden" : ""}" id="sec-${s.id}" ${s.gated ? "data-gated='1'" : ""}>
+      <h2>${esc(s.title)}</h2><div class="intro">${s.intro || ""}</div>
+      ${s.showData ? `<details class="data" open><summary>데이터 보기 · 查看数据 (<code>tea</code> · <code>stores</code>)</summary>
+         <div class="intro" style="margin-top:6px">${ex.dataCols || ""}</div><pre class="show">${esc(ex.dataShow || "")}</pre></details>` : ""}
+      ${s.items.map(it => `
+        <div class="item" data-item="${esc(it.id)}" ${it.group ? `data-group="${it.group}"` : ""}>
+          <h3>${esc(it.id)} ${it.pts ? `<span class="pts">(${it.pts}점 · ${it.pts} 分)</span>` : ""}</h3>
+          <div class="prompt">${it.prompt}</div>
+          ${it.parts.map(p => renderPart(it, p)).join("")}
+          ${it.gateOpener ? `<div class="lockbox"><div class="bar"><button type="button" id="gate-btn" ${gateOpen ? "disabled" : ""}>${gateOpen ? "1부 확정됨 · 第 1 部分已确认" : "1부 확정하고 2부 열기 · 确认第 1 部分并打开第 2 部分"}</button></div></div>` : ""}
+        </div>`).join("")}
+    </section>`).join("");
+  wire();
+  if (gateOpen) lockGate();
+  if (now() >= state.endMs) endExam();
+}
+function wire() {
+  document.querySelectorAll("#exam [data-k]").forEach(el => {
+    const ev = (el.tagName === "SELECT" || el.type === "radio") ? "change" : "input";
+    el.addEventListener(ev, () => setAnswer(el.dataset.k, el.value));
+    if (el.classList.contains("code")) el.addEventListener("keydown", e => {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); runCode(el.value, $(el.id + "-out"), document.querySelector(`[data-run="${el.id}"]`)); }
+      if (e.key === "Tab") { e.preventDefault(); const s = el.selectionStart;
+        el.value = el.value.slice(0, s) + "  " + el.value.slice(el.selectionEnd); el.selectionStart = el.selectionEnd = s + 2; setAnswer(el.dataset.k, el.value); }
+    });
+  });
+  document.querySelectorAll("[data-run]").forEach(b => b.onclick = () => { const id = b.dataset.run; runCode($(id).value, $(id + "-out"), b); });
+  document.querySelectorAll("[data-reset]").forEach(b => b.onclick = () => {
+    if (!confirm("처음 코드로 되돌릴까요? 지금 코드는 지워짐.\n恢复初始代码吗？现在的代码会被删除。")) return;
+    const el = $(b.dataset.reset); el.value = b.dataset.starter; setAnswer(el.dataset.k, el.value);
+  });
+  const gb = $("gate-btn");
+  if (gb) gb.onclick = () => {
+    const p1 = state.exam.sections.flatMap(s => s.items).filter(i => i.group === "P1");
+    const blanks = [...new Set(p1.flatMap(i => i.parts.filter(p => ["radio", "select", "text"].includes(p.type) && !state.answers[`${i.id}.${p.key}`]).map(() => i.id)))];
+    const warn = blanks.length ? `비어 있는 문항 · 未作答: ${blanks.join(", ")}\n\n` : "";
+    if (!confirm(warn + "1부를 확정하면 1부 답은 더 고칠 수 없고 2부가 열림. 확정할까요?\n确认后第 1 部分的答案不能再修改，并打开第 2 部分。确定吗？")) return;
+    setAnswer("__gateAt", now()); setAnswer("__gate", true); lockGate();
+    document.getElementById("sec-p2")?.scrollIntoView({ behavior: "smooth" });
+  };
+  $("btn-download").onclick = downloadAnswers;
+  $("btn-final").onclick = async () => {
+    if (!confirm(PRACTICE ? "체험판: 제출하면 칸마다 맞음 · 다름이 표시됨.\n练习版：提交后会显示每题对错。" : "최종 제출할까요? 마감 전까지는 다시 제출할 수 있음.\n确定最终提交吗？截止前可以重新提交。")) return;
+    if (PRACTICE) { await serverSave("final"); $("receipt").textContent = "채점 중 · 评分中…"; await showFeedback(); return; }
+    $("btn-final").disabled = true;
+    const j = await serverSave("final", 3);
+    $("btn-final").disabled = state.ended;
+    $("receipt").innerHTML = j ? KZ1(`제출 완료 · 접수 ${new Date(j.serverMs).toLocaleTimeString("ko-KR")}`, "提交成功")
+      : KZ("<b>제출 실패.</b> 잠시 뒤 다시 누르고, 계속 실패하면 손을 들고 <b>답안 파일 저장</b>.", "<b>提交失败。</b>请稍后再试；如果一直失败，请举手并点击 <b>下载答案文件</b>。");
+  };
+}
+function lockGate() {
+  document.querySelectorAll("[data-group='P1'] input, [data-group='P1'] select, [data-group='P1'] textarea").forEach(el => el.disabled = true);
+  const gb = $("gate-btn"); if (gb) { gb.disabled = true; gb.textContent = "1부 확정됨 · 第 1 部分已确认"; }
+  document.querySelectorAll("[data-gated]").forEach(d => d.classList.remove("hidden"));
+}
+
+/* ---------- 체험판: 제출 뒤 칸마다 맞음 · 다름만 표시 ---------- */
+async function practiceScore(code, p) {
+  await loadEngine();
+  const sh = await new webR.Shelter();
+  try {
+    const f = await sh.evalR(".practice_check(.s, .c, .k, .m, .b)", { env: { ".s": state.exam.setup, ".c": code || "", ".k": p.keyCode, ".m": p.mode.type, ".b": p.mode.by || "" } });
+    return (await f.toNumber());
+  } catch (e) { return 0; } finally { await sh.purge(); }
+}
+async function showFeedback() {
+  document.querySelectorAll(".feedback").forEach(d => d.remove());
+  document.querySelectorAll("[data-gated]").forEach(d => d.classList.remove("hidden"));
+  let got = 0, total = 0;
+  for (const it of state.exam.sections.flatMap(s => s.items)) {
+    const lines = [];
+    for (const p of it.parts) {
+      const v = state.answers[`${it.id}.${p.key}`];
+      const mark = ok => { total++; if (ok) got++; return ok ? "<span class='fb-ok'>맞음 · 对</span>" : "<span class='fb-no'>다름 · 错</span>"; };
+      if (p.answer !== undefined) lines.push(`${mark(String(v || "").trim() === String(p.answer))} ${p.label || ""}`);
+      if (p.keyCode) lines.push(`${mark((await practiceScore(v ?? p.starter, p)) === 1)} ${KZ1("코드 실행 결과", "代码运行结果")}`);
+    }
+    if (!lines.length) continue;
+    const box = document.querySelector(`[data-item="${CSS.escape(it.id)}"]`);
+    if (box) box.insertAdjacentHTML("beforeend", `<div class="feedback">${lines.map(l => `<div>${l}</div>`).join("")}</div>`);
+  }
+  $("receipt").innerHTML = KZ(`체험판: <b>${got} / ${total}</b> 맞음. 답을 고쳐 다시 제출해 볼 수 있음.`, `练习版：<b>${got} / ${total}</b> 正确。可以修改答案后再次提交。`);
+}
+
+initLogin();
+</script>
+</body>
+</html>
