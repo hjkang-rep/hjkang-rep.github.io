@@ -1,0 +1,980 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>파이썬 중간고사</title>
+<style>
+  :root {
+    --red: #6F263D; --red-soft: #f6eef1; --ink: #1f242b; --gray: #5b6570; --line: #d9dce0;
+    --box: #f6f5f4; --bg: #ffffff; --ok: #1f6f43; --warn: #9a6200; --err: #a32020;
+    --code-fs: 14px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: 120px; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font-family: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; font-size: 15px; line-height: 1.55; }
+  code, .mono, textarea.code, pre { font-family: Consolas, "D2Coding", "Malgun Gothic", monospace; }
+  code { background: var(--box); padding: 0 4px; border-radius: 3px; font-size: 0.92em; }
+  button { font: inherit; border: 1px solid var(--red); background: var(--red); color: #fff; border-radius: 4px; padding: 6px 14px; cursor: pointer; }
+  button.ghost { background: #fff; color: var(--red); }
+  button:disabled { opacity: .45; cursor: default; }
+  input[type=text], input[type=password], select, textarea { font: inherit; border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; background: #fff; color: var(--ink); }
+  input:disabled, select:disabled, textarea:disabled { background: var(--box); color: var(--gray); }
+  .hint { color: var(--gray); font-size: 13px; }
+
+  /* 시작 화면 */
+  #login { max-width: 520px; margin: 8vh auto; padding: 28px 30px; border: 1px solid var(--line); border-radius: 8px; }
+  #login h1 { font-size: 20px; margin: 0 0 4px; color: var(--red); }
+  #login .row { display: grid; grid-template-columns: 110px 1fr; gap: 10px; align-items: center; margin: 12px 0; }
+  #login .err { color: var(--err); min-height: 1.4em; font-size: 14px; }
+  #login ul { padding-left: 18px; font-size: 14px; }
+  #l-wait { text-align: center; padding: 18px 0 6px; }
+  .wait-who { font-weight: 600; }
+  .wait-big { font-size: 44px; font-weight: 700; color: var(--red); font-variant-numeric: tabular-nums; margin: 8px 0; }
+  .emg-link { margin-top: 18px; font-size: 12px; text-align: right; }
+  .emg-link a { color: var(--gray); }
+  #l-emg { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
+
+  /* 시험 화면: 문제 글은 선택 · 복사가 안 되게, 답 칸만 선택 가능 */
+  #app { -webkit-user-select: none; user-select: none; }
+  #app textarea, #app input { -webkit-user-select: text; user-select: text; }
+  .sticky { position: sticky; top: 0; z-index: 10; }
+  header.top { background: var(--red); color: #fff; padding: 8px 16px;
+               display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  header.top .who { font-weight: 600; }
+  header.top .timer { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 18px; margin-left: auto; }
+  header.top .timer.low { color: #ffd166; }
+  header.top .save { font-size: 13px; opacity: .95; }
+  header.top button { background: #fff; color: var(--red); border-color: #fff; padding: 4px 10px; font-size: 13px; }
+  .seg { display: inline-flex; }
+  .seg button { border-radius: 0; background: transparent; color: #fff; border-color: #fff; }
+  .seg button:first-child { border-radius: 4px 0 0 4px; } .seg button:last-child { border-radius: 0 4px 4px 0; border-left: 0; }
+  .seg button.on { background: #fff; color: var(--red); font-weight: 700; }
+  .fs-ctl { display: inline-flex; gap: 4px; align-items: center; font-size: 13px; }
+  .fs-ctl button { padding: 2px 8px; }
+  nav.strip { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; padding: 6px 16px; border-bottom: 1px solid var(--line); background: #fff; }
+  nav.strip .chip { min-width: 36px; padding: 2px 6px; font-size: 13px; border-radius: 4px; background: #fff; color: var(--ink); border: 1px solid var(--line); }
+  nav.strip .chip.part { background: linear-gradient(90deg, var(--red-soft) 50%, #fff 50%); border-color: var(--red); }
+  nav.strip .chip.done { background: #e9cfd8; border-color: var(--red); color: var(--red); font-weight: 700; }
+  nav.strip .chip.cur { outline: 2px solid var(--red); outline-offset: 1px; }
+  nav.strip .chip.lock { color: #aab0b6; border-style: dashed; }
+  nav.strip .sep { width: 1px; height: 18px; background: var(--line); margin: 0 4px; }
+  nav.strip .legend { margin-left: auto; font-size: 12px; color: var(--gray); }
+  nav.strip .legend i { display: inline-block; width: 11px; height: 11px; border: 1px solid var(--line); vertical-align: -1px; margin: 0 2px 0 8px; }
+  nav.strip .legend i.d { background: #e9cfd8; border-color: var(--red); }
+  nav.strip .legend i.p { background: linear-gradient(90deg, var(--red-soft) 50%, #fff 50%); border-color: var(--red); }
+  body { overflow-x: hidden; }
+  main { max-width: 1000px; margin: 0 auto; padding: 16px; }
+  .notice { background: var(--box); border-radius: 6px; padding: 10px 16px; margin-bottom: 18px; font-size: 14px; }
+  .notice ul { margin: 4px 0; padding-left: 18px; }
+  section.part { margin: 26px 0 10px; }
+  section.part > h2 { font-size: 18px; color: var(--red); border-bottom: 2px solid var(--red); padding-bottom: 4px; }
+  .item { border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; margin: 14px 0; }
+  .item h3 { font-size: 15px; margin: 0 0 6px; }
+  .item h3 .pts { color: var(--gray); font-weight: 400; font-size: 13px; }
+  .prompt { margin-bottom: 8px; }
+  .prompt ul { margin: 4px 0; }
+  .part-row { margin: 8px 0; }
+  .part-row > label.lbl { display: block; font-size: 14px; margin-bottom: 3px; }
+  .grid2 { display: grid; grid-template-columns: minmax(200px, 1fr) 280px; gap: 6px 12px; align-items: center; }
+  .grid2 label.lbl { margin: 0; }
+  .radio-list label { display: block; padding: 3px 0; cursor: pointer; }
+  .radio-inline { display: flex; gap: 18px; align-items: center; }
+  .radio-inline .k { width: 40px; font-weight: 600; }
+  textarea { width: 100%; resize: vertical; }
+  input[type=text].wide { width: 100%; }
+
+  /* 코드 편집 칸: 줄 번호 + 세로로 늘릴 수 있음 */
+  .editor { display: flex; align-items: stretch; border: 1px solid var(--line); border-radius: 4px; background: #fff; }
+  .editor:focus-within { border-color: var(--red); }
+  .editor .gutter { margin: 0; padding: 8px 6px 40px; min-width: 3.2em; text-align: right; color: #9aa0a6; background: var(--box);
+                    border-right: 1px solid var(--line); overflow: hidden; white-space: pre; border-radius: 4px 0 0 4px;
+                    font-family: Consolas, "D2Coding", monospace; font-size: var(--code-fs); line-height: 1.5; }
+  .editor textarea.code { flex: 1; min-width: 0; width: auto; border: 0; border-radius: 0 4px 4px 0; outline: none; margin: 0;
+                          padding: 8px 10px; height: 320px; min-height: 160px; font-size: var(--code-fs); line-height: 1.5;
+                          tab-size: 4; white-space: pre; overflow-wrap: normal; overflow: auto; }
+  pre.out { background: #1f242b; color: #e8eaed; border-radius: 4px; padding: 8px 12px; font-size: var(--code-fs); margin: 4px 0; white-space: pre-wrap; max-height: 280px; overflow: auto; }
+  pre.out:empty { display: none; }
+  pre.out .e { color: #ff9b9b; }
+  .lockbox { margin-top: 14px; padding: 12px 14px; border: 2px dashed var(--red); border-radius: 6px; background: var(--red-soft); }
+  pre.show { background: var(--box); border-radius: 4px; padding: 10px 12px; font-size: var(--code-fs); line-height: 1.5; overflow-x: auto; margin: 4px 0; white-space: pre; }
+  .bar { display: flex; gap: 8px; align-items: center; margin: 6px 0; flex-wrap: wrap; }
+  .request { background: var(--red-soft); border-left: 4px solid var(--red); padding: 8px 12px; margin: 6px 0 10px; }
+  .submit-area { border: 2px solid var(--red); border-radius: 8px; padding: 16px; margin: 30px 0 60px; text-align: center; }
+  .submit-area .receipt { margin-top: 8px; font-size: 14px; }
+  .receipt .rc { display: inline-block; text-align: left; margin-top: 6px; padding: 12px 18px; border: 2px solid var(--ok); border-radius: 6px; background: #f3f8f4; font-size: 15px; }
+  .banner { padding: 10px 16px; text-align: center; font-weight: 600; }
+  .banner.end { background: #fff3cd; color: #6b4e00; }
+  .banner.warn { background: #ffe1e1; color: var(--err); }
+  .feedback { margin-top: 10px; padding: 8px 12px; background: #f3f8f4; border-left: 4px solid var(--ok); font-size: 14px; }
+  .feedback > div { margin: 3px 0; }
+  .fb-ok { color: var(--ok); font-weight: 700; } .fb-no { color: var(--err); font-weight: 700; }
+  .hidden { display: none !important; }
+
+  /* 한 문제씩 보기: 지금 문제만 화면에 크게 */
+  #pager { display: none; }
+  body.single main { max-width: 1240px; padding-bottom: 80px; }
+  body.single [data-page] { display: none; }
+  body.single [data-page].cur { display: block; }
+  body.single section.part { display: none; margin-top: 8px; }
+  body.single section.part.cur { display: block; }
+  body.single .item.cur { border: 0; padding: 4px 0; margin: 0; }
+  body.single .item h3 { font-size: 17px; }
+  body.single .editor textarea.code { height: calc(100vh - 400px); min-height: 260px; }
+  @media (min-width: 980px) {      /* 한 문제씩 보기에서 넓은 화면이면 코드 칸 왼쪽, 실행 결과 오른쪽 */
+    body.single .codewrap { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+    body.single .codewrap .bar { margin-top: 0; }
+    body.single .codewrap pre.out { max-height: calc(100vh - 460px); min-height: 120px; }
+  }
+  body.single .submit-area { margin-top: 20px; }
+  body.single #pager { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 9; gap: 12px; justify-content: center; align-items: center;
+                       background: #fff; border-top: 1px solid var(--line); padding: 8px 16px; }
+  #pager .pos { min-width: 120px; text-align: center; font-weight: 600; color: var(--red); }
+
+  /* 전체 화면 · 이탈 가림막, 확인 창, 알림 */
+  #guard { position: fixed; inset: 0; z-index: 50; background: #fff; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+  #guard .box { max-width: 560px; border: 2px solid var(--red); border-radius: 8px; padding: 26px 30px; }
+  #guard h2 { color: var(--red); margin: 0 0 10px; font-size: 20px; }
+  #guard button { margin-top: 14px; font-size: 16px; padding: 10px 22px; }
+  #modal { position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; padding: 20px; }
+  #modal .box { background: #fff; max-width: 520px; width: 100%; border-radius: 8px; padding: 20px 24px; box-shadow: 0 6px 30px rgba(0,0,0,.25); }
+  #modal .bar { justify-content: flex-end; margin-top: 16px; }
+  #toast { position: fixed; left: 50%; bottom: 70px; transform: translateX(-50%); z-index: 60; background: #1f242b; color: #fff; padding: 8px 16px; border-radius: 6px; font-size: 14px; }
+  @media (max-width: 700px) { .grid2 { grid-template-columns: 1fr; } #login .row { grid-template-columns: 1fr; } nav.strip .legend { display: none; } }
+</style>
+</head>
+<body>
+
+<div id="login">
+  <h1 id="l-title">중간고사</h1>
+  <div class="hint" id="l-sub"></div>
+  <div id="l-form">
+    <ul>
+      <li>학번 · 이름을 정확히 입력. 채점과 성적 처리에 그대로 쓰임</li>
+      <li>입장해 두면 <b>시작 시각에 문제가 자동으로 열림</b>. 미리 들어와 기다릴 것</li>
+      <li>문제가 열리면 <b>전체 화면</b>으로 시험을 봄. 다른 탭 · 창으로 나가면 문제가 가려지고 기록됨</li>
+      <li>시험 중 새로고침하거나 창을 닫아도, 같은 컴퓨터에서 다시 들어오면 쓰던 답안이 남아 있음</li>
+    </ul>
+    <div class="row"><label for="sid">학번</label><input id="sid" type="text" inputmode="numeric" autocomplete="off"></div>
+    <div class="row"><label for="sname">이름</label><input id="sname" type="text" autocomplete="off"></div>
+    <div class="err" id="l-err"></div>
+    <button id="l-go">입장</button>
+  </div>
+  <div id="l-wait" class="hidden">
+    <div class="wait-who" id="w-who"></div>
+    <div class="wait-big" id="w-count">--:--</div>
+    <div class="hint" id="w-msg">시작 시각에 자동으로 열림. 창을 닫지 말고 기다릴 것</div>
+    <div class="err" id="w-err"></div>
+  </div>
+  <div id="l-emg" class="hidden">
+    <div class="row"><label for="pw">비상 비밀번호</label><input id="pw" type="password" autocomplete="off"></div>
+    <button id="pw-go" class="ghost">비상 비밀번호로 열기</button>
+  </div>
+  <div class="emg-link"><a href="#" id="emg-toggle">서버 연결 문제로 감독자가 비상 비밀번호를 알려 준 경우</a></div>
+</div>
+
+<div id="app" class="hidden">
+  <div class="sticky">
+    <header class="top">
+      <span class="who" id="who"></span>
+      <span class="save" id="save-status">저장 대기</span>
+      <span class="seg" role="group" aria-label="보기 방식">
+        <button type="button" id="v-all">전체 보기</button><button type="button" id="v-single">한 문제씩</button>
+      </span>
+      <span class="fs-ctl">코드 글자 <button type="button" id="fs-dn" title="코드 글자 작게">가-</button><button type="button" id="fs-up" title="코드 글자 크게">가+</button></span>
+      <button id="btn-download" title="서버 저장이 안 될 때 답안을 파일로 받아 둠">답안 파일 저장</button>
+      <span class="timer" id="timer">--:--</span>
+    </header>
+    <div class="banner warn hidden" id="warn-banner"></div>
+    <div class="banner end hidden" id="end-banner">시험 시간이 끝남. 답안을 더 고칠 수 없음</div>
+    <nav class="strip" id="strip" aria-label="문항 번호"></nav>
+  </div>
+  <main>
+    <div class="notice" id="notice" data-page="__notice"></div>
+    <div id="exam"></div>
+    <div class="submit-area" data-page="__submit">
+      <div>다 풀었으면 최종 제출. <b>최종 제출하면 더 이상 고칠 수 없음.</b> 시간이 끝나면 그때까지의 답안이 자동 제출됨</div>
+      <div class="bar" style="justify-content:center; margin-top:10px">
+        <button id="btn-final">최종 제출</button>
+      </div>
+      <div class="receipt" id="receipt"></div>
+    </div>
+  </main>
+  <div id="pager">
+    <button type="button" class="ghost" id="pg-prev">◀ 이전</button>
+    <span class="pos" id="pg-pos"></span>
+    <button type="button" id="pg-next">다음 ▶</button>
+  </div>
+</div>
+
+<div id="guard" class="hidden"><div class="box">
+  <h2 id="g-title"></h2>
+  <div id="g-msg"></div>
+  <button type="button" id="g-btn" class="hidden"></button>
+</div></div>
+<div id="modal" class="hidden"><div class="box">
+  <div id="modal-body"></div>
+  <div class="bar"><button type="button" class="ghost" id="modal-cancel">취소</button><button type="button" id="modal-ok">확인</button></div>
+</div></div>
+<div id="toast" class="hidden"></div>
+
+<script>
+/* 빌드할 때 build.mjs 가 아래 값을 채움. 문제는 enc 안에 암호화되어 있고, 여는 열쇠는 이 파일에 없음 */
+const CONFIG = {"endpoint":"https://script.google.com/macros/s/AKfycbyRQUQih36lwZWpH7SBAqL2TA_uacKT0e-tr_9iWnKa9Lj9QQIqRXR5ZyJjwR8_pRfFBw/exec","startISO":"2026-10-26T15:00:00+09:00","endISO":"2026-10-26T16:15:00+09:00","build":"20261026-122108","roster":{"salt":"H78+HfoCX78m+jZdeVq1nw==","h":["89f143f16394b92e","088162b0f0be60ea","203f67b6a13c9f45","9fa2f25f88552961","b065487918c0160c","f13b115ee036e3b9","3afce591dce64e38","e6acb6c6fffcf9f4","e0bb73d393195a27","0bdb27d487617fef","ae585836f2354cfd","79459bbd04fd3bc1","a6d405740e8967fe","a348550061c2f9fa","869a1bcaa7fc43f5","4e9e0e5a0b5b35e9","bbb587ee0a195b63","f87fc463af220e5d","5e9d1cc8d207eb53","9dc418a80685a8ea","f3bafc95bff7fc30","1db5e0b0ee8a6754","7ed97fbab7e40541","d2dfd9830b07f157","12ad65d1e3863c4a","0d38c4513c04c40d","645e7b96e500d1c7","963b9dbf0f9be6f4","f857676947e18d0c","904b9ae8b336c704","e688818b5f36d259","f25db1b8aae66368","be376d1f6dcad1ce","edb0e8dab9ed9045","cb196d71a9b4864c","23dd62b610aecd4d","0a3781eb09205c84","f6db62c223ac1988","8e5a2a716cebd3d2","1a1749ab253269f1","3fac334e1397fe2a","f5406603b2bb4e4d","6d38e694090c5fdd","83363361cbb79b79","3d375eb5dbf0e34d","78a9dc7116c77c2e","34bf086407b39d07","a16c5e3e2d7ad0a6","8b9560e9a79f602a","3fcbef4656effc81","1018f5c99841297e"]},"test":false,"pyBase":"","enc":{"iv":"Bxz20ehqqSaBwklL","data":"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"},"wrap":{"salt":"HavXj7b9+OH0D1QVyZohAA==","iv":"qFxd9db0El5Sx0QL","iter":300000,"data":"/IUdNJeUS0nqpnHQ3hsNU+MShNUPKf4khoDG8Gqh0CRyeD1FVX+/4uMPa51PYSgo"}};
+</script>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const state = {
+  sid: "", name: "", exam: null, files: {}, items: [],
+  answers: {}, tabLeaves: 0, dirty: false, ended: false,
+  serverOffset: 0, startMs: 0, endMs: 0, lastSavedJSON: "", saving: false,
+  finalDone: false, finalMs: 0, finalHow: "",
+  view: "all", cur: "__notice", clip: [], awayAt: 0, guardOn: false, fsRequired: false, warned: 0
+};
+const PRACTICE = !!CONFIG.practice;
+const PFX = PRACTICE ? "py-mid-2026-practice" : "py-mid-2026";   // BI 시험과 같은 PC · 같은 날이라 이름을 나눔
+const storeKey = () => `${PFX}-${state.sid}`;
+const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+const lsDel = k => { try { localStorage.removeItem(k); } catch (e) {} };
+
+/* ---------- 복호화 ----------
+   문제는 무작위 열쇠(K)로 암호화되어 있음. K는 두 곳에서만 얻을 수 있음
+   1) 서버: 시작 시각이 지나야 내줌 (평소 경로)
+   2) 비상 비밀번호: 서버가 응답하지 않을 때 감독자가 알려 줌 */
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function openPayload(rawKeyB64) {
+  const key = await crypto.subtle.importKey("raw", b64(rawKeyB64), "AES-GCM", false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(CONFIG.enc.iv) }, key, b64(CONFIG.enc.data));
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+async function unwrapWithPassword(password) {
+  const w = CONFIG.wrap;
+  const keyMat = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]);
+  const kek = await crypto.subtle.deriveKey({ name: "PBKDF2", salt: b64(w.salt), iterations: w.iter, hash: "SHA-256" },
+    keyMat, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+  const raw = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(w.iv) }, kek, b64(w.data));
+  return btoa(String.fromCharCode(...new Uint8Array(raw)));
+}
+
+/* ---------- 서버 ---------- */
+async function api(payload) {
+  if (!CONFIG.endpoint) throw new Error("서버 주소 미설정");
+  const r = await fetch(CONFIG.endpoint, { method: "POST", body: JSON.stringify(payload) });
+  const j = await r.json();
+  if (!j.ok) { const e = new Error(j.msg || "서버 거부"); e.data = j; throw e; }
+  return j;
+}
+async function syncTime() {
+  state.startMs = Date.parse(CONFIG.startISO);
+  state.endMs = Date.parse(CONFIG.endISO);
+  if (!CONFIG.endpoint) return;
+  try {
+    const t0 = Date.now();
+    const j = await api({ action: "time" });
+    const t1 = Date.now();
+    state.serverOffset = j.serverMs - (t0 + t1) / 2;
+    if (j.startMs) state.startMs = j.startMs;
+    if (j.endMs) state.endMs = j.endMs;
+  } catch (e) { /* 서버 시각을 못 받으면 이 컴퓨터 시계로 진행 */ }
+}
+const now = () => Date.now() + state.serverOffset;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+// 대기 화면: 1시간 넘게 남으면 "13일 18시간 12분"처럼, 그 안이면 "59:30"처럼
+function waitText(ms) {
+  if (ms <= 3600000) return mmss(ms);
+  const m = Math.floor(ms / 60000), d = Math.floor(m / 1440), h = Math.floor(m % 1440 / 60);
+  return (d ? `${d}일 ` : "") + `${h}시간 ${m % 60}분`;
+}
+const mmss = ms => { const s = Math.max(0, Math.ceil(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
+const hhmm = ms => { const t = new Date(ms); return `${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`; };
+const clock = ms => new Date(ms).toLocaleTimeString("ko-KR");
+
+/* ---------- 파이썬 엔진 ----------
+   Web Worker 안의 Pyodide(브라우저용 파이썬 3.12)로 실행.
+   무한 반복이면 정해진 시간 뒤 Worker를 통째로 끄고 새로 띄움 (다시 준비되기까지 1~2초) */
+const PY_BASE = CONFIG.pyBase || "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/";
+const RUN_LIMIT_MS = 6000;
+const WORKER_SRC = `
+importScripts("${PY_BASE}pyodide.js");
+let py = null, n = 0;
+self.onmessage = async (e) => {
+  const { id, code, stdin, files } = e.data;
+  try {
+    if (!py) py = await loadPyodide({ indexURL: "${PY_BASE}" });
+    if (code === null) { self.postMessage({ id, ready: true }); return; }
+    const out = [];
+    const lines = (stdin || "").split(/\\r?\\n/); let li = 0;
+    py.setStdout({ raw: c => out.push(c) });
+    py.setStderr({ raw: c => out.push(c) });
+    py.setStdin({ stdin: () => {
+      if (li >= lines.length || (li === lines.length - 1 && lines[li] === "")) return null;
+      const s = lines[li++];
+      for (const ch of new TextEncoder().encode(s + "\\n")) out.push(ch);
+      return s + "\\n";
+    }});
+    const dir = "/run" + (++n); py.FS.mkdir(dir); py.FS.chdir(dir);
+    for (const [name, text] of Object.entries(files || {})) py.FS.writeFile(name, text, { encoding: "utf8" });
+    const g = py.globals.get("dict")(); g.set("__name__", "__main__");
+    let err = null;
+    try { await py.runPythonAsync(code, { globals: g, filename: "<답안>" }); }
+    catch (ex) { err = String(ex.message || ex); }
+    g.destroy();
+    self.postMessage({ id, out: new TextDecoder().decode(new Uint8Array(out)), err });
+  } catch (ex) { self.postMessage({ id, out: "", err: "ENGINE: " + ex }); }
+};`;
+let worker = null, seq = 0, pending = null, enginePromise = null;
+function makeWorker() {
+  worker = new Worker(URL.createObjectURL(new Blob([WORKER_SRC], { type: "text/javascript" })));
+  worker.onmessage = e => { if (pending && pending.id === e.data.id) { clearTimeout(pending.t); const p = pending; pending = null; p.res(e.data); } };
+  worker.onerror = () => {};
+}
+function callWorker(msg, limitMs) {
+  return new Promise(res => {
+    if (pending) { res({ out: "", err: "BUSY" }); return; }
+    const id = ++seq;
+    const t = setTimeout(() => { worker.terminate(); makeWorker(); enginePromise = null; pending = null; res({ id, out: "", err: "TIMEOUT" }); }, limitMs);
+    pending = { id, res, t };
+    worker.postMessage(Object.assign({ id }, msg));
+  });
+}
+function loadEngine() {                    // 기다리는 동안 미리 받아 둠. 처음 한 번 10MB 정도
+  if (!worker) makeWorker();
+  if (!enginePromise) enginePromise = callWorker({ code: null }, 120000).then(r => { if (!r.ready) { enginePromise = null; throw new Error(r.err || "준비 실패"); } return true; });
+  return enginePromise;
+}
+async function runPython(code, stdin, force) {
+  if (!force && !state.answers["__gate"]) return { out: "", err: "LOCKED" };   // 1부 확정 전에는 실행하지 않음
+  await loadEngine();
+  return callWorker({ code, stdin, files: state.files || {} }, RUN_LIMIT_MS);
+}
+
+/* ---------- 입장 · 대기 · 자동 열림 ---------- */
+function initLogin() {
+  $("l-title").textContent = PRACTICE ? "파이썬 프로그래밍 중간고사 체험판" : "파이썬 프로그래밍 중간고사";
+  $("l-sub").textContent = PRACTICE ? "연습용 · 점수에 들어가지 않음 · 학번은 아무 숫자, 이름은 아무 글자나 넣어도 됨"
+                                    : "2026학년도 2학기 · 담당교수 강호준 · 75분 · AI 사용 불가";
+  if (PRACTICE) {
+    document.querySelector(".emg-link").classList.add("hidden"); document.title = "파이썬 중간고사 체험판";
+    document.querySelector("#l-form li").textContent = "실제 시험에서는 학번 · 이름을 정확히 입력해야 함 (채점과 성적 처리에 그대로 쓰임)";
+  }
+  try {
+    const last = JSON.parse(lsGet(`${PFX}-last`) || "null");
+    if (last) { $("sid").value = last.sid; $("sname").value = last.name; }
+  } catch (e) {}
+  $("l-go").onclick = enter;
+  $("sname").addEventListener("keydown", e => { if (e.key === "Enter") enter(); });
+  $("emg-toggle").onclick = e => { e.preventDefault(); $("l-emg").classList.toggle("hidden"); };
+  $("pw-go").onclick = openWithPassword;
+  $("pw").addEventListener("keydown", e => { if (e.key === "Enter") openWithPassword(); });
+  loadEngine().catch(() => {});      // 기다리는 동안 파이썬 엔진을 미리 받아 둠
+}
+// 수강생 명단: build.mjs 가 학번을 소금 친 SHA-256 앞 16자리로만 넣음. 명단이 없으면 확인하지 않음
+async function inRoster(sid) {
+  const R = CONFIG.roster; if (!R || !R.h || !R.h.length) return true;
+  const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(R.salt + ":" + sid));
+  const hex = [...new Uint8Array(d)].map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
+  return R.h.includes(hex);
+}
+async function readIdentity() {
+  const sid = $("sid").value.trim(), name = $("sname").value.trim();
+  if (PRACTICE) {                                        // 체험판: 아무 숫자 · 아무 이름이나 통과
+    if (!/^\d+$/.test(sid)) return "학번 칸에는 숫자만 넣을 것 (체험판은 아무 숫자나 됨)";
+    if (!name) return "이름을 입력하시오. (체험판은 아무 이름이나 됨)";
+  } else {
+    if (!/^\d{7,10}$/.test(sid)) return "학번을 숫자로 정확히 입력하시오.";
+    if (!(await inRoster(sid))) return "잘못된 학번입니다";
+    if (name.length < 2) return "이름을 입력하시오.";
+  }
+  state.sid = sid; state.name = name;
+  lsSet(`${PFX}-last`, JSON.stringify({ sid, name }));
+  return "";
+}
+async function enter() {
+  const msg = await readIdentity(); $("l-err").textContent = msg; if (msg) return;
+  $("l-go").disabled = true;
+  if (PRACTICE) {
+    state.startMs = Date.now() + CONFIG.practice.delaySec * 1000;
+    state.endMs = state.startMs + CONFIG.practice.durationMin * 60000;
+    try { const old = JSON.parse(lsGet(storeKey()) || "null"); if (old && old.endMs > Date.now()) { state.startMs = Date.now(); state.endMs = old.endMs; } } catch (e) {}
+    $("w-msg").textContent = "체험판은 입장하고 10초 뒤 열림. 실제 시험은 15:00에 이렇게 열림";
+  } else {
+    await syncTime();
+  }
+  $("l-form").classList.add("hidden"); $("l-wait").classList.remove("hidden");
+  $("w-who").textContent = `${state.sid} ${state.name}`;
+  if (!PRACTICE) {
+    const t = new Date(state.startMs);
+    const wd = "일월화수목금토"[t.getDay()];
+    $("w-msg").textContent = `${t.getMonth() + 1}월 ${t.getDate()}일(${wd}) ${hhmm(state.startMs)}에 자동으로 열림. 창을 닫지 말고 기다릴 것`;
+  }
+  // 같은 창에서 이미 열었던 시험이면 서버를 다시 거치지 않음 (새로고침 대비)
+  let cached = null; try { cached = sessionStorage.getItem(`${PFX}-k`); } catch (e) {}
+  if (cached) { try { return await start(cached); } catch (e) {} }
+  waitAndOpen();
+}
+async function waitAndOpen() {
+  while (now() < state.startMs) {                       // 시작 전: 남은 시간만 보여 줌
+    $("w-count").textContent = waitText(state.startMs - now());
+    await sleep(250);
+  }
+  $("w-count").textContent = "여는 중";
+  if (PRACTICE) return start(CONFIG.practice.key);
+  $("w-msg").textContent = "문제를 받는 중. 잠시 기다릴 것";
+  await sleep(Math.random() * 8000);                    // 100명이 같은 순간에 몰리지 않게 0~8초 흩뜨림
+  const t0 = Date.now();
+  for (let i = 0; ; i++) {
+    try {
+      const j = await api({ action: "key", studentId: state.sid });
+      return await start(j.key);
+    } catch (e) {
+      const d = e.data || {};
+      if (d.msg === "not_yet" && d.startMs) { state.serverOffset = d.serverMs - Date.now(); state.startMs = d.startMs; return waitAndOpen(); }
+      if (d.msg === "closed") { $("w-err").textContent = "시험 시간이 끝남"; return; }
+      if (d.msg === "bad_id") { $("w-count").textContent = "--:--"; $("w-err").textContent = "잘못된 학번입니다. 손을 들어 감독자에게 알릴 것"; return; }
+      if (Date.now() - t0 > 45000) {
+        $("w-err").textContent = "서버에 연결되지 않음. 손을 들어 감독자에게 알릴 것";
+        $("l-emg").classList.remove("hidden");
+      }
+      await sleep(Math.min(8000, 1500 * 1.5 ** i) + Math.random() * 1500);
+    }
+  }
+}
+async function openWithPassword() {
+  if (!state.sid) { const msg = await readIdentity(); if (msg) { $("l-err").textContent = msg; return; } await syncTime(); }
+  try { await start(await unwrapWithPassword($("pw").value.trim())); }
+  catch (e) { $("w-err").textContent = ""; $("l-err").textContent = "비상 비밀번호가 맞지 않음"; }
+}
+async function start(rawKey) {
+  const payload = await openPayload(rawKey);            // 열쇠가 틀리면 여기서 오류
+  try { sessionStorage.setItem(`${PFX}-k`, rawKey); } catch (e) {}
+  state.exam = payload.exam;
+  state.files = payload.files || {};
+  state.items = state.exam.sections.flatMap(s => s.items.map(it => Object.assign(it, { sec: s.id, secTitle: s.title })));
+  state.p1ids = new Set(state.items.filter(i => i.group === "P1").map(i => i.id));
+  loadEngine().catch(e => setStatus("파이썬 엔진을 불러오지 못함. 손을 들어 알릴 것"));
+  loadLocal();
+  render();
+  $("login").classList.add("hidden"); $("app").classList.remove("hidden");
+  initView();
+  startLoops();
+  if (state.finalDone) { applyLocked(); if (PRACTICE) showFeedback(); return; }
+  setAnswer("__opens", (state.answers.__opens || []).concat([Math.round(now())]));   // 페이지를 연(다시 연) 시각
+  initGuard();
+}
+
+/* ---------- 답안 저장 ---------- */
+function loadLocal() {
+  try {
+    const s = JSON.parse(lsGet(storeKey()) || "null");
+    if (s) { state.answers = s.answers || {}; state.tabLeaves = s.tabLeaves || 0; }
+    const f = JSON.parse(lsGet(`${storeKey()}-final`) || "null");          // 최종 제출 잠금 (새로고침해도 유지)
+    if (f && f.ms) { state.finalDone = true; state.finalMs = f.ms; state.finalHow = f.how || "submit"; }
+  } catch (e) {}
+}
+function saveLocal() {
+  lsSet(storeKey(), JSON.stringify({ answers: state.answers, tabLeaves: state.tabLeaves, at: now(), endMs: state.endMs }));
+}
+function p1Key(k) { return state.p1ids && state.p1ids.has(k.split(".")[0]); }
+function setAnswer(k, v) {
+  if (state.ended || state.finalDone) return;           // 최종 제출 · 시간 종료 뒤에는 저장하지 않음
+  if (state.answers["__gate"] && p1Key(k)) return;     // 1부 확정 뒤에는 1부 답을 바꿀 수 없음 (화면을 조작해도 저장되지 않음)
+  state.answers[k] = v; state.dirty = true; saveLocal();
+  setStatus("이 컴퓨터에 저장됨 · 서버 저장 대기");
+  queueStrip();
+}
+function setStatus(t) { $("save-status").textContent = t; }
+function payload(kind) {
+  return { action: "submit", kind, studentId: state.sid, name: state.name, build: CONFIG.build || "",
+           answers: state.answers, tabLeaves: state.tabLeaves, clientMs: Date.now() };
+}
+async function serverSave(kind, tries = 1) {
+  if (state.finalDone) return false;
+  const body = payload(kind), json = JSON.stringify(body.answers);
+  if (kind === "draft" && json === state.lastSavedJSON) return true;
+  if (PRACTICE) {
+    state.lastSavedJSON = json; state.dirty = false;
+    setStatus("체험판 · 이 컴퓨터에만 저장됨 " + clock(Date.now()));
+    return { serverMs: Date.now() };
+  }
+  for (let i = 0; i < tries; i++) {
+    try {
+      const j = await api(body);
+      state.lastSavedJSON = json; state.dirty = false;
+      setStatus((kind === "final" ? "최종 제출됨 " : "서버에 중간 저장됨 ") + clock(j.serverMs));
+      return j;
+    } catch (e) {
+      const d = e.data || {};
+      if (d.msg === "already_final") { lockFinal(d.finalMs || d.serverMs || now(), "already"); return false; }
+      if (d.msg === "bad_id") { setStatus("서버가 학번을 거절함 (잘못된 학번). 손을 들 것"); return false; }
+      setStatus(`서버 저장 실패 (${e.message}) · 이 컴퓨터에는 저장됨`);
+      if (i < tries - 1) await sleep(1500 * 2 ** i + Math.random() * 1000);
+    }
+  }
+  return false;
+}
+function downloadAnswers() {
+  const blob = new Blob([JSON.stringify(payload("file"), null, 1)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = `파이썬중간고사_${state.sid}_${state.name}.json`; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+/* ---------- 최종 제출 · 잠금 ---------- */
+async function finalSubmit() {
+  if (state.finalDone || state.ended) return;
+  const gate = !!state.answers.__gate;
+  const left = state.items.filter(it => (!it.gated || gate) && itemStatus(it) !== "done").map(it => it.id);
+  const ok = await ask(`<b>최종 제출하면 더 이상 고칠 수 없음.</b><br>제출한 뒤에는 이 학번으로 저장 · 제출이 모두 막힘.` +
+    (!gate ? `<br><br><b>아직 1부를 확정하지 않았음.</b> 지금 제출하면 2부는 빈 답안으로 처리됨.` : "") +
+    (left.length ? `<br><br>아직 다 쓰지 않은 문항: ${esc(left.join(", "))}` : "") +
+    (PRACTICE ? "<br><br>체험판: 제출하면 칸마다 맞음 · 다름이 표시됨." : "") + "<br><br>최종 제출할까요?", "최종 제출", "취소");
+  if (!ok || state.finalDone || state.ended) return;
+  $("btn-final").disabled = true; $("btn-final").textContent = "제출 중…";
+  if (PRACTICE) { await serverSave("final"); lockFinal(Date.now(), "submit"); await showFeedback(); return; }
+  const j = await serverSave("final", 3);
+  if (j && j.serverMs) { lockFinal(j.serverMs, "submit"); return; }
+  if (state.finalDone) return;                           // 서버가 이미 최종 제출된 학번이라고 알려 옴
+  $("btn-final").disabled = false; $("btn-final").textContent = "최종 제출";
+  $("receipt").innerHTML = "<b>제출 실패.</b> 잠시 뒤 다시 누르고, 계속 실패하면 손을 들고 <b>답안 파일 저장</b>으로 파일을 받으시오.";
+}
+function lockFinal(ms, how) {
+  if (state.finalDone) return;
+  state.finalDone = true; state.finalMs = ms; state.finalHow = how; state.dirty = false;
+  saveLocal(); lsSet(`${storeKey()}-final`, JSON.stringify({ ms, how }));
+  applyLocked();
+}
+function applyLocked() {
+  document.querySelectorAll("#exam input, #exam select, #exam textarea, #exam button, #btn-final").forEach(el => el.disabled = true);
+  $("btn-final").textContent = "제출 완료";
+  const msg = { submit: "최종 제출 완료", auto: "시간 종료로 자동 제출됨", already: "이 학번은 이미 최종 제출됨" }[state.finalHow] || "최종 제출 완료";
+  const t = clock(state.finalMs);
+  $("receipt").innerHTML = `<div class="rc"><b>${msg}</b><br>학번 ${esc(state.sid)} · 이름 ${esc(state.name)}<br>` +
+    `${PRACTICE ? "접수 시각 (체험판 · 이 컴퓨터 시계)" : "서버 접수 시각"} <b>${esc(t)}</b><br>더 이상 고칠 수 없음` +
+    (PRACTICE ? "" : ". 이 화면을 감독자에게 보여 주고 안내에 따를 것") + `</div>` +
+    (PRACTICE ? `<div class="bar" style="justify-content:center;margin-top:10px"><button type="button" class="ghost" id="btn-reset">체험판 처음부터 다시 하기</button></div>` : "");
+  if (PRACTICE) $("btn-reset").onclick = resetPractice;
+  $("end-banner").textContent = `${msg} (${t}). 답안을 더 고칠 수 없음`;
+  $("end-banner").classList.remove("hidden"); $("warn-banner").classList.add("hidden");
+  setStatus(`${msg} ${t}`);
+  hideGuard(); queueStrip();
+  if (state.view === "single") showPage("__submit");
+}
+function resetPractice() {                                 // 체험판만: 이 컴퓨터의 체험판 답안 · 잠금을 지우고 처음부터
+  lsDel(storeKey()); lsDel(`${storeKey()}-final`);
+  try { sessionStorage.removeItem(`${PFX}-k`); } catch (e) {}
+  location.reload();
+}
+
+/* ---------- 타이머 · 주기 저장 · 종료 안내 ---------- */
+function startLoops() {
+  const tick = () => {
+    const left = Math.max(0, state.endMs - now());
+    const m = Math.floor(left / 60000), s = Math.floor(left / 1000) % 60;
+    $("timer").textContent = `남은 시간 ${m}:${String(s).padStart(2, "0")}`;
+    $("timer").classList.toggle("low", left < 10 * 60000);
+    if (!state.finalDone && !state.ended) {
+      const w = left <= 5 * 60000 ? 5 : left <= 10 * 60000 ? 10 : 0;
+      if (w && w !== state.warned) {
+        state.warned = w;
+        $("warn-banner").textContent = w === 10
+          ? `종료 10분 전 (${hhmm(state.endMs)} 마감). 답을 점검하고 최종 제출할 것. 최종 제출하면 더 이상 고칠 수 없음`
+          : `종료 5분 전. 지금 최종 제출할 것. ${hhmm(state.endMs)}에 그때까지의 답안이 자동 제출됨`;
+        $("warn-banner").classList.remove("hidden");
+        toast(w === 10 ? "종료 10분 전" : "종료 5분 전. 지금 최종 제출할 것");
+      }
+    }
+    if (left <= 0 && !state.ended) endExam();
+    checkAway();
+  };
+  tick(); setInterval(tick, 1000);
+  const loop = async () => {               // 학생마다 저장 시점이 겹치지 않게 90~150초 사이로 흩뜨림
+    if (!state.ended && !state.finalDone && state.dirty) await serverSave("draft");
+    setTimeout(loop, 90000 + Math.random() * 60000);
+  };
+  setTimeout(loop, 20000 + Math.random() * 60000);
+  window.addEventListener("beforeunload", e => { if (!state.ended && !state.finalDone && state.dirty) { e.preventDefault(); e.returnValue = ""; } });
+}
+async function endExam() {
+  if (state.ended) return;
+  state.ended = true;
+  document.querySelectorAll("#exam input, #exam select, #exam textarea, #exam button, #btn-final").forEach(el => el.disabled = true);
+  hideGuard(); $("warn-banner").classList.add("hidden");
+  if (state.finalDone) return;
+  $("end-banner").textContent = "시험 시간이 끝남. 답안을 더 고칠 수 없음";
+  $("end-banner").classList.remove("hidden");
+  setStatus("자동 제출 중…");
+  if (PRACTICE) { lockFinal(Date.now(), "auto"); await showFeedback(); return; }
+  const j = await serverSave("final", 5);
+  if (j && j.serverMs) lockFinal(j.serverMs, "auto");
+  else if (!state.finalDone) $("receipt").innerHTML = "<b>자동 제출 실패.</b> 손을 들고 위의 <b>답안 파일 저장</b> 버튼으로 파일을 받으시오.";
+}
+
+/* ---------- 부정행위 대비 ----------
+   - 문제가 열리면 전체 화면으로 시작. 다른 탭 · 창으로 나가거나 전체 화면을 끄면 가림막이 문제를 덮음
+   - 나갈 때마다 [나간 시각(ms), 머문 시간(ms)]을 answers.__leaves 에, 횟수를 tabLeaves 에 기록
+   - 이 페이지 안에서 복사한 내용만 붙여 넣기 가능 (바깥 붙여 넣기 시도는 answers.__paste 에 [시각, 글자 수])
+   - 문제 글 선택 · 복사, 우클릭, 개발자 도구 · 소스 보기 · 인쇄 · 저장 단축키를 막음 (막은 횟수 answers.__keys) */
+const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement || null;
+const fsEnabled = () => !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+const guardActive = () => !!state.exam && !state.ended && !state.finalDone;
+function initGuard() {
+  state.fsRequired = fsEnabled();
+  state.guardOn = !state.fsRequired;                     // 전체 화면을 쓸 수 없는 브라우저면 탭 · 창 이탈만 봄
+  ["visibilitychange", "fullscreenchange", "webkitfullscreenchange"].forEach(ev => document.addEventListener(ev, checkAway));
+  window.addEventListener("blur", checkAway); window.addEventListener("focus", checkAway);
+  $("g-btn").onclick = enterFs;
+  checkAway();
+}
+async function enterFs() {
+  const d = document.documentElement;
+  let p = null;
+  try { p = d.requestFullscreen ? d.requestFullscreen({ navigationUI: "hide" }) : (d.webkitRequestFullscreen && d.webkitRequestFullscreen()); } catch (e) {}
+  await Promise.race([Promise.resolve(p).catch(() => {}), sleep(3000)]);
+  if (!fsEl()) {                                         // 브라우저가 거절하거나 응답이 없으면 전체 화면 없이 진행하고 기록
+    state.fsRequired = false; setAnswer("__fsFail", Math.round(now()));
+    toast("이 브라우저에서는 전체 화면을 켤 수 없음. 탭 · 창 이탈만 기록됨");
+  }
+  state.guardOn = true;
+  setTimeout(checkAway, 150);
+}
+function isAway() { return document.hidden || !document.hasFocus() || (state.fsRequired && !fsEl()); }
+function checkAway() {
+  if (!guardActive()) { hideGuard(); return; }
+  if (!state.guardOn) { showGuard("start"); return; }
+  const away = isAway();
+  if (away && !state.awayAt) { state.awayAt = now(); state.tabLeaves++; state.dirty = true; saveLocal(); }
+  if (!away && state.awayAt) {
+    const L = (state.answers.__leaves || []).concat([[Math.round(state.awayAt), Math.round(now() - state.awayAt)]]);
+    state.awayAt = 0; setAnswer("__leaves", L);
+  }
+  if (away) showGuard(state.fsRequired && !fsEl() ? "fs" : "focus"); else hideGuard();
+}
+function showGuard(kind) {
+  const T = {
+    start: ["문제가 열림", "시험은 <b>전체 화면</b>으로 봄. 아래 단추를 누르면 시작.<br>시험 중 다른 탭 · 창으로 나가거나 전체 화면을 끄면 문제가 가려지고 나간 시각과 시간이 기록됨", "전체 화면으로 시작"],
+    fs: ["전체 화면이 꺼짐", "문제를 가렸음. 나간 시각과 시간이 기록되고 있음.<br>아래 단추를 눌러 전체 화면으로 돌아올 것", "전체 화면으로 돌아가기"],
+    focus: ["시험 화면 밖으로 나갔음", "문제를 가렸음. 나간 시각과 시간이 기록되고 있음.<br>이 화면을 한 번 클릭하면 돌아옴", ""]
+  }[kind];
+  $("g-title").textContent = T[0]; $("g-msg").innerHTML = T[1];
+  $("g-btn").textContent = T[2]; $("g-btn").classList.toggle("hidden", !T[2]);
+  $("guard").classList.remove("hidden");
+}
+function hideGuard() { $("guard").classList.add("hidden"); }
+const clipNorm = t => String(t || "").replace(/\r/g, "");
+const isField = el => !!el && (el.tagName === "TEXTAREA" || (el.tagName === "INPUT" && /^(text|password)$/.test(el.type)));
+function onCopyCut(e) {
+  if (!state.exam) return;
+  const el = document.activeElement;
+  if (isField(el) && el.selectionEnd > el.selectionStart) {      // 답 칸에서 복사한 것은 기억해 두고 붙여 넣기를 허용
+    state.clip.push(clipNorm(el.value.slice(el.selectionStart, el.selectionEnd)));
+    if (state.clip.length > 30) state.clip.shift();
+    return;
+  }
+  e.preventDefault(); toast("문제 글은 복사할 수 없음");
+}
+document.addEventListener("copy", onCopyCut, true);
+document.addEventListener("cut", onCopyCut, true);
+document.addEventListener("paste", e => {
+  if (!state.exam) return;
+  const t = clipNorm(e.clipboardData ? e.clipboardData.getData("text/plain") : "");
+  if (t && state.clip.includes(t)) return;
+  e.preventDefault();
+  if (guardActive()) setAnswer("__paste", (state.answers.__paste || []).concat([[Math.round(now()), t.length]]));
+  toast("이 페이지 밖에서 복사한 내용은 붙여 넣을 수 없음 (기록됨)");
+}, true);
+document.addEventListener("drop", e => { if (state.exam) { e.preventDefault(); toast("끌어다 놓기는 쓸 수 없음"); } }, true);
+document.addEventListener("dragstart", e => { if (state.exam && !isField(e.target)) e.preventDefault(); }, true);
+document.addEventListener("selectstart", e => {
+  if (!state.exam) return;
+  const n = e.target && e.target.nodeType === 3 ? e.target.parentElement : e.target;
+  if (!(n && n.closest && n.closest("textarea, input"))) e.preventDefault();
+}, true);
+document.addEventListener("contextmenu", e => e.preventDefault(), true);
+window.addEventListener("keydown", e => {
+  const c = e.code || "", mod = e.ctrlKey || e.metaKey;
+  const bad = e.key === "F12" || c === "F12" ||
+    (mod && e.shiftKey && ["KeyI", "KeyJ", "KeyC"].includes(c)) ||
+    (e.metaKey && e.altKey && ["KeyI", "KeyJ", "KeyC", "KeyU"].includes(c)) || (mod && e.shiftKey && c === "KeyK") ||
+    (mod && !e.shiftKey && ["KeyU", "KeyP", "KeyS"].includes(c));
+  if (!bad) return;
+  e.preventDefault(); e.stopPropagation();
+  if (guardActive()) setAnswer("__keys", (state.answers.__keys || 0) + 1);
+  toast(c === "KeyS" ? "답안은 자동으로 저장되고 있음" : "시험 중에는 쓸 수 없는 단축키");
+}, true);
+let toastT = 0;
+function toast(t) { $("toast").textContent = t; $("toast").classList.remove("hidden"); clearTimeout(toastT); toastT = setTimeout(() => $("toast").classList.add("hidden"), 2500); }
+function ask(html, okText = "확인", cancelText = "취소") {   // 브라우저 기본 확인 창 대신 (전체 화면이 풀리지 않게)
+  return new Promise(res => {
+    $("modal-body").innerHTML = html; $("modal-ok").textContent = okText; $("modal-cancel").textContent = cancelText;
+    $("modal").classList.remove("hidden"); $("modal-cancel").focus();
+    const done = v => { $("modal").classList.add("hidden"); $("modal-ok").onclick = $("modal-cancel").onclick = null; res(v); };
+    $("modal-ok").onclick = () => done(true); $("modal-cancel").onclick = () => done(false);
+  });
+}
+
+/* ---------- 파이썬 실행 ---------- */
+const HINTS = [
+  [/^SyntaxError/, "문법 오류. 콜론(:) · 괄호 · 따옴표 · 연산자를 확인"],
+  [/^IndentationError|^TabError/, "들여쓰기 오류. 같은 블록은 같은 칸만큼 들여 씀"],
+  [/^NameError/, "정의되지 않은 이름. 오타 · 변수를 만들기 전에 쓴 것 · 따옴표 빠진 문자열을 확인"],
+  [/^TypeError/, "자료형이 맞지 않음. 문자열과 숫자를 섞어 계산했는지, int() · float() · str() 변환을 확인"],
+  [/^ValueError/, "값의 형식이 맞지 않음. 예: int('3.5'), int('') 처럼 바꿀 수 없는 문자열"],
+  [/^ZeroDivisionError/, "0으로 나눔"],
+  [/^IndexError/, "리스트 · 문자열의 범위를 벗어난 위치"],
+  [/^KeyError/, "딕셔너리에 없는 키"],
+  [/^FileNotFoundError/, "이 시험에는 제공 파일이 없음. 파일을 읽지 않고 리스트 · 문자열로 처리"],
+  [/^AttributeError/, "그 자료형에 없는 메서드 · 속성"],
+  [/^EOFError/, "이 시험에서는 input()을 쓰지 않음. 값은 함수의 매개변수로 받음"]
+];
+function cleanError(err) {
+  if (err === "TIMEOUT") return `${RUN_LIMIT_MS / 1000}초 안에 끝나지 않아 멈춤. 무한 반복이 아닌지 확인 (while 조건이 바뀌는지)`;
+  if (err === "BUSY") return "앞의 실행이 아직 끝나지 않음";
+  if (err === "LOCKED") return "1부를 확정해야 실행할 수 있음";
+  if (err.startsWith("ENGINE")) return "파이썬 엔진 오류. 다시 실행해 보고, 계속되면 손을 들 것";
+  const lines = err.trim().split("\n");
+  const i = lines.findIndex(l => l.includes('"<답안>"'));
+  const body = i >= 0 ? lines.slice(i).join("\n") : lines.slice(-3).join("\n");
+  const last = lines[lines.length - 1] || "";
+  const hint = (HINTS.find(([re]) => re.test(last)) || [null, ""])[1];
+  return body.replace(/File "<답안>", /g, "") + (hint ? `\n→ ${hint}` : "");
+}
+async function runCode(code, stdin, outEl, btn) {
+  if (state.finalDone || state.ended) return;
+  if (!code.trim()) { outEl.innerHTML = "<span class='e'>코드를 입력하시오.</span>"; return; }
+  if (btn) { btn.disabled = true; btn.textContent = "실행 중…"; }
+  outEl.textContent = "";
+  const r = await runPython(code, stdin);
+  outEl.innerHTML = esc(r.out) + (r.err ? `<span class="e">${esc((r.out && !r.out.endsWith("\n") ? "\n" : "") + cleanError(r.err))}</span>` : (r.out ? "" : "<span class='e'>(출력 없음)</span>"));
+  if (btn) { btn.disabled = state.finalDone || state.ended; btn.textContent = "실행"; }
+}
+
+/* ---------- 코드 편집 칸: 줄 번호 · Tab(공백 4칸) · Shift+Tab · Enter 자동 들여쓰기 ---------- */
+function insertText(el, txt) {
+  let ok = false;
+  try { ok = document.execCommand("insertText", false, txt); } catch (e) {}   // 되돌리기(Ctrl+Z)가 되도록
+  if (!ok) { el.setRangeText(txt, el.selectionStart, el.selectionEnd, "end"); el.dispatchEvent(new Event("input")); }
+}
+function dedent(el) {
+  const s = el.selectionStart, ls = el.value.lastIndexOf("\n", s - 1) + 1;
+  const m = el.value.slice(ls, ls + 4).match(/^ {1,4}/); if (!m) return;
+  el.setSelectionRange(ls, ls + m[0].length);
+  let ok = false; try { ok = document.execCommand("delete"); } catch (e) {}
+  if (!ok) { el.setRangeText("", ls, ls + m[0].length, "start"); el.dispatchEvent(new Event("input")); }
+  const p = Math.max(ls, s - m[0].length); el.setSelectionRange(p, p);
+}
+function editorKey(e, el) {
+  if (e.isComposing || e.keyCode === 229) return;          // 한글 입력 중에는 건드리지 않음
+  if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); runFor(el); return; }
+  if (e.key === "Tab") { e.preventDefault(); if (e.shiftKey) dedent(el); else insertText(el, "    "); return; }
+  if (e.key === "Enter" && !e.shiftKey && !e.altKey) {
+    const s = el.selectionStart, ls = el.value.lastIndexOf("\n", s - 1) + 1, line = el.value.slice(ls, s);
+    let ind = (line.match(/^ */) || [""])[0]; if (/:\s*$/.test(line)) ind += "    ";
+    e.preventDefault(); insertText(el, "\n" + ind);
+  }
+}
+function syncGutter(el) {
+  const g = el.previousElementSibling; if (!g) return;
+  const n = el.value.split("\n").length;
+  if (g._n !== n) { g._n = n; let s = ""; for (let i = 1; i <= n; i++) s += i + (i < n ? "\n" : ""); g.textContent = s; }
+  g.scrollTop = el.scrollTop;
+}
+function runFor(el) { runCode(el.value, "", $(el.id + "-out"), document.querySelector(`[data-run="${el.id}"]`)); }
+function setFs(px) {
+  px = Math.max(12, Math.min(24, px)); state.fs = px;
+  document.documentElement.style.setProperty("--code-fs", px + "px"); lsSet(`${PFX}-fs`, String(px));
+}
+
+/* ---------- 화면 그리기 ---------- */
+function choicesOf(p) { return p.choices === "@errtypes" ? state.exam.errtypes : p.choices; }
+function codeBlock(id, k, initial) {
+  return `<div class="codewrap"><div class="editor"><div class="gutter" aria-hidden="true">1</div><textarea class="code" id="${id}" data-k="${k}" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="# 여기에 코드를 쓰고 실행">${esc(initial || "")}</textarea></div>
+    <div class="side"><div class="bar"><button type="button" data-run="${id}">실행</button><span class="hint">Ctrl + Enter 로도 실행 · Tab은 공백 4칸 (Shift + Tab은 내어 쓰기) · 오른쪽 아래 모서리를 끌어 칸을 늘릴 수 있음</span></div>
+    <pre class="out" id="${id}-out"></pre></div></div>`;
+}
+function renderPart(item, p) {
+  const k = `${item.id}.${p.key}`, v = state.answers[k], did = "f-" + k.replace(/[^\w]/g, "_");
+  const lbl = p.label ? `<label class="lbl" for="${did}">${p.label}</label>` : "";
+  switch (p.type) {
+    case "radio": {
+      const cs = choicesOf(p);
+      if (p.inline) return `<div class="part-row radio-inline"><span class="k">${p.label}</span>` +
+        cs.map(c => `<label><input type="radio" name="${did}" data-k="${k}" value="${esc(c)}" ${v === c ? "checked" : ""}> ${esc(c)}</label>`).join("") + "</div>";
+      return `<div class="part-row radio-list">${lbl}` + cs.map((c, i) =>
+        `<label><input type="radio" name="${did}" data-k="${k}" value="${esc(c)}" ${v === c ? "checked" : ""}> ${i + 1}. ${p.code ? "<code>" + esc(c) + "</code>" : esc(c)}</label>`).join("") + "</div>";
+    }
+    case "select":
+      return `<div class="part-row grid2">${lbl}<select id="${did}" data-k="${k}"><option value="">(선택)</option>` +
+        choicesOf(p).map(c => `<option ${v === c ? "selected" : ""}>${esc(c)}</option>`).join("") + "</select></div>";
+    case "text":
+      return `<div class="part-row">${lbl}<input type="text" class="wide" id="${did}" data-k="${k}" value="${esc(v || "")}" autocomplete="off"></div>`;
+    case "textarea":
+      return `<div class="part-row">${lbl}<textarea id="${did}" data-k="${k}" rows="${p.rows || 3}">${esc(v || "")}</textarea></div>`;
+    case "code":
+      return `<div class="part-row">${lbl}${codeBlock(did, k, v ?? p.starter)}</div>`;
+    case "showcode":
+      return `<div class="part-row">${p.label ? `<label class="lbl"><b>${p.label}</b></label>` : ""}<pre class="show" id="${did}">${esc(p.code)}</pre>
+        ${p.runnable ? `<div class="bar"><button type="button" class="ghost" data-runshow="${did}">실행해 보기</button></div><pre class="out" id="${did}-out"></pre>` : ""}</div>`;
+  }
+  return "";
+}
+function render() {
+  const ex = state.exam;
+  $("who").textContent = (PRACTICE ? "체험판 · " : "") + `${state.sid} ${state.name}`;
+  $("notice").innerHTML = "<b>안내</b><ul>" + ex.notice.map(n => `<li>${n}</li>`).join("") + "</ul>";
+  const gateOpen = !!state.answers["__gate"];
+  $("exam").innerHTML = ex.sections.map(s => `
+    <section class="part" id="sec-${s.id}"><h2>${esc(s.title)}</h2>${s.intro ? `<div class="intro">${s.intro}</div>` : ""}
+    ${s.items.map(it => {
+      const hide = it.gated && !gateOpen;
+      return `<div class="item ${hide ? "hidden" : ""}" id="item-${it.id}" data-item="${it.id}" data-page="${it.id}" ${it.gated ? "data-gated='1'" : ""} ${it.group ? `data-group="${it.group}"` : ""}>
+        <h3>${esc(it.id)} ${it.pts ? `<span class="pts">(${it.pts}점)</span>` : ""}</h3>
+        <div class="prompt">${it.prompt}</div>
+        ${it.parts.map(p => renderPart(it, p)).join("")}
+        ${it.gateOpener ? `<div class="lockbox"><div>${it.gateText || ""}</div><div class="bar"><button type="button" id="gate-btn" ${gateOpen ? "disabled" : ""}>${gateOpen ? "1부 확정됨" : "1부 확정하고 2부 열기"}</button> <span class="hint" id="gate-msg"></span></div></div>` : ""}
+      </div>`; }).join("")}
+    </section>`).join("");
+  wire();
+  if (gateOpen) lockGate();
+  queueStrip();
+  if (now() >= state.endMs) endExam();
+}
+function wire() {
+  document.querySelectorAll("#exam [data-k]").forEach(el => {
+    const ev = (el.tagName === "SELECT" || el.type === "radio") ? "change" : "input";
+    el.addEventListener(ev, () => setAnswer(el.dataset.k, el.value));
+    if (el.classList.contains("code")) {
+      el.addEventListener("keydown", e => editorKey(e, el));
+      el.addEventListener("input", () => syncGutter(el));
+      el.addEventListener("scroll", () => { el.previousElementSibling.scrollTop = el.scrollTop; });
+      syncGutter(el);
+    }
+  });
+  document.querySelectorAll("[data-run]").forEach(b => b.onclick = () => runFor($(b.dataset.run)));
+  document.querySelectorAll("[data-runshow]").forEach(b => b.onclick = () => { const id = b.dataset.runshow; runCode($(id).textContent, "", $(id + "-out"), null); });
+  const gb = $("gate-btn");
+  if (gb) gb.onclick = async () => {
+    const p1 = state.items.filter(i => i.group === "P1");
+    const blanks = p1.flatMap(i => i.parts.filter(p => p.type !== "showcode" && !state.answers[`${i.id}.${p.key}`]).map(() => i.id));
+    const warn = blanks.length ? `아직 비어 있는 칸이 ${blanks.length}개 있음 (${esc([...new Set(blanks)].join(", "))}).<br><br>` : "";
+    if (!(await ask(warn + "<b>1부를 확정하면 1부 답은 더 고칠 수 없고</b>, 2부(코드 실행)가 열림. 확정할까요?", "1부 확정", "취소"))) return;
+    setAnswer("__gateAt", now()); setAnswer("__gate", true); lockGate();
+    if (state.view === "single") { const first = state.items.find(i => i.gated); if (first) showPage(first.id); }
+  };
+  $("btn-download").onclick = downloadAnswers;
+  $("btn-final").onclick = finalSubmit;
+}
+function lockGate() {
+  document.querySelectorAll("[data-group='P1'] input, [data-group='P1'] select, [data-group='P1'] textarea").forEach(el => el.disabled = true);
+  const gb = $("gate-btn"); if (gb) { gb.disabled = true; gb.textContent = "1부 확정됨"; }
+  document.querySelectorAll("[data-gated]").forEach(d => d.classList.remove("hidden"));
+  document.querySelectorAll("#exam textarea.code").forEach(syncGutter);
+  queueStrip();
+}
+
+/* ---------- 보기 방식 (전체 보기 · 한 문제씩) · 문항 번호 줄 ---------- */
+function itemStatus(it) {
+  const parts = it.parts.filter(p => p.type !== "showcode");
+  let filled = 0;
+  for (const p of parts) {
+    const v = state.answers[`${it.id}.${p.key}`];
+    if (p.type === "code") { if (v !== undefined && v.trim() !== (p.starter || "").trim()) filled++; }
+    else if (v !== undefined && String(v).trim() !== "") filled++;
+  }
+  return !parts.length || filled === 0 ? "" : filled === parts.length ? "done" : "part";
+}
+const pageOpen = id => { const it = state.items.find(i => i.id === id); return !it || !it.gated || !!state.answers.__gate || PRACTICE && state.finalDone; };
+const pageList = () => ["__notice", ...state.items.map(i => i.id), "__submit"].filter(pageOpen);
+let stripQ = 0;
+function queueStrip() { if (!stripQ) stripQ = requestAnimationFrame(() => { stripQ = 0; drawStrip(); }); }
+function drawStrip() {
+  if (!state.exam) return;
+  let html = `<button type="button" class="chip ${state.cur === "__notice" ? "cur" : ""}" data-go="__notice">안내</button>`, sec = "";
+  for (const it of state.items) {
+    if (it.sec !== sec) { html += `<span class="sep"></span>`; sec = it.sec; }
+    const open = pageOpen(it.id);
+    html += `<button type="button" class="chip ${itemStatus(it)} ${state.cur === it.id ? "cur" : ""} ${open ? "" : "lock"}" data-go="${it.id}" ${open ? "" : "disabled"} title="${esc(it.secTitle)}${open ? "" : " · 1부 확정 뒤 열림"}">${esc(it.id)}</button>`;
+  }
+  html += `<span class="sep"></span><button type="button" class="chip ${state.cur === "__submit" ? "cur" : ""} ${state.finalDone ? "done" : ""}" data-go="__submit">제출</button>`;
+  html += `<span class="legend"><i class="d"></i>답함<i class="p"></i>일부<i></i>안 함</span>`;
+  $("strip").innerHTML = html;
+  $("strip").querySelectorAll("[data-go]").forEach(b => b.onclick = () => showPage(b.dataset.go, true));
+  const L = pageList(), i = L.indexOf(state.cur);
+  $("pg-prev").disabled = i <= 0; $("pg-next").disabled = i < 0 || i >= L.length - 1;
+  const label = state.cur === "__notice" ? "안내" : state.cur === "__submit" ? "제출" : state.cur;
+  $("pg-pos").textContent = `${label} (${i + 1} / ${L.length})`;
+}
+function showPage(id, scroll) {
+  if (!pageOpen(id)) id = "__notice";
+  state.cur = id; lsSet(`${PFX}-cur`, id);
+  document.querySelectorAll("[data-page]").forEach(el => el.classList.toggle("cur", el.dataset.page === id));
+  document.querySelectorAll("#exam section.part").forEach(s => s.classList.toggle("cur", !!s.querySelector(`[data-page="${id}"]`)));
+  const el = document.querySelector(`[data-page="${id}"]`);
+  if (state.view === "single") { window.scrollTo(0, 0); document.querySelectorAll(".cur textarea.code").forEach(syncGutter); }
+  else if (scroll && el) el.scrollIntoView({ block: "start" });
+  queueStrip();
+}
+function step(d) { const L = pageList(), i = L.indexOf(state.cur); if (L[i + d]) showPage(L[i + d]); }
+function setView(v) {
+  state.view = v === "single" ? "single" : "all"; lsSet(`${PFX}-view`, state.view);
+  document.body.classList.toggle("single", state.view === "single");
+  $("v-all").classList.toggle("on", state.view === "all"); $("v-single").classList.toggle("on", state.view === "single");
+  showPage(state.cur, true);
+}
+function initView() {
+  $("v-all").onclick = () => setView("all"); $("v-single").onclick = () => setView("single");
+  $("pg-prev").onclick = () => step(-1); $("pg-next").onclick = () => step(1);
+  $("fs-dn").onclick = () => setFs((state.fs || 14) - 1); $("fs-up").onclick = () => setFs((state.fs || 14) + 1);
+  setFs(Number(lsGet(`${PFX}-fs`)) || 14);
+  state.cur = lsGet(`${PFX}-cur`) || "__notice";
+  setView(lsGet(`${PFX}-view`) || "all");
+}
+
+/* ---------- 체험판: 제출 뒤 칸마다 맞음 · 다름만 표시 (정답 · 해설은 보여 주지 않음) ---------- */
+const normOut = s => (s || "").replace(/\r/g, "").split("\n").map(l => l.replace(/\s+$/, "")).join("\n").trim();
+async function sameAsKey(code, p) {          // 정답 코드와 같은 덧붙임 코드로 돌려 출력이 같은지
+  for (const c of p.cases) {
+    const mine = await runPython((code || "") + "\n" + (c.append || ""), c.stdin || "", true);
+    const key = await runPython(p.keyCode + "\n" + (c.append || ""), c.stdin || "", true);
+    if (mine.err || normOut(mine.out) !== normOut(key.out)) return false;
+  }
+  return true;
+}
+async function showFeedback() {
+  document.querySelectorAll(".feedback").forEach(d => d.remove());
+  document.querySelectorAll("[data-gated]").forEach(d => d.classList.remove("hidden"));
+  queueStrip();
+  let got = 0, total = 0;
+  for (const it of state.items) {
+    const lines = [];
+    for (const p of it.parts) {
+      const v = state.answers[`${it.id}.${p.key}`];
+      const mark = ok => { total++; if (ok) got++; return ok ? "<span class='fb-ok'>맞음</span>" : "<span class='fb-no'>다름</span>"; };
+      if (p.answer !== undefined) lines.push(`${mark(v === p.answer)} ${p.label ? p.label.replace(/<[^>]+>/g, "") : "답"}`);
+      if (p.answerText !== undefined) lines.push(`${mark(normOut(v) === normOut(p.answerText))} ${p.label ? p.label.replace(/<[^>]+>/g, "") : "답"}`);
+      if (p.answerNum !== undefined) {
+        const n = parseFloat(String(v || "").replace(/[^\d.]/g, ""));
+        lines.push(`${mark(Math.abs(n - p.answerNum) < 0.5)} ${esc(p.label || "값")}`);
+      }
+      if (p.keyCode) {
+        const ok = !!v && await sameAsKey(v, p);
+        lines.push(`${mark(ok)} 시험용 입력 ${p.cases.length}가지로 실행한 결과${ok ? "가 모두 맞음" : (v ? "가 정답과 다름 (또는 오류)" : " · 답안 없음")}`);
+      }
+    }
+    if (!lines.length) continue;
+    const box = document.querySelector(`[data-item="${it.id}"]`);
+    if (box) box.insertAdjacentHTML("beforeend", `<div class="feedback">${lines.map(l => `<div>${l}</div>`).join("")}</div>`);
+  }
+  $("receipt").insertAdjacentHTML("afterbegin", `<div>체험판: <b>${got} / ${total}</b>칸 맞음. 칸마다 맞음 · 다름만 표시함. ` +
+    "실제 시험에서는 제출해도 아무것도 표시되지 않고, 서술형은 교수가 채점함.</div>");
+}
+
+initLogin();
+</script>
+</body>
+</html>
