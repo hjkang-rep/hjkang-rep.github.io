@@ -1,4 +1,8 @@
 ::: {.pub}
+[Kim, J., [Kang, H.]{.me}, & Lee, J. (Oct 2026). From Regulation to Innovation: Mining High-Impact AI Patents Grounded in the EU AI Act and Korea's AI Basic Act]{.apa} [TRUST '26, ACM International Workshop on Trustworthy and Responsible Autonomous Systems (Proceedings, pp. 17–24), Munich, Germany.]{.venue}
+:::
+
+::: {.pub}
 [[Kang, H.]{.me}, & Lee, S.-G. (Jun 2026). MATE: Multi-Actor Graph Neural Networks for Corporate Delisting Prediction]{.apa} [KMIS, Gyeongju, Korea.]{.venue}
 :::
 

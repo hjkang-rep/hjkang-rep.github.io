@@ -85,11 +85,34 @@ appointments:
       - Economic research and analysis of blockchain technology
 
 # ------------------------------------------------------------
+# 게재확정(in press) 논문. Notion Accept 논문 DB로 옮긴 뒤 아직 권호가 없는 논문.
+# 권호·DOI가 나오면 이 항목을 지우고 아래 publications 맨 위로 옮기세요.
+# ------------------------------------------------------------
+forthcoming:
+  - title: "The Paradox of Regulation: Why Does Housing Supply Fail to Respond to Price Signals?"
+    authors: [Hokyun Byun, Sang-Gun Lee, Hojun Kang]
+    venue: Journal of Real Estate Research
+    index: SSCI
+    role: corresponding
+
+# ------------------------------------------------------------
 # 게재 논문. 새 논문이 억셉되면 여기 맨 위에 추가하세요.
 #   authors: 이름을 그대로 쓰고, 본인은 "Hojun Kang" 으로 적으면 자동 강조됩니다.
 #   role:    first / corresponding / coauthor
 # ------------------------------------------------------------
 publications:
+  - title: "Guilt by Association: Interpretable Multiplex Graph Learning of Accounting-Risk Contagion"
+    authors: [Hojun Kang, Sang-Gun Lee]
+    venue: Information Sciences
+    publisher: Elsevier
+    index: SCIE Q1
+    year: 2027
+    pages: "762, 124208"
+    role: first
+    doi: 10.1016/j.ins.2026.124208
+    summary: >-
+      Parity with the strongest tabular learner, with the graph's value residing in
+      relation-level explanation of accounting-risk contagion.
   - title: "Frozen Markets, Falling Prices: Illiquidity and Bounded Price Discovery in U.S. Neighborhood Housing Markets"
     authors: [Hojun Kang, Sang-Gun Lee]
     venue: The Journal of Real Estate Finance and Economics
@@ -119,69 +142,83 @@ publications:
     publisher: Elsevier
     index: SCIE Q1
     year: 2026
+    pages: "210, 114753"
     role: first
+    doi: 10.1016/j.dss.2026.114753
     summary: >-
       A transaction-learning framework for efficient pattern embedding that improves
       large-scale Ethereum phishing detection under limited-label settings.
-  - title: "Quieter Markets, Unchanged Risks: Frequency Connectedness and the Spot Bitcoin ETF"
+  - title: "Institutionalization Without Integration: Bitcoin After the Spot ETF"
     authors: [Hojun Kang, Sang-Gun Lee]
     venue: International Review of Economics and Finance
     publisher: Elsevier
     index: SSCI Q1
     year: 2026
+    pages: "110, 105531"
     role: first
+    doi: 10.1016/j.iref.2026.105531
     summary: >-
       Frequency-decomposed connectedness shows weaker short-term transmission after the spot
       Bitcoin ETF, but largely unchanged medium- and long-horizon risk spillovers.
-  - title: "Declining Connectedness, Rising Influence: TVP-VAR Evidence from the Magnificent Seven"
+  - title: "How the Magnificent Seven Reshape Market Spillovers: TVP-VAR Evidence"
     authors: [Hojun Kang, Minjeong Kwon, Sang-Gun Lee]
     venue: Finance Research Letters
     publisher: Elsevier
     index: SSCI Q1
     year: 2026
+    pages: "101, 109942"
     role: first
+    doi: 10.1016/j.frl.2026.109942
     summary: >-
       A connectedness paradox around the launch of ChatGPT: lower overall connectedness
       alongside stronger influence on benchmark assets.
+  - title: "Unleashing STO Potential: An AHP-Based Analysis of Critical Success Factors"
+    authors: [Sunhee Lee, Sang-Gun Lee, Hojun Kang]
+    venue: "Blockchain: Research and Applications"
+    publisher: ""
+    index: SCIE Q1
+    year: 2026
+    pages: "7(2), 100333"
+    role: corresponding
+    doi: 10.1016/j.bcra.2025.100333
+    summary: >-
+      AHP-based structuring of STO platform success factors from an investor perspective.
+  - title: "The Role of Household Savings in Fiscal and Monetary Policy: A DSGE Analysis of China"
+    authors: [Kyuyeon Hwang, Hojun Kang, Junhee Han]
+    venue: Journal of Asian and African Studies
+    publisher: ""
+    index: SSCI Q2
+    year: 2026
+    pages: "61(3), 2038–2065"
+    role: coauthor
+    doi: 10.1177/00219096251336367
+    summary: >-
+      DSGE evidence that shifts in the saving rate act as an important constraint on the
+      effectiveness and stability of policy.
   - title: "FORTRESS: Fraud-oriented Transformer with Random Traversal for Ethereum Security Surveillance"
     authors: [Hojun Kang, Kyuyeon Hwang]
     venue: Information Sciences
     publisher: Elsevier
     index: SCIE Q1
     year: 2025
+    pages: "720, 122534"
     role: first
+    doi: 10.1016/j.ins.2025.122534
     summary: >-
       Random walks combined with a structural Transformer detect fraudulent Ethereum
       accounts with AUC up to 0.9573.
-  - title: "Unleashing STO Potential: An AHP-Based Analysis of Critical Success Factors"
-    authors: [Sunhee Lee, Sang-Gun Lee, Hojun Kang]
-    venue: "Blockchain: Research and Applications"
-    publisher: ""
-    index: SCIE Q1
-    year: 2025
-    role: corresponding
-    summary: >-
-      AHP-based structuring of STO platform success factors from an investor perspective.
   - title: "Market Phases and Price Discovery in NFTs: A Deep Learning Approach to Digital Asset Valuation"
     authors: [Hojun Kang, Sang-Gun Lee]
     venue: Journal of Theoretical and Applied Electronic Commerce Research
     publisher: ""
     index: SSCI Q1
     year: 2025
+    pages: "20(2), 64"
     role: first
+    doi: 10.3390/jtaer20020064
     summary: >-
       The CARD model, using channel-wise attention and relative distance, reduces error
       versus LSTM and Transformer baselines and identifies regime-dependent drivers.
-  - title: "The Role of Household Savings in Fiscal and Monetary Policy: A DSGE Analysis of China"
-    authors: [Kyuyeon Hwang, Hojun Kang]
-    venue: Asian and African Studies
-    publisher: ""
-    index: SSCI Q2
-    year: 2025
-    role: corresponding
-    summary: >-
-      DSGE evidence that shifts in the saving rate act as an important constraint on the
-      effectiveness and stability of policy.
   - title: "Graph-based Phishing Detection on Ethereum: A Comparative Analysis of GNN and Traditional Embedding Methods"
     authors: [Liu Hui, Sang-Gun Lee, Hojun Kang]
     venue: Journal of Information Systems
@@ -196,7 +233,9 @@ publications:
     publisher: ""
     index: SCIE Q2
     year: 2022
+    pages: "62(3), 622–631"
     role: first
+    doi: 10.1080/08874417.2021.1872046
     summary: >-
       Identifies limits to information incorporation and crypto-specific market inefficiencies
       under the efficient-market hypothesis.
@@ -226,6 +265,12 @@ books:
     year: 2021
 
 conferences:
+  - title: "From Regulation to Innovation: Mining High-Impact AI Patents Grounded in the EU AI Act and Korea's AI Basic Act"
+    authors: [Jimin Kim, Hojun Kang, Jaehyun Lee]
+    venue: "TRUST '26, ACM International Workshop on Trustworthy and Responsible Autonomous Systems (Proceedings, pp. 17–24)"
+    location: Munich, Germany
+    date: Oct 2026
+    doi: 10.1145/3843782.3844652
   - title: "MATE: Multi-Actor Graph Neural Networks for Corporate Delisting Prediction"
     authors: [Hojun Kang, Sang-Gun Lee]
     venue: KMIS

@@ -82,7 +82,7 @@ University.
 :::
 
 ::: {.pub}
-[[Kang, H.]{.me}, & Lee, S.-G. (2026). Frozen Markets, Falling Prices: Illiquidity and Bounded Price Discovery in U.S. Neighborhood Housing Markets.]{.apa} *The Journal of Real Estate Finance and Economics*.
+[[Kang, H.]{.me}, & Lee, S.-G. (2027). Guilt by Association: Interpretable Multiplex Graph Learning of Accounting-Risk Contagion.]{.apa} *Information Sciences*.
 :::
 
 [See all publications and working papers →](research.qmd)

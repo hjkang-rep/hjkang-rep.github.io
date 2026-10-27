@@ -180,6 +180,13 @@ def working_papers(rows: list[dict], cfg: dict) -> dict[str, list[dict]]:
             entry.update(journal="", status="", cls="b-under")
             buckets["in_progress"].append(entry)
 
+    # Accept 논문 DB로 이관돼 Notion 목록에서 빠진 게재확정 논문 (profile.yml 의 forthcoming)
+    for i, f in enumerate(cfg.get("forthcoming") or []):
+        buckets["forthcoming"].append(dict(
+            project="", title=clean(f["title"]), journal=clean(f.get("venue", "")),
+            authors=list(f["authors"]), year="", summary=clean(f.get("summary", "")),
+            order=10**6 - i, round=0, status="Forthcoming", cls="b-accept"))
+
     featured = cfg.get("featured_under_review") or []
     if featured:
         keep = {clean(f) for f in featured}
