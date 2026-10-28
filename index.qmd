@@ -94,19 +94,4 @@ University.
 [Sep 2026]{.when}
 Joined Dongduk Women's University as Assistant Professor.
 :::
-
-::: {.news-item}
-[Aug 2026]{.when}
-*Freezing Digital Dollars* under review at the *Journal of Finance*.
-:::
-
-::: {.news-item}
-[Jul 2026]{.when}
-*The Market for Governance Votes* under review at the *Review of Financial Studies*.
-:::
-
-::: {.news-item}
-[Jun 2026]{.when}
-Presented *MATE: Multi-Actor Graph Neural Networks for Corporate Delisting Prediction* at KMIS, Gyeongju.
-:::
 :::
