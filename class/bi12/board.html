@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>응답 결과 · 빅데이터와 비즈니스인텔리전스</title>
+<style>
+  :root {
+    --main: #6F263D; --main-soft: #f6eef1; --ink: #1c2026; --gray: #5b6570; --line: #d9dce0;
+    --box: #f4f4f3; --bg: #ffffff; --ok: #1f7a4a; --ok-soft: #e6f3ea; --dim: #c5cad0; --err: #a32020; --warn: #8a5a00;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font-family: "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+         font-size: 20px; line-height: 1.45; }
+  button, input { font: inherit; color: inherit; }
+  button { border: 2px solid var(--main); background: #fff; color: var(--main); border-radius: 8px; padding: 6px 16px; cursor: pointer; font-weight: 700; }
+  button.solid { background: var(--main); color: #fff; }
+  button.on { background: var(--main); color: #fff; }
+  button.okb { border-color: var(--ok); color: var(--ok); }
+  button.okb.on { background: var(--ok); color: #fff; }
+  button:disabled { opacity: .45; cursor: default; }
+  button.link { border: none; background: none; color: var(--gray); font-weight: 400; text-decoration: underline; padding: 0 6px; font-size: 15px; }
+
+  header.top { display: flex; align-items: center; gap: 24px; padding: 10px 28px; background: var(--main); color: #fff; flex-wrap: wrap; }
+  header.top .title { font-weight: 700; font-size: 22px; }
+  header.top .url { font-size: 22px; }
+  header.top .url b { font-size: 26px; letter-spacing: .3px; }
+  header.top .conn { margin-left: auto; font-size: 15px; opacity: .95; }
+  header.top .conn.bad { color: #ffd166; font-weight: 700; opacity: 1; }
+
+  .row { display: flex; align-items: center; gap: 12px; padding: 12px 28px 0; flex-wrap: wrap; }
+  .qsel button { min-width: 150px; text-align: left; padding: 6px 14px; border-color: var(--line); color: var(--ink); font-weight: 400; }
+  .qsel button .n { font-weight: 700; color: var(--main); }
+  .qsel button .st { display: block; font-size: 14px; color: var(--gray); }
+  .qsel button .st.open { color: var(--ok); font-weight: 700; }
+  .qsel button.sel { border-color: var(--main); background: var(--main-soft); }
+  .controls { margin-left: auto; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .controls .sep { width: 1px; height: 32px; background: var(--line); margin: 0 6px; }
+  .controls label { font-size: 16px; color: var(--gray); }
+  .controls input { width: 64px; padding: 3px 6px; border: 1px solid var(--line); border-radius: 6px; }
+
+  main { padding: 10px 28px 24px; }
+  .qline { display: flex; align-items: flex-end; gap: 24px; border-bottom: 3px solid var(--main); padding-bottom: 8px; margin-bottom: 18px; }
+  .qline .qtitle { flex: 1; font-size: 32px; font-weight: 700; line-height: 1.3; }
+  .qline .qtitle .tag { display: inline-block; font-size: 18px; vertical-align: middle; padding: 2px 10px; border-radius: 12px; margin-left: 10px; font-weight: 700; }
+  .tag.open { background: var(--ok-soft); color: var(--ok); }
+  .tag.closed { background: var(--box); color: var(--gray); }
+  .qline .count { font-size: 46px; font-weight: 700; color: var(--main); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .qline .count small { font-size: 24px; color: var(--gray); font-weight: 400; }
+
+  .hidden-note { background: var(--box); border-radius: 12px; padding: 50px 20px; text-align: center; font-size: 30px; color: var(--gray); }
+  .hidden-note div { font-size: 20px; margin-top: 8px; }
+
+  .bars { display: grid; grid-template-columns: minmax(220px, auto) 1fr 210px; gap: 14px 18px; align-items: center; }
+  .bars .lab { font-size: 28px; font-weight: 700; white-space: nowrap; }
+  .bars .lab small { display: block; font-size: 18px; font-weight: 400; color: var(--gray); white-space: normal; }
+  .bars .lab .badge { font-size: 17px; background: var(--ok); color: #fff; border-radius: 10px; padding: 1px 9px; margin-left: 8px; vertical-align: middle; }
+  .bars .track { height: 52px; background: var(--box); border-radius: 8px; overflow: hidden; }
+  .bars .fill { height: 100%; background: var(--main); border-radius: 8px; transition: width .4s; min-width: 0; }
+  .bars .fill.ok { background: var(--ok); }
+  .bars .fill.dim { background: var(--dim); }
+  .bars .num { font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .bars .num small { font-size: 20px; color: var(--gray); font-weight: 400; margin-left: 6px; }
+  .bars.compact { grid-template-columns: minmax(170px, auto) 1fr 150px; gap: 8px 14px; }
+  .bars.compact .lab { font-size: 22px; }
+  .bars.compact .track { height: 34px; }
+  .bars.compact .num { font-size: 22px; }
+  .bars.compact .num small { font-size: 16px; }
+
+  .others { margin-top: 18px; font-size: 22px; color: var(--ink); }
+  .others b { color: var(--gray); font-weight: 400; margin-right: 10px; }
+  .others span { display: inline-block; background: var(--box); border-radius: 8px; padding: 2px 12px; margin: 4px 6px 4px 0; font-variant-numeric: tabular-nums; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+  .two h3 { margin: 0 0 12px; font-size: 24px; color: var(--main); }
+  .two h3 small { font-weight: 400; color: var(--gray); font-size: 16px; margin-left: 8px; }
+  .sent-wrap { margin-top: 22px; }
+  .sent-wrap .btns { display: flex; gap: 10px; align-items: center; }
+  .sents { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 14px; }
+  .sent { border: 2px solid var(--line); border-radius: 12px; padding: 14px 18px; font-size: 22px; line-height: 1.5; background: #fff; overflow-wrap: anywhere; }
+  .sent .t { font-size: 17px; font-weight: 700; color: var(--main); margin-bottom: 6px; }
+  .empty { color: var(--gray); font-size: 22px; padding: 10px 0; }
+  .foot { padding: 0 28px 16px; font-size: 14px; color: var(--gray); }
+
+  .overlay { position: fixed; inset: 0; background: rgba(20, 22, 26, .55); display: flex; align-items: center; justify-content: center; z-index: 50; }
+  .dlg { background: #fff; border-radius: 12px; padding: 28px 32px; width: min(520px, 92vw); }
+  .dlg h2 { margin: 0 0 6px; color: var(--main); font-size: 24px; }
+  .dlg form { display: flex; gap: 10px; margin-top: 14px; }
+  .dlg input { flex: 1; font-size: 20px; padding: 6px 10px; border: 1px solid #b9bec5; border-radius: 6px; }
+  .dlg .err { color: var(--err); min-height: 1.4em; margin-top: 8px; font-size: 16px; white-space: pre-line; }
+  .dlg .hint { color: var(--gray); font-size: 15px; }
+  .banner { background: #fdecec; color: var(--err); padding: 10px 28px; font-size: 18px; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="title">빅데이터와 비즈니스인텔리전스 · 수업 응답</div>
+  <div class="url">학생 주소 <b id="studentUrl"></b></div>
+  <div class="conn" id="conn"></div>
+</header>
+<div class="banner" id="banner" hidden></div>
+<div class="row">
+  <div class="qsel" id="qsel"></div>
+  <div class="controls">
+    <button id="openBtn" class="solid" type="button">문항 열기</button>
+    <button id="closeBtn" type="button">닫기</button>
+    <span class="sep"></span>
+    <button id="showBtn" type="button">결과 보이기</button>
+    <button id="ansBtn" class="okb" type="button">정답 표시</button>
+    <span class="sep"></span>
+    <label>예상 인원 <input id="expected" type="number" min="1" max="999"></label>
+  </div>
+</div>
+<main>
+  <div class="qline"><div class="qtitle" id="qtitle"></div><div class="count" id="count"></div></div>
+  <div id="chart"></div>
+</main>
+<div class="foot">단축키: 1~4 문항 고르기 · R 결과 보이기/가리기 · A 정답 표시 · 결과는 4초마다 갱신 · 학번과 이름은 이 화면에 오지 않습니다 <button class="link" id="forgetKey" type="button">비밀번호 다시 입력</button></div>
+
+<div class="overlay" id="keyDlg" hidden>
+  <div class="dlg">
+    <h2>교수 화면 비밀번호</h2>
+    <div class="hint">Apps Script(Code.gs)에 정한 비밀번호. 이 컴퓨터의 브라우저에 기억됩니다.</div>
+    <form id="keyForm" autocomplete="off">
+      <input type="password" id="keyInput" aria-label="비밀번호">
+      <button class="solid" type="submit">확인</button>
+    </form>
+    <div class="err" id="keyErr"></div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="questions.js"></script>
+<script>
+(function () {
+  "use strict";
+  var EP = String(window.CLASS_ENDPOINT || "").trim();
+  var QS = window.QUESTIONS || [];
+  // 정답 · 업종별 정답값은 공개 파일에 두지 않고, 비밀번호가 맞은 뒤 서버에서 한 번 받음 (action "answers")
+  var KEY = {}, ANS = {};
+  var answersState = "none";   // none · loading · ok · failed
+  var LETTERS = ["가", "나", "다", "라", "마", "바"];
+  var POLL_MS = 4000;
+  var $ = function (id) { return document.getElementById(id); };
+  var B = { key: "", q: 1, show: {}, reveal: {}, data: {}, open: [], current: 0, expected: 40,
+            timer: null, inflight: false, lastOk: 0, err: "", sents: null, sentsOn: false };
+
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function lsGet(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } }
+  function lsSet(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+  function hms(t) { var d = new Date(t); return [d.getHours(), d.getMinutes(), d.getSeconds()].map(function (x) { return String(x).padStart(2, "0"); }).join(":"); }
+  function qdef(q) { for (var i = 0; i < QS.length; i++) if (QS[i].q === q) return QS[i]; return null; }
+  function isOpen(q) { return B.open.indexOf(q) >= 0; }
+  function fmt(v) { var s = (Math.round(v * 100) / 100).toLocaleString("ko-KR", { maximumFractionDigits: 2 }); return s.replace(/^-/, "−"); }
+  function pct(n, tot) { return tot ? Math.round(100 * n / tot) : 0; }
+
+  async function post(payload) {
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, 20000);
+    try {
+      var r = await fetch(EP, { method: "POST", body: JSON.stringify(payload), signal: ctl.signal });
+      return await r.json();
+    } finally { clearTimeout(timer); }
+  }
+
+  function applyState(j) {
+    if (Array.isArray(j.open)) B.open = j.open.map(Number);
+    if (j.current !== undefined) B.current = Number(j.current) || 0;
+  }
+
+  /* ---------- 4초마다 집계 받기 ---------- */
+  async function poll() {
+    clearTimeout(B.timer); B.timer = null;
+    if (!EP || !B.key) return;
+    if (B.inflight) { B.timer = setTimeout(poll, POLL_MS); return; }
+    B.inflight = true;
+    var q = B.q;
+    try {
+      var j = await post({ action: "results", q: q, key: B.key });
+      if (j.ok) {
+        B.data[q] = j; applyState(j); B.lastOk = Date.now(); B.err = "";
+        if (q === B.q) render(); else renderSel();
+        if (answersState === "none") loadAnswers();     // 비밀번호가 맞은 뒤 한 번
+      } else if (j.msg === "bad key" || j.msg === "key not set") {
+        B.inflight = false; askKey(j.msg); return;
+      } else { B.err = "서버 거절: " + j.msg; }
+    } catch (e) { B.err = "서버 응답 없음 (다시 시도 중)"; }
+    B.inflight = false;
+    renderConn();
+    B.timer = setTimeout(poll, q === B.q ? POLL_MS : 0);
+  }
+
+  // 정답 자료 받기. 실패하면 위에 안내를 띄우고 20초 뒤 다시 (최대 3번)
+  var answersTries = 0;
+  async function loadAnswers() {
+    answersState = "loading";
+    answersTries++;
+    try {
+      var j = await post({ action: "answers", key: B.key });
+      if (j.ok && j.key && j.answers) { KEY = j.key; ANS = j.answers; answersState = "ok"; }
+      else answersState = "failed";
+    } catch (e) { answersState = "failed"; }
+    if (answersState === "failed" && answersTries < 3) setTimeout(function () { if (answersState === "failed") answersState = "none"; }, 20000);
+    renderBanner(); render();
+  }
+
+  function renderBanner() {
+    var b = $("banner");
+    if (!EP) { b.hidden = false; b.textContent = "서버 주소가 없습니다. config.js 에 Apps Script 웹 앱 주소를 넣으세요."; return; }
+    if (answersState === "failed") { b.hidden = false; b.textContent = "정답 자료를 서버에서 받지 못했습니다. 정답 표시와 업종별 판정이 꺼집니다."; return; }
+    b.hidden = true;
+  }
+
+  function askKey(why) {
+    clearTimeout(B.timer); B.timer = null;
+    $("keyDlg").hidden = false;
+    $("keyErr").textContent = why === "bad key" ? "비밀번호가 맞지 않습니다." :
+      why === "key not set" ? "서버의 비밀번호가 아직 정해지지 않았습니다.\nCode.gs 의 BOARD_KEY 줄(또는 스크립트 속성 BOARD_KEY)을 바꾼 뒤 다시 배포하세요." : "";
+    $("keyInput").value = "";
+    $("keyInput").focus();
+  }
+
+  async function setOpen(open) {
+    if (!EP || !B.key) return;
+    $("openBtn").disabled = $("closeBtn").disabled = true;
+    try {
+      var j = await post({ action: open ? "open" : "close", q: B.q, key: B.key });
+      if (j.ok) { applyState(j); B.err = ""; }
+      else if (j.msg === "bad key" || j.msg === "key not set") askKey(j.msg);
+      else B.err = "열기 · 닫기 실패: " + j.msg;
+    } catch (e) { B.err = "열기 · 닫기 실패: 서버 응답 없음"; }
+    render(); renderConn();
+  }
+
+  /* ---------- 화면 ---------- */
+  function renderConn() {
+    var c = $("conn");
+    if (!EP) { c.textContent = ""; return; }
+    if (B.err) { c.className = "conn bad"; c.textContent = B.err; return; }
+    c.className = "conn";
+    c.textContent = B.lastOk ? "갱신 " + hms(B.lastOk) : "연결 중…";
+  }
+
+  function renderSel() {
+    var h = "";
+    QS.forEach(function (d) {
+      var st = isOpen(d.q) ? '<span class="st open">● 열림</span>' : '<span class="st">닫힘</span>';
+      h += '<button type="button" data-q="' + d.q + '" class="' + (d.q === B.q ? "sel" : "") + '"><span class="n">' + d.q + "</span> " + esc(d.tab) + st + "</button>";
+    });
+    $("qsel").innerHTML = h;
+    $("openBtn").disabled = !EP || isOpen(B.q);
+    $("closeBtn").disabled = !EP || !isOpen(B.q);
+    var sb = $("showBtn"); sb.textContent = B.show[B.q] ? "결과 가리기" : "결과 보이기"; sb.classList.toggle("on", !!B.show[B.q]);
+    var ab = $("ansBtn"); ab.classList.toggle("on", !!B.reveal[B.q]); ab.textContent = B.reveal[B.q] ? "정답 숨기기" : "정답 표시";
+    ab.disabled = B.q === 4 || answersState !== "ok";
+  }
+
+  function render() {
+    renderSel();
+    var d = qdef(B.q), j = B.data[B.q];
+    var n = j ? j.n : 0;
+    $("qtitle").innerHTML = esc(d.q + ". " + d.title) + '<span class="tag ' + (isOpen(d.q) ? "open" : "closed") + '">' + (isOpen(d.q) ? "받는 중" : "닫힘") + "</span>";
+    $("count").innerHTML = "응답 " + (j ? n : "…") + " <small>/ " + B.expected + "</small>";
+    var el = $("chart");
+    if (!B.show[B.q]) {
+      el.innerHTML = '<div class="hidden-note">결과를 가린 상태입니다<div>모두 제출한 뒤 결과 보이기 (R)</div></div>' + (d.type === "form" ? sentHtml() : "");
+      bindSent(); return;
+    }
+    if (!j) { el.innerHTML = '<div class="empty">불러오는 중…</div>'; return; }
+    if (d.type === "choice") el.innerHTML = choiceHtml(d, j);
+    else if (d.type === "number") el.innerHTML = numberHtml(d, j);
+    else el.innerHTML = formHtml(d, j);
+    bindSent();
+  }
+
+  function barRow(label, sub, n, tot, max, cls, badge) {
+    var w = max ? Math.round(1000 * n / max) / 10 : 0;
+    return '<div class="lab">' + label + (badge ? '<span class="badge">' + badge + "</span>" : "") + (sub ? "<small>" + sub + "</small>" : "") + "</div>" +
+      '<div class="track"><div class="fill ' + (cls || "") + '" style="width:' + w + '%"></div></div>' +
+      '<div class="num">' + n + "명<small>" + pct(n, tot) + "%</small></div>";
+  }
+
+  function choiceHtml(d, j) {
+    var k = KEY[d.q] || {}, rev = !!B.reveal[d.q], counts = j.counts || {};
+    var max = 0; d.options.forEach(function (o) { max = Math.max(max, counts[o.id] || 0); });
+    var h = '<div class="bars">';
+    d.options.forEach(function (o, i) {
+      var ok = o.id === k.correct, c = counts[o.id] || 0;
+      var label = o.sql ? "(" + LETTERS[i] + ")" : esc(o.label) + "행";
+      var sub = o.sql ? esc(o.short) + (rev && k.results ? " · 결과 " + esc(k.results[o.id]) : "") : "";
+      h += barRow(label, sub, c, j.n, max, rev ? (ok ? "ok" : "dim") : "", rev && ok ? "정답" : "");
+    });
+    return h + "</div>";
+  }
+
+  function numberHtml(d, j) {
+    if (answersState !== "ok") {   // 정답 자료가 없으면 묶지 않고 많이 나온 값만
+      var vs = (j.values || []).slice(0, 8), vmax = vs.length ? vs[0][1] : 0;
+      return '<div class="bars">' + vs.map(function (p) { return barRow(fmt(p[0]), "", p[1], j.n, vmax, "", ""); }).join("") + "</div>";
+    }
+    var k = KEY[d.q] || { bins: [], tol: 0.15 }, rev = !!B.reveal[d.q];
+    var bins = (k.bins || []).map(function (b) { return { b: b, n: 0 }; });
+    var other = 0, others = [];
+    (j.values || []).forEach(function (p) {
+      var v = Number(p[0]), c = Number(p[1]), hit = null;
+      bins.forEach(function (x) { if (!hit && Math.abs(v - x.b.v) <= k.tol + 1e-9) hit = x; });
+      if (hit) hit.n += c; else { other += c; others.push(p); }
+    });
+    var max = other; bins.forEach(function (x) { max = Math.max(max, x.n); });
+    var h = '<div class="bars">';
+    bins.forEach(function (x) {
+      h += barRow(fmt(x.b.v), rev && !x.b.correct ? esc(x.b.label) : "", x.n, j.n, max, rev ? (x.b.correct ? "ok" : "dim") : "", rev && x.b.correct ? "정답" : "");
+    });
+    h += barRow("그 밖", "", other, j.n, max, rev ? "dim" : "", "");
+    h += "</div>";
+    others.sort(function (a, b) { return b[1] - a[1] || a[0] - b[0]; });
+    if (others.length) {
+      h += '<div class="others"><b>그 밖에 나온 값</b>' + others.slice(0, 8).map(function (p) { return "<span>" + fmt(p[0]) + " (" + p[1] + "명)</span>"; }).join("") + "</div>";
+    }
+    return h;
+  }
+
+  function near(a, b, tol) { return typeof a === "number" && typeof b === "number" && Math.abs(a - b) <= tol + 1e-9; }
+
+  function formHtml(d, j) {
+    var k = KEY[4] || { tolSales: 0.15, tolGrowth: 0.15, tolShare: 0.15 };
+    var items = j.items || [], tot = items.length;
+    var m = { s: 0, g: 0, a: 0, p: 0, all: 0 };
+    items.forEach(function (it) {
+      var a = ANS[it[0]];
+      if (!a) return;
+      var s = near(it[1], a.sales, k.tolSales), g = near(it[2], a.growth, k.tolGrowth), ar = it[3] === a.topType, p = near(it[4], a.topShare, k.tolShare);
+      m.s += s; m.g += g; m.a += ar; m.p += p; m.all += (s && g && ar && p);
+    });
+    var types = Object.keys(j.types || {}).map(function (t) { return [t, j.types[t]]; }).sort(function (a, b) { return b[1] - a[1] || (a[0] < b[0] ? -1 : 1); });
+    var tmax = types.length ? types[0][1] : 0;
+    var h = '<div class="two"><div><h3>많이 고른 업종<small>업종 ' + types.length + "개</small></h3>";
+    if (!types.length) h += '<div class="empty">아직 제출이 없습니다</div>';
+    else {
+      h += '<div class="bars compact">';
+      types.slice(0, 8).forEach(function (t) { h += barRow(esc(t[0]), "", t[1], tot, tmax, "", ""); });
+      h += "</div>";
+    }
+    h += '</div><div><h3>업종별 정답값과 맞는 제출<small>허용 ±' + k.tolSales + "</small></h3>";
+    if (answersState !== "ok") return h + '<div class="empty">정답 자료를 받지 못해 판정할 수 없습니다</div></div></div>' + sentHtml();
+    h += '<div class="bars compact">';
+    [["매출 (억 원)", m.s], ["증감률 (%)", m.g], ["가장 큰 상권 구분", m.a], ["그 비중 (%)", m.p]].forEach(function (r) {
+      h += barRow(r[0], "", r[1], tot, tot, "", "");
+    });
+    h += barRow("네 값 모두", "", m.all, tot, tot, "ok", "");
+    h += "</div></div></div>";
+    return h + sentHtml();
+  }
+
+  function sentHtml() {
+    var h = '<div class="sent-wrap"><div class="btns"><button type="button" id="sentBtn">' + (B.sentsOn ? "문장 닫기" : "문장 보기") + "</button>";
+    if (B.sentsOn) h += '<button type="button" id="sentMore">다른 문장</button>';
+    h += "</div>";
+    if (B.sentsOn) {
+      if (!B.sents || !B.sents.length) h += '<div class="empty">아직 제출된 문장이 없습니다</div>';
+      else h += '<div class="sents">' + B.sents.map(function (s) { return '<div class="sent"><div class="t">' + esc(s[0]) + "</div>" + esc(s[1]) + "</div>"; }).join("") + "</div>";
+    }
+    return h + "</div>";
+  }
+
+  function pickSents() {
+    var j = B.data[4];
+    var pool = ((j && j.items) || []).filter(function (it) { return it[5] && String(it[5]).trim(); }).map(function (it) { return [it[0], it[5]]; });
+    var out = [];
+    while (pool.length && out.length < 3) out.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+    B.sents = out;
+  }
+
+  function bindSent() {
+    var b = $("sentBtn");
+    if (b) b.addEventListener("click", function () { B.sentsOn = !B.sentsOn; if (B.sentsOn) pickSents(); render(); });
+    var m = $("sentMore");
+    if (m) m.addEventListener("click", function () { pickSents(); render(); });
+  }
+
+  function selectQ(q) {
+    if (!qdef(q) || q === B.q) return;
+    B.q = q; render();
+    if (!B.inflight) poll();
+  }
+
+  /* ---------- 시작 ---------- */
+  $("studentUrl").textContent = window.STUDENT_URL || "";
+  B.expected = Number(lsGet("bi12-expected", "40")) || 40;
+  $("expected").value = B.expected;
+  $("expected").addEventListener("input", function () {
+    var v = Math.round(Number(this.value));
+    if (v > 0) { B.expected = v; lsSet("bi12-expected", String(v)); render(); }
+  });
+  $("qsel").addEventListener("click", function (e) { var b = e.target.closest("button[data-q]"); if (b) selectQ(Number(b.getAttribute("data-q"))); });
+  $("openBtn").addEventListener("click", function () { setOpen(true); });
+  $("closeBtn").addEventListener("click", function () { setOpen(false); });
+  $("showBtn").addEventListener("click", function () { B.show[B.q] = !B.show[B.q]; render(); });
+  $("ansBtn").addEventListener("click", function () { B.reveal[B.q] = !B.reveal[B.q]; render(); });
+  $("forgetKey").addEventListener("click", function () { B.key = ""; lsSet("bi12-board-key", null); askKey(""); });
+  $("keyForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var v = $("keyInput").value.trim();
+    if (!v) return;
+    B.key = v; lsSet("bi12-board-key", v);
+    $("keyDlg").hidden = true; B.err = ""; renderConn();
+    poll();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (!$("keyDlg").hidden || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    if (/^[1-4]$/.test(e.key)) selectQ(Number(e.key));
+    else if (e.key === "r" || e.key === "R") $("showBtn").click();
+    else if ((e.key === "a" || e.key === "A") && B.q !== 4) $("ansBtn").click();
+  });
+
+  renderBanner();
+  render(); renderConn();
+  B.key = lsGet("bi12-board-key", "") || "";
+  if (EP) { if (B.key) poll(); else askKey(""); }
+})();
+</script>
+</body>
+</html>
