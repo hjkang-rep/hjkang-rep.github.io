@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>파이썬 프로그래밍 · 수업 응답</title>
+<style>
+  :root {
+    --main: #6F263D; --main-soft: #f6eef1; --ink: #1f242b; --gray: #5b6570; --line: #d9dce0;
+    --box: #f5f5f4; --bg: #ffffff; --ok: #1f6f43; --ok-soft: #e8f4ec; --warn: #8a5a00; --warn-soft: #fff6e0; --err: #a32020;
+    --mono: "D2Coding", Consolas, Menlo, "Malgun Gothic", "Apple SD Gothic Neo", monospace;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font-family: "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+         font-size: 17px; line-height: 1.55; word-break: keep-all; overflow-wrap: break-word; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { border: 1px solid var(--main); background: var(--main); color: #fff; border-radius: 6px; padding: 8px 18px; cursor: pointer; }
+  button.ghost { background: #fff; color: var(--main); }
+  button.link { border: none; background: none; color: inherit; text-decoration: underline; padding: 0 4px; font-size: 14px; }
+  button:disabled { opacity: .5; cursor: default; }
+  input[type=text], select, textarea { border: 1px solid #b9bec5; border-radius: 6px; padding: 8px 10px; background: #fff; }
+  input[type=text]:focus, select:focus, textarea:focus { outline: 2px solid var(--main); outline-offset: 0; }
+  .hint { color: var(--gray); font-size: 14.5px; }
+
+  header.top { background: var(--main); color: #fff; padding: 10px 20px; display: flex; gap: 6px 16px; align-items: center; flex-wrap: wrap; }
+  header.top .brand { font-weight: 700; font-size: 18px; }
+  header.top .who { margin-left: auto; font-size: 15px; }
+  .banner { background: var(--warn-soft); color: var(--warn); padding: 10px 20px; border-bottom: 1px solid #f0d9a8; font-size: 15px; }
+  .banner.bad { background: #fdecec; color: var(--err); border-color: #f3c4c4; }
+
+  .card { max-width: 920px; margin: 20px auto; padding: 22px 26px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+  #login { max-width: 520px; margin-top: 8vh; }
+  #login h1 { margin: 0 0 6px; font-size: 22px; color: var(--main); }
+  #login form { display: flex; gap: 10px; margin-top: 14px; }
+  #login input { flex: 1; min-width: 0; font-size: 22px; letter-spacing: 1px; }
+  .err { color: var(--err); min-height: 1.5em; margin-top: 8px; font-size: 15px; }
+
+  main { padding: 0 16px 40px; }
+  .groupbar { max-width: 920px; margin: 14px auto 0; display: flex; align-items: baseline; gap: 4px 12px; flex-wrap: wrap; }
+  .groupbar .gname { font-weight: 700; color: var(--main); }
+  .groupbar button.link { color: var(--gray); }
+  nav.tabs { max-width: 920px; margin: 8px auto 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  nav.tabs button { background: #fff; color: var(--ink); border: 1px solid var(--line); text-align: left; padding: 8px 12px; border-radius: 8px; min-width: 0; }
+  nav.tabs button .n { font-weight: 700; color: var(--main); }
+  nav.tabs button .st { display: block; font-size: 13px; color: var(--gray); }
+  nav.tabs button .st.open { color: var(--main); font-weight: 700; }
+  nav.tabs button .st.done { color: var(--ok); font-weight: 700; }
+  nav.tabs button.on { border: 2px solid var(--main); background: var(--main-soft); padding: 7px 11px; }
+
+  .qhead .qn { color: var(--main); font-weight: 700; font-size: 15px; }
+  .qhead h2 { margin: 2px 0 6px; font-size: 22px; line-height: 1.45; word-break: keep-all; overflow-wrap: anywhere; }
+  .qhead h2 code { display: inline-block; max-width: 100%; font-family: var(--mono); font-size: .86em; background: var(--box); border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; font-weight: 600; }
+  .qhead .hint { margin: 0 0 14px; }
+  .qhead .hint.code { font-family: var(--mono); color: var(--ink); background: var(--box); border-radius: 6px; padding: 6px 10px; display: inline-block; max-width: 100%; overflow-wrap: anywhere; }
+
+  /* 코드: 줄마다 따로 두고, 긴 줄은 빈칸에서 줄을 바꾸며 이어지는 줄은 그 줄의 들여쓰기보다 조금 더 들여 씀 */
+  .code { background: var(--box); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin: 0 0 14px;
+          font-family: var(--mono); font-size: 14.5px; line-height: 1.5; min-width: 0; }
+  .code .cl { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .code.nums .cl { grid-template-columns: 2.4ch minmax(0, 1fr); column-gap: 1.2ch; }
+  .code .no { color: #8a9099; text-align: right; user-select: none; }
+  .code .tx { display: block; white-space: pre-wrap; word-break: keep-all; overflow-wrap: anywhere; min-height: 1.5em; }
+
+  .opts { display: grid; gap: 10px; }
+  .opts.code2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .opts.text { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .opts.text1 { grid-template-columns: minmax(0, 1fr); }
+  .opts.small { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  label.opt { display: flex; gap: 10px; align-items: flex-start; min-width: 0; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; cursor: pointer; background: #fff; }
+  label.opt:hover { border-color: #a9aeb5; }
+  label.opt.sel { border: 2px solid var(--main); background: var(--main-soft); padding: 9px 11px; }
+  label.opt input { margin-top: 5px; width: 18px; height: 18px; flex: none; accent-color: var(--main); }
+  label.opt .letter { font-weight: 700; font-size: 18px; color: var(--main); flex: none; }
+  label.opt .otext { font-size: 18px; min-width: 0; word-break: keep-all; overflow-wrap: anywhere; }
+  label.opt .otext small { display: block; font-size: 14.5px; color: var(--gray); margin-top: 2px; }
+  label.opt .code { flex: 1; margin: 0; font-size: 13.5px; padding: 6px 8px; background: #fafaf9; }
+  .opts.code2 label.opt { flex-wrap: wrap; }
+  .opts.code2 label.opt .code { flex-basis: 100%; }
+  .opts.small label.opt { flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 12px 8px; }
+  .opts.small label.opt.sel { padding: 11px 7px; }
+  .opts.small label.opt input { margin-top: 0; }
+  .opts.small label.opt .letter { font-size: 16px; }
+  .opts.small label.opt .otext { font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .opts.small label.opt .otext.mono { font-family: var(--mono); }
+
+  .preview { font-size: 14.5px; color: var(--gray); margin-top: 6px; min-height: 1.4em; }
+  .preview.bad { color: var(--err); }
+  .preview.good { color: var(--ok); }
+
+  .numq { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .numq input { width: 220px; max-width: 70%; font-size: 24px; font-variant-numeric: tabular-nums; }
+  .numq .unit { font-size: 20px; }
+
+  .form4 { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 12px 16px; align-items: start; }
+  .form4 > label { padding-top: 9px; font-weight: 600; font-size: 15.5px; }
+  .form4 .f { min-width: 0; }
+  .form4 .f input.num { width: 200px; max-width: calc(100% - 3em); }
+  .form4 .f input.name { width: 100%; max-width: 360px; }
+  .form4 .f input.filter { width: 100%; max-width: 560px; margin-bottom: 6px; font-size: 15.5px; }
+  .form4 .f select { width: 100%; max-width: 560px; }
+  .form4 .f .unit { margin-left: 6px; }
+  .form4 .f .selname { display: none; margin-top: 4px; font-size: 14.5px; color: var(--ink); word-break: keep-all; overflow-wrap: anywhere; }
+  .form4 textarea { width: 100%; min-height: 96px; resize: vertical; }
+  .pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pills label.opt { padding: 8px 14px; align-items: center; }
+  .pills label.opt.sel { padding: 7px 13px; }
+  .pills label.opt input { margin-top: 0; }
+
+  /* 줄로 묶인 칸 (업종 1 · 2 · 3): 넓은 화면은 한 줄에 세 칸, 휴대폰은 상자 안에 세로로 */
+  .rowbox { grid-column: 1 / -1; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px 12px; }
+  .rowbox .rt { font-weight: 700; color: var(--main); margin-bottom: 4px; }
+  .rowgrid { display: grid; grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.2fr) minmax(0, 1fr); gap: 10px 12px; align-items: start; }
+  .rowgrid .cell { min-width: 0; }
+  .rowgrid .cell > label { display: block; font-weight: 600; font-size: 14.5px; margin-bottom: 3px; }
+  .rowgrid input.filter, .rowgrid select, .rowgrid input.name, .rowgrid input.num { width: 100%; }
+  .rowgrid input.filter { margin-bottom: 6px; font-size: 15px; }
+  .rowgrid .selname { margin-top: 4px; font-size: 14.5px; word-break: keep-all; overflow-wrap: anywhere; }
+  .rowgrid .numwrap { display: flex; align-items: center; gap: 6px; }
+
+  .actions { margin-top: 18px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .actions button.big { font-size: 18px; padding: 10px 30px; }
+  .msg { font-size: 15px; }
+  .msg.bad { color: var(--err); }
+  .msg.ok { color: var(--ok); }
+
+  .donebox { background: var(--ok-soft); border: 1px solid #b9dcc5; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; }
+  .donebox b { color: var(--ok); font-size: 18px; }
+  .donebox .val { font-size: 17px; margin-top: 4px; white-space: pre-line; word-break: keep-all; overflow-wrap: anywhere; }
+  .donebox .hint { margin-top: 6px; }
+  .locked { background: var(--box); border-radius: 8px; padding: 18px 20px; text-align: center; }
+  .locked .big { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+  .locked .hint { margin: 6px 0 12px; }
+
+  @media (max-width: 760px) {
+    header.top { padding: 10px 16px; }
+    #login { margin-left: 16px; margin-right: 16px; }
+    nav.tabs { grid-template-columns: repeat(2, 1fr); }
+    .card { padding: 16px 14px; }
+    .qhead h2 { font-size: 20px; }
+    .code { font-size: 13px; padding: 6px 8px; }
+    .opts.code2, .opts.text { grid-template-columns: minmax(0, 1fr); }
+    .opts.small { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    label.opt .code { font-size: 12.5px; }
+    .form4 { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+    .form4 > label { padding-top: 10px; }
+    .form4 .f .selname { display: block; }
+    .rowgrid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">파이썬 프로그래밍 · 수업 응답</div>
+  <div class="who" id="who" hidden>학번 <b id="whoSid"></b><button class="link" id="changeSid" type="button">학번 바꾸기</button></div>
+</header>
+<div id="banner" class="banner" hidden></div>
+
+<section id="login" class="card" hidden>
+  <h1>학번을 입력하세요</h1>
+  <div class="hint">이름은 받지 않습니다. 교수 화면에는 학번 없이 전체 합계만 보이고, 다른 학생의 답은 이 화면에 보이지 않습니다.</div>
+  <form id="loginForm" autocomplete="off">
+    <input type="text" id="sid" inputmode="numeric" maxlength="12" placeholder="숫자 7~10자리" aria-label="학번">
+    <button type="submit">시작</button>
+  </form>
+  <div class="err" id="loginErr"></div>
+</section>
+
+<main id="app" hidden>
+  <div class="groupbar" id="groupbar"></div>
+  <nav class="tabs" id="tabs"></nav>
+  <section class="card" id="panel"></section>
+</main>
+
+<script src="config.js"></script>
+<script src="questions.js"></script>
+<script>
+(function () {
+  "use strict";
+  var EP = String(window.CLASS_ENDPOINT || "").trim();
+  var QS = window.QUESTIONS || [];
+  var GROUPS = window.GROUPS || [{ name: "", qs: QS.map(function (d) { return d.q; }), from: "" }];
+  var LETTERS = ["가", "나", "다", "라", "마", "바"];
+  var POLL_MS = 15000, JITTER_MS = 3000;
+  var LS = "py13-";   // 같은 주소(hjkang-rep.github.io)의 다른 수업 사이트와 겹치지 않게
+  var $ = function (id) { return document.getElementById(id); };
+  var S = { sid: "", open: [], current: 0, view: 1, checkedAt: 0, checking: false, netErr: false,
+            subs: {}, drafts: {}, msg: {}, sending: false };
+  var pollTimer = null, pendingVisible = false;
+
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function lsGet(k, d) { try { var v = localStorage.getItem(LS + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }
+  function lsSet(k, v) { try { localStorage.setItem(LS + k, JSON.stringify(v)); } catch (e) {} }
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function two(x) { return String(x).padStart(2, "0"); }
+  function hms(t) { var d = new Date(t); return [d.getHours(), d.getMinutes(), d.getSeconds()].map(two).join(":"); }
+  function today() { var d = new Date(); return d.getFullYear() + "-" + two(d.getMonth() + 1) + "-" + two(d.getDate()); }
+  function qdef(q) { for (var i = 0; i < QS.length; i++) if (QS[i].q === q) return QS[i]; return null; }
+  function isOpen(q) { return S.open.indexOf(q) >= 0; }
+  function fmtNum(v) { return (Math.round(v * 1000) / 1000).toLocaleString("ko-KR", { maximumFractionDigits: 3 }); }
+  function isCount(v) { return v !== null && v >= 0 && Math.floor(v) === v; }
+  function decimals(v) { var t = String(v), i = t.indexOf("."); return i < 0 ? 0 : t.length - i - 1; }
+  function titleHtml(d) { return (d.titleCode ? "<code>" + esc(d.titleCode) + "</code>" : "") + esc(d.title); }
+  function groupIndex(q) { for (var i = 0; i < GROUPS.length; i++) if (GROUPS[i].qs.indexOf(q) >= 0) return i; return 0; }
+  function dateGroup() { var g = 0, t = today(); GROUPS.forEach(function (x, i) { if (x.from && x.from <= t) g = i; }); return g; }
+
+  // 코드 상자: 줄 번호(start)가 있으면 왼쪽에 붙임
+  function codeHtml(text, start) {
+    var lines = String(text).split("\n"), h = '<div class="code' + (start ? " nums" : "") + '">';
+    lines.forEach(function (ln, i) {
+      var ind = ln.match(/^ */)[0].length + 2;
+      h += '<div class="cl">' + (start ? '<span class="no">' + (start + i) + "</span>" : "") +
+        '<span class="tx" style="padding-left:' + ind + "ch;text-indent:-" + ind + 'ch">' + (ln ? esc(ln) : " ") + "</span></div>";
+    });
+    return h + "</div>";
+  }
+
+  /* ---------- 서버 ---------- */
+  // 실패(네트워크 · 서버 혼잡)하면 잠깐 쉬었다가 다시 보냄. 그 밖의 거절(closed 등)은 그대로 돌려줌
+  async function call(payload, tries) {
+    var lastErr = null;
+    for (var i = 0; i < tries; i++) {
+      try {
+        var ctl = new AbortController();
+        var timer = setTimeout(function () { ctl.abort(); }, 20000);
+        var r = payload
+          ? await fetch(EP, { method: "POST", body: JSON.stringify(payload), signal: ctl.signal })
+          : await fetch(EP + (EP.indexOf("?") >= 0 ? "&" : "?") + "action=state", { cache: "no-store", signal: ctl.signal });
+        var j = await r.json();
+        clearTimeout(timer);
+        if (j.ok || (j.msg !== "busy" && j.msg !== "server error")) return j;
+        lastErr = new Error(j.msg);
+      } catch (e) { lastErr = e; }
+      if (i < tries - 1) await sleep(800 * (i + 1) + Math.random() * 1600);
+    }
+    throw lastErr || new Error("network");
+  }
+
+  function applyState(j) {
+    if (j && Array.isArray(j.open)) S.open = j.open.map(Number);
+    if (j && j.current !== undefined) S.current = Number(j.current) || 0;
+  }
+
+  async function refreshState() {
+    if (!EP || S.checking) return;
+    S.checking = true;
+    renderLockedInfo();
+    try { var j = await call(null, 2); if (j.ok) applyState(j); S.netErr = false; }
+    catch (e) { S.netErr = true; }
+    S.checking = false;
+    S.checkedAt = Date.now();
+    renderBanner();
+  }
+
+  // 지금 보는 문항이 잠겨 있을 때만 15초(±3초)마다 상태를 물음
+  function schedule() {
+    clearTimeout(pollTimer); pollTimer = null;
+    if (!EP || !S.sid || isOpen(S.view)) return;
+    var delay = POLL_MS + (Math.random() * 2 - 1) * JITTER_MS;
+    pollTimer = setTimeout(async function () {
+      if (document.hidden) { pendingVisible = true; return; }
+      await refreshState(); afterCheck();
+    }, delay);
+  }
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden && pendingVisible) {
+      pendingVisible = false;
+      setTimeout(async function () { await refreshState(); afterCheck(); }, Math.random() * 2000);
+    }
+  });
+
+  function afterCheck() {
+    if (!isOpen(S.view) && S.current && isOpen(S.current) && S.current !== S.view) S.view = S.current;
+    render(); schedule();
+  }
+
+  /* ---------- 화면 ---------- */
+  function renderBanner() {
+    var b = $("banner");
+    if (!EP) { b.hidden = false; b.className = "banner bad"; b.textContent = "서버 주소가 설정되지 않았습니다 (config.js). 교수님께 알려 주세요."; return; }
+    if (S.netErr) { b.hidden = false; b.className = "banner"; b.textContent = "서버에 연결하지 못했습니다. 잠시 뒤 '다시 확인'을 누르세요."; return; }
+    b.hidden = true;
+  }
+
+  // 휴대폰에서 탭이 너무 많지 않게, 지금 보는 문항이 든 묶음(월 1~4 또는 수 5~8)만 보이고 다른 묶음은 작은 단추로 엶
+  function renderTabs() {
+    var gi = groupIndex(S.view), g = GROUPS[gi], h = "";
+    var gb = '<span class="gname">' + esc(g.name) + "</span>";
+    GROUPS.forEach(function (x, i) {
+      if (i === gi) return;
+      var openHere = x.qs.filter(isOpen).length;
+      gb += '<button type="button" class="link" data-group="' + i + '">' + esc(x.name) + " 보기" + (openHere ? " (열림 " + openHere + ")" : "") + "</button>";
+    });
+    $("groupbar").innerHTML = gb;
+    g.qs.forEach(function (q) {
+      var d = qdef(q); if (!d) return;
+      var st = S.subs[d.q] ? '<span class="st done">제출됨</span>' : isOpen(d.q) ? '<span class="st open">열림</span>' : '<span class="st">닫힘</span>';
+      h += '<button type="button" data-q="' + d.q + '" class="' + (S.view === d.q ? "on" : "") + '"><span class="n">문항 ' + d.q + '</span> ' + esc(d.tab) + st + "</button>";
+    });
+    $("tabs").innerHTML = h;
+  }
+
+  function renderLockedInfo() {
+    var el = $("lockinfo");
+    if (!el) return;
+    if (S.checking) { el.textContent = "확인하는 중…"; return; }
+    el.textContent = S.checkedAt ? "마지막 확인 " + hms(S.checkedAt) + " · 약 15초마다 자동으로 확인합니다" : "";
+  }
+
+  function nextInGroup(q) {
+    var g = GROUPS[groupIndex(q)], i = g.qs.indexOf(q);
+    return i >= 0 && i < g.qs.length - 1 ? qdef(g.qs[i + 1]) : null;
+  }
+
+  function render() {
+    renderBanner();
+    renderTabs();
+    var d = qdef(S.view);
+    if (!d) return;
+    var sub = S.subs[d.q];
+    var h = '<div class="qhead"><div class="qn">문항 ' + d.q + " · " + esc(d.tab) + "</div><h2>" + titleHtml(d) + "</h2>";
+    if (d.help) h += '<p class="hint' + (d.helpCode ? " code" : "") + '">' + esc(d.help) + "</p>";
+    h += "</div>";
+    if (d.code) h += codeHtml(d.code, d.codeStart);
+    if (sub) {
+      h += '<div class="donebox"><b>제출됨</b> <span class="hint">' + hms(sub.at) + '</span><div class="val">' + esc(sub.label) + "</div>";
+      h += isOpen(d.q) ? '<div class="hint">다시 제출하면 앞의 답을 바꿉니다. 마지막으로 낸 답만 셉니다.</div>' : "";
+      h += "</div>";
+    }
+    var nx = nextInGroup(d.q);
+    if (isOpen(d.q)) {
+      h += formHtml(d);
+      var m = S.msg[d.q];
+      h += '<div class="actions"><button type="button" class="big" id="submitBtn"' + (S.sending ? " disabled" : "") + ">" + (S.sending ? "보내는 중…" : sub ? "다시 제출" : "제출") + "</button>";
+      h += '<span class="msg ' + (m ? m.cls : "") + '" id="msg">' + (m ? esc(m.text) : "") + "</span>";
+      if (sub && nx) h += '<button type="button" class="ghost" data-go="' + nx.q + '">다음 문항으로 →</button>';
+      h += "</div>";
+    } else {
+      var m2 = S.msg[d.q];
+      h += '<div class="locked"><div class="big">' + (sub ? "이 문항은 지금 닫혀 있습니다" : "아직 열리지 않은 문항입니다") + "</div>";
+      h += '<div class="hint">교수님이 문항을 열면 이 화면에 나타납니다. 창을 닫지 말고 기다리세요.</div>';
+      if (m2) h += '<div class="msg ' + m2.cls + '">' + esc(m2.text) + "</div>";
+      h += '<button type="button" class="ghost" id="recheck"' + (EP ? "" : " disabled") + ">다시 확인</button>";
+      h += '<div class="hint" id="lockinfo"></div></div>';
+      if (sub && nx) h += '<div class="actions"><button type="button" class="ghost" data-go="' + nx.q + '">다음 문항으로 →</button></div>';
+    }
+    $("panel").innerHTML = h;
+    renderLockedInfo();
+    bindForm(d);
+  }
+
+  function draft(q) { if (!S.drafts[q]) S.drafts[q] = {}; return S.drafts[q]; }
+  function saveDrafts() { lsSet("drafts-" + S.sid, S.drafts); }
+
+  function optionsHtml(list, val, filter) {
+    var f = String(filter || "").replace(/\s+/g, "");
+    var h = '<option value="">선택하세요</option>';
+    list.forEach(function (x) {
+      if (f && x !== val && x.replace(/\s+/g, "").indexOf(f) < 0) return;
+      h += '<option' + (x === val ? " selected" : "") + ">" + esc(x) + "</option>";
+    });
+    return h;
+  }
+
+  // 만들기 문항의 칸 하나 (입력 부분만)
+  function fieldInput(f, dr, inRow) {
+    var id = "f-" + f.key, val = dr[f.key] || "", h = "";
+    if (f.kind === "select") {
+      var list = window[f.source] || [];
+      if (f.filter) h += '<input type="text" class="filter" id="flt-' + esc(f.key) + '" autocomplete="off" value="' + esc(dr["_filter_" + f.key] || "") + '" placeholder="이름 일부를 적으면 목록이 줄어듭니다" aria-label="' + esc(f.label) + ' 찾기">';
+      h += '<select id="' + id + '" data-k="' + esc(f.key) + '" aria-label="' + esc(f.label) + '">' + optionsHtml(list, val, dr["_filter_" + f.key]) + "</select>";
+      h += '<div class="selname" id="sn-' + esc(f.key) + '">' + (val ? "고른 업종: " + esc(val) : "") + "</div>";
+    } else if (f.kind === "radio") {
+      h += '<div class="pills" id="' + id + '">';
+      (window[f.source] || []).forEach(function (x) {
+        var sel = val === x;
+        h += '<label class="opt' + (sel ? " sel" : "") + '"><input type="radio" name="r-' + esc(f.key) + '" value="' + esc(x) + '"' + (sel ? " checked" : "") + '><span class="otext">' + esc(x) + "</span></label>";
+      });
+      h += "</div>";
+    } else if (f.kind === "number") {
+      var inp = '<input type="text" class="num" id="' + id + '" data-k="' + esc(f.key) + '" inputmode="' + (f.integer ? "numeric" : "decimal") + '" autocomplete="off" value="' + esc(val) + '" placeholder="' + esc(f.example || "숫자만") + '" aria-label="' + esc(f.label) + '">';
+      h += inRow ? '<div class="numwrap">' + inp + (f.unit ? '<span class="unit">' + esc(f.unit) + "</span>" : "") + "</div>" : inp + '<span class="unit">' + esc(f.unit || "") + "</span>";
+      h += '<div class="preview" id="pv-' + esc(f.key) + '"></div>';
+    } else if (f.kind === "name") {
+      h += '<input type="text" class="name" id="' + id + '" data-k="' + esc(f.key) + '" maxlength="' + (f.maxLen || 40) + '" autocomplete="off" value="' + esc(val) + '" placeholder="' + esc(f.example || "") + '" aria-label="' + esc(f.label) + '">';
+    } else {
+      h += '<textarea id="' + id + '" data-k="' + esc(f.key) + '" maxlength="' + (f.maxLen || 300) + '" placeholder="' + esc(f.example || "") + '">' + esc(val) + "</textarea>";
+      h += '<div class="hint" id="cnt-' + esc(f.key) + '"></div>';
+    }
+    if (f.note) h += '<div class="hint">' + esc(f.note) + "</div>";
+    if (f.after === "mult") h += '<div class="preview" id="mult"></div>';
+    return h;
+  }
+
+  function zeroNoteHtml(d, f) { return d.zeroNote && d.zero === f.key ? '<div class="hint">' + esc(d.zeroNote) + "</div>" : ""; }
+
+  function formHtml(d) {
+    var dr = draft(d.q), h = "";
+    if (d.type === "choice") {
+      h += '<div class="opts ' + esc(d.layout || "text") + '">';
+      d.options.forEach(function (o, i) {
+        var sel = dr.choice === o.id;
+        h += '<label class="opt' + (sel ? " sel" : "") + '"><input type="radio" name="choice" value="' + esc(o.id) + '"' + (sel ? " checked" : "") + ">";
+        h += '<span class="letter">(' + LETTERS[i] + ")</span>";
+        if (o.code && d.layout === "small") h += '<span class="otext mono">' + esc(o.code) + "</span>";
+        else if (o.code) h += codeHtml(o.code, 0);
+        else h += '<span class="otext">' + esc(o.label) + (o.desc ? "<small>" + esc(o.desc) + "</small>" : "") + "</span>";
+        h += "</label>";
+      });
+      h += "</div>";
+    } else if (d.type === "number") {
+      h += '<div class="numq"><input type="text" id="f-num" inputmode="decimal" autocomplete="off" value="' + esc(dr.num || "") + '" placeholder="' + esc(d.example || "숫자만") + '" aria-label="답"><span class="unit">' + esc(d.unit || "") + "</span></div>";
+      h += '<div class="preview" id="pv-num"></div>';
+    } else if (d.type === "make") {
+      h += '<div class="form4">';
+      var i = 0;
+      while (i < d.fields.length) {
+        var f = d.fields[i];
+        if (f.group) {
+          var grp = f.group;
+          h += '<div class="rowbox"><div class="rt">' + esc(grp) + '</div><div class="rowgrid">';
+          while (i < d.fields.length && d.fields[i].group === grp) {
+            var g = d.fields[i];
+            h += '<div class="cell"><label for="f-' + esc(g.key) + '">' + esc(g.short || g.label) + "</label>" + fieldInput(g, dr, true) + "</div>";
+            i++;
+          }
+          h += "</div></div>";
+        } else {
+          h += '<label for="f-' + esc(f.key) + '">' + esc(f.label) + '</label><div class="f">' + fieldInput(f, dr, false) + zeroNoteHtml(d, f) + "</div>";
+          i++;
+        }
+      }
+      h += "</div>";
+    }
+    return h;
+  }
+
+  // 숫자 칸 하나를 읽어 {n, err}. err 가 있으면 제출을 막음
+  function readNumber(f, s, zeroVal) {
+    s = String(s || "").trim();
+    var n = s ? window.parseNumber(s) : null;
+    if (s && n === null) return { n: null, err: "숫자로 읽을 수 없습니다" };
+    if (n === null) return { n: null, err: (f.req === true || (f.req === "nz" && zeroVal !== 0)) ? "비어 있습니다" : "" };
+    if (f.integer && Math.floor(n) !== n) return { n: n, err: "정수로 적으세요" };
+    if (f.pos && !(n > 0)) return { n: n, err: "0보다 큰 수로 적으세요" };
+    if (f.min !== undefined && n < f.min) return { n: n, err: f.min + " 이상으로 적으세요" };
+    if (f.max !== undefined && n > f.max) return { n: n, err: f.max + " 이하로 적으세요" };
+    if (f.dec !== undefined && decimals(n) > f.dec) return { n: n, err: "소수 " + (f.dec === 1 ? "첫째" : f.dec + "째") + " 자리까지 적으세요" };
+    return { n: n, err: "" };
+  }
+
+  function zeroOf(d) {
+    if (!d.zero) return null;
+    return window.parseNumber(String(draft(d.q)[d.zero] || "").trim());
+  }
+
+  function preview(d, f) {
+    var pv = $("pv-" + f.key), el = $("f-" + f.key);
+    if (!pv || !el) return;
+    var raw = el.value.trim();
+    if (!raw) { pv.textContent = ""; pv.className = "preview"; return; }
+    var r = readNumber(f, raw, zeroOf(d));
+    if (r.err) { pv.textContent = r.err; pv.className = "preview bad"; }
+    else { pv.textContent = "읽은 값: " + fmtNum(r.n) + (f.unit ? " " + f.unit : ""); pv.className = "preview"; }
+  }
+
+  // 분해표의 곱셈 확인: (1 + 건수/100) × (1 + 건당/100) 과 1 + 매출/100
+  function multPreview(d) {
+    var el = $("mult");
+    if (!el) return;
+    var dr = draft(d.q), ks = d.mult;
+    var v = ks.map(function (k) { return window.parseNumber(String(dr[k] || "").trim()); });
+    if (v.some(function (x) { return x === null; })) { el.textContent = "곱셈 확인: 증가율 세 칸을 채우면 여기에 나옵니다"; el.className = "preview"; return; }
+    var prod = (1 + v[1] / 100) * (1 + v[2] / 100), rhs = 1 + v[0] / 100, diff = Math.abs(prod - rhs);
+    el.textContent = "곱셈 확인: (1 + 건수/100) × (1 + 건당/100) = " + prod.toFixed(4) + ", 1 + 매출/100 = " + rhs.toFixed(4) +
+      (diff <= 0.0015 ? " → 거의 같음" : " → 차이 " + diff.toFixed(4) + ". 숫자를 다시 확인하세요");
+    el.className = "preview " + (diff <= 0.0015 ? "good" : "bad");
+  }
+
+  function textCount(f) {
+    var el = $("f-" + f.key), c = $("cnt-" + f.key);
+    if (!el || !c) return;
+    var n = el.value.trim().length;
+    c.textContent = n + " / " + (f.maxLen || 300) + "자" + (f.minLen > 1 && n < f.minLen ? " · " + f.minLen + "자 이상" : "");
+  }
+
+  function bindForm(d) {
+    var dr = draft(d.q);
+    var clearMsg = function () {   // 고치기 시작하면 앞의 안내를 지움
+      if (!S.msg[d.q]) return;
+      S.msg[d.q] = null;
+      var m = $("msg"); if (m) { m.textContent = ""; m.className = "msg"; }
+    };
+    if (d.type === "choice") {
+      document.querySelectorAll('input[name="choice"]').forEach(function (r) {
+        r.addEventListener("change", function () {
+          dr.choice = r.value; saveDrafts(); clearMsg();
+          document.querySelectorAll("label.opt").forEach(function (l) { l.classList.toggle("sel", l.contains(r)); });
+        });
+      });
+    } else if (d.type === "number") {
+      var nf = { key: "num", unit: d.unit };
+      var ne = $("f-num");
+      if (ne) {
+        ne.addEventListener("input", function () { dr.num = ne.value; saveDrafts(); clearMsg(); preview(d, nf); });
+        preview(d, nf);
+      }
+    } else if (d.type === "make") {
+      d.fields.forEach(function (f) {
+        if (f.kind === "radio") {
+          document.querySelectorAll('input[name="r-' + f.key + '"]').forEach(function (r) {
+            r.addEventListener("change", function () {
+              dr[f.key] = r.value; saveDrafts(); clearMsg();
+              $("f-" + f.key).querySelectorAll("label.opt").forEach(function (l) { l.classList.toggle("sel", l.contains(r)); });
+            });
+          });
+          return;
+        }
+        var el = $("f-" + f.key);
+        if (!el) return;
+        var up = function () {
+          dr[f.key] = el.value; saveDrafts(); clearMsg();
+          if (f.kind === "number") {
+            preview(d, f);
+            if (d.zero === f.key) d.fields.forEach(function (g) { if (g.kind === "number" && g !== f) preview(d, g); });
+          }
+          if (f.kind === "text") textCount(f);
+          if (f.kind === "select") $("sn-" + f.key).textContent = el.value ? "고른 업종: " + el.value : "";
+          if (d.mult && d.mult.indexOf(f.key) >= 0) multPreview(d);
+        };
+        el.addEventListener(f.kind === "select" ? "change" : "input", up);
+        if (f.kind === "number") preview(d, f);
+        if (f.kind === "text") textCount(f);
+        if (f.kind === "select" && f.filter) {
+          var flt = $("flt-" + f.key);
+          flt.addEventListener("input", function () {
+            dr["_filter_" + f.key] = flt.value; saveDrafts();
+            el.innerHTML = optionsHtml(window[f.source] || [], dr[f.key] || "", flt.value);
+          });
+        }
+      });
+      if (d.mult) multPreview(d);
+    }
+    var sb = $("submitBtn"); if (sb) sb.addEventListener("click", submit);
+    var rc = $("recheck");
+    if (rc) rc.addEventListener("click", async function () {
+      rc.disabled = true; S.msg[d.q] = null;
+      if (Date.now() - S.checkedAt < 3000) await sleep(3000 - (Date.now() - S.checkedAt));   // 연타 막기
+      await refreshState(); afterCheck();
+    });
+    document.querySelectorAll("[data-go]").forEach(function (b) {
+      b.addEventListener("click", function () { setView(Number(b.getAttribute("data-go")), true); });
+    });
+  }
+
+  // 화면의 입력을 읽어 {value, raw, label} 또는 {error}
+  function collect(d) {
+    var dr = draft(d.q);
+    if (d.type === "choice") {
+      var idx = -1;
+      d.options.forEach(function (o, i) { if (o.id === dr.choice) idx = i; });
+      if (idx < 0) return { error: "보기를 하나 고르세요." };
+      var o = d.options[idx];
+      var label = "(" + LETTERS[idx] + ")" + (o.code ? (d.layout === "small" ? " " + o.code : "") : " " + o.label + (d.unit || ""));
+      return { value: o.id, raw: label, label: label };
+    }
+    if (d.type === "number") {
+      var r = readNumber({ req: true }, dr.num, null);
+      if (r.err) return { error: r.err === "비어 있습니다" ? "답을 적으세요." : r.err };
+      return { value: r.n, raw: String(dr.num).trim(), label: fmtNum(r.n) + (d.unit ? " " + d.unit : "") };
+    }
+    // 만들기: 칸마다 검사. 서버(Code.gs FORMS)와 같은 조건
+    var out = {}, errs = [], lines = [], raws = [];
+    var zeroVal = zeroOf(d);
+    d.fields.forEach(function (f) {
+      var s = String(dr[f.key] || "").trim();
+      var name = f.label;
+      if (f.kind === "select" || f.kind === "radio") {
+        if ((window[f.source] || []).indexOf(s) < 0) errs.push(name + ": " + (f.kind === "radio" ? "고르세요" : "목록에서 고르세요"));
+        out[f.key] = s; raws.push(s);
+        lines.push(name + ": " + (s || "(비움)"));
+      } else if (f.kind === "number") {
+        var r = readNumber(f, s, zeroVal);
+        if (r.err) errs.push(name + ": " + r.err);
+        out[f.key] = r.n; raws.push(s);
+        lines.push(name + ": " + (r.n === null ? "(비움)" : fmtNum(r.n) + (f.unit ? " " + f.unit : "")));
+      } else {
+        var t = s.slice(0, f.maxLen || 300);
+        if (t.length < (f.minLen || 0)) errs.push(name + ": " + (f.minLen > 1 ? f.minLen + "자 이상 적으세요" : "비어 있습니다"));
+        out[f.key] = t;
+        if (f.kind === "name") raws.push(t);
+        lines.push(name + ": " + (t || "(비움)"));
+      }
+    });
+    if (d.unique) {
+      var u = d.unique.keys.map(function (k) { return out[k]; }).filter(function (x) { return x; });
+      if (u.some(function (x, i) { return u.indexOf(x) !== i; })) errs.push(d.unique.msg);
+    }
+    if (errs.length) return { error: errs.slice(0, 3).join(" · ") + (errs.length > 3 ? " 외 " + (errs.length - 3) + "곳" : "") };
+    return { value: out, raw: raws.join(" | "), label: lines.join("\n") };
+  }
+
+  async function submit() {
+    var d = qdef(S.view);
+    if (!d || S.sending || !isOpen(d.q)) return;
+    var c = collect(d);
+    if (c.error) { S.msg[d.q] = { cls: "bad", text: c.error }; render(); return; }
+    if (!EP) { S.msg[d.q] = { cls: "bad", text: "서버 주소가 없어 보낼 수 없습니다." }; render(); return; }
+    S.sending = true; S.msg[d.q] = null; render();
+    var j = null;
+    try { j = await call({ action: "submit", sid: S.sid, q: d.q, value: c.value, raw: c.raw }, 4); }
+    catch (e) { j = null; }
+    S.sending = false;
+    if (!j) {
+      S.netErr = true;
+      S.msg[d.q] = { cls: "bad", text: "서버에 닿지 않아 제출되지 않았습니다. 잠시 뒤 다시 누르세요." };
+    } else if (j.ok) {
+      S.netErr = false;
+      applyState(j);
+      S.subs[d.q] = { value: c.value, label: c.label, at: Date.now() };
+      lsSet("subs-" + S.sid, S.subs);
+      S.msg[d.q] = { cls: "ok", text: "제출했습니다." };
+    } else if (j.msg === "closed") {
+      applyState(j);
+      S.msg[d.q] = { cls: "bad", text: "이 문항은 방금 닫혀 제출되지 않았습니다." };
+    } else if (j.msg === "bad sid") {
+      S.msg[d.q] = { cls: "bad", text: "학번이 올바르지 않습니다. 위의 '학번 바꾸기'로 다시 넣으세요." };
+    } else {
+      S.msg[d.q] = { cls: "bad", text: "제출되지 않았습니다 (" + j.msg + "). 입력을 확인하세요." };
+    }
+    render(); schedule();
+  }
+
+  function setView(q, userAction) {
+    S.view = q;
+    lsSet("view", q);
+    render();
+    if (!isOpen(q) && userAction && EP && Date.now() - S.checkedAt > 5000) {
+      refreshState().then(afterCheck);
+    } else {
+      schedule();
+    }
+  }
+
+  /* ---------- 학번 ---------- */
+  function showLogin(err) {
+    clearTimeout(pollTimer);
+    $("app").hidden = true; $("who").hidden = true; $("login").hidden = false;
+    $("sid").value = S.sid || lsGet("sid", "") || "";
+    $("loginErr").textContent = err || "";
+    $("sid").focus();
+  }
+
+  async function start(sid) {
+    S.sid = sid;
+    lsSet("sid", sid);
+    S.subs = lsGet("subs-" + sid, {}) || {};
+    S.drafts = lsGet("drafts-" + sid, {}) || {};
+    S.msg = {};
+    $("login").hidden = true; $("app").hidden = false; $("who").hidden = false;
+    $("whoSid").textContent = sid;
+    var dg = dateGroup(), saved = Number(lsGet("view", 0)) || 0;
+    S.view = qdef(saved) && groupIndex(saved) >= dg ? saved : GROUPS[dg].qs[0];   // 지난 수업의 문항이 남아 있으면 오늘 묶음으로
+    render();
+    if (Date.now() - S.checkedAt > 5000) await refreshState();
+    if (S.current && isOpen(S.current)) S.view = S.current;
+    else if (!isOpen(S.view) && S.open.length) S.view = S.open[0];
+    render(); schedule();
+  }
+
+  $("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var v = $("sid").value.normalize("NFKC").replace(/[\s-]/g, "");
+    if (!/^\d{7,10}$/.test(v)) { $("loginErr").textContent = "학번은 숫자 7~10자리입니다."; return; }
+    start(v);
+  });
+  $("changeSid").addEventListener("click", function () { showLogin(""); });
+  $("tabs").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-q]");
+    if (b) { S.msg[Number(b.getAttribute("data-q"))] = null; setView(Number(b.getAttribute("data-q")), true); }
+  });
+  // 다른 묶음 보기: 그 묶음에 열린 문항이 있으면 그 문항, 없으면 첫 문항
+  $("groupbar").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-group]");
+    if (!b) return;
+    var g = GROUPS[Number(b.getAttribute("data-group"))];
+    var openQ = g.qs.filter(isOpen);
+    setView(openQ.length ? openQ[0] : g.qs[0], true);
+  });
+
+  renderBanner();
+  var saved = lsGet("sid", "");
+  if (saved && /^\d{7,10}$/.test(saved)) start(saved); else showLogin("");
+})();
+</script>
+</body>
+</html>
