@@ -132,18 +132,6 @@
   .dlg .hint { color: var(--gray); font-size: 15px; }
   .banner { background: #fdecec; color: var(--err); padding: 10px 28px; font-size: 18px; }
   .hint { color: var(--gray); font-size: 17px; }
-  .card8 { font-size: 20px; line-height: 1.45; }
-  .card8 .fl { margin-top: 6px; }
-  .facts { margin-top: 10px; border-top: 1px dashed var(--line); padding-top: 8px; font-size: 17px; line-height: 1.4; }
-  .facts .fline { margin: 2px 0; }
-  .facts .fline.small { font-size: 16px; color: var(--gray); }
-  .facts b { font-variant-numeric: tabular-nums; }
-  .facts .hit { background: var(--ok-soft); color: var(--ok); border-radius: 4px; padding: 0 3px; font-weight: 700; }
-  .ftabs { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 14px; margin: 6px 0; }
-  .ftabs table { border-collapse: collapse; width: 100%; font-size: 17px; }
-  .ftabs th, .ftabs td { border-bottom: 1px solid #eceef0; padding: 1px 6px; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
-  .ftabs th:first-child { text-align: left; }
-  .ftabs tr:first-child th { color: var(--gray); font-weight: 400; font-size: 15px; }
 </style>
 </head>
 <body>
@@ -377,6 +365,8 @@
   }
 
   // 숫자 문항: 결과 보이기 = 많이 낸 값, 정답 표시 = 묶음(정답 · 흔한 실수 · 그 밖)
+  //   묶음마다 v(견줄 값), show(화면에 쓸 글자, 없으면 v), unit(단위, 없으면 문항의 단위), tol(허용 오차, 없으면 문항의 tol)
+  function binTol(b, k) { return b.tol !== undefined ? b.tol : k.tol; }
   function numberHtml(d, j) {
     var vals = j.values || [], tot = j.n, unit = esc(d.unit || "");
     var k = KEY[d.q], rev = !!B.reveal[d.q] && answersState === "ok" && k && k.bins;
@@ -391,12 +381,12 @@
     }
     var cnt = k.bins.map(function () { return 0; }), other = [], otherN = 0;
     vals.forEach(function (v) {
-      for (var i = 0; i < k.bins.length; i++) if (near(v[0], k.bins[i].v, k.tol)) { cnt[i] += v[1]; return; }
+      for (var i = 0; i < k.bins.length; i++) if (near(v[0], k.bins[i].v, binTol(k.bins[i], k))) { cnt[i] += v[1]; return; }
       other.push(v); otherN += v[1];
     });
     var mx = Math.max.apply(null, cnt.concat([otherN]));
     k.bins.forEach(function (b, i) {
-      h += barRow('<span class="mono">' + fmt(b.v) + "</span> " + unit + " " + esc(b.correct ? "" : b.label), '<small class="note">' + esc(b.note) + "</small>",
+      h += barRow('<span class="mono">' + (b.show !== undefined ? esc(b.show) : fmt(b.v)) + "</span> " + (b.unit !== undefined ? esc(b.unit) : unit) + " " + esc(b.correct ? "" : b.label), '<small class="note">' + esc(b.note) + "</small>",
         cnt[i], tot, mx, b.correct ? "ok" : "mis", b.correct ? "정답" : "", "b:" + b.v);
     });
     h += barRow("그 밖", '<small class="note">' + esc(k.otherNote || "") + "</small>", otherN, tot, mx, "dim", "", "b:other");
@@ -540,102 +530,85 @@
     }
   };
 
-  // 문항 8: AI 문장 팩트체크. 자동 정답 판정은 없음
-  //   카드 옆에 그 업종의 사실표(ANSWER_DATA.answers["8"])를 함께 보이고,
-  //   '확인한 숫자' 칸의 숫자 가운데 사실표에 없는 것만 노란색으로 표시 (틀렸다고 단정하지 않음)
-  MAKE.bi8 = function (d, j) {
-    var rows = rowsOf(j), tot = rows.length, v = {};
-    (window.VERDICTS || []).forEach(function (x) { v[x] = 0; });
-    rows.forEach(function (o) { if (v[o["판정"]] !== undefined) v[o["판정"]]++; });
-    var vmax = Math.max.apply(null, Object.keys(v).map(function (x) { return v[x]; }).concat([0]));
-    var h = '<div class="two"><div><h3>학생이 고른 판정<small>제출 ' + tot + "개</small></h3>";
-    h += '<div class="bars compact">';
-    Object.keys(v).forEach(function (x) { h += barRow(esc(x), "", v[x], tot, vmax, "", "", "verdict:" + x); });
-    h += "</div></div><div>" + typesHtml(j, 6) + "</div></div>";
-    return h;
-  };
+  // 문항 8: 상권 구분별 분해. 칸 2~5를 그 업종의 정답 자료(Code.gs ANSWER_DATA.answers["8"])와 견줌. 판정 기준 값은 KEY[8]
+  //   2. 전체 증감률: 정확한 값 ±tolGrowth 맞음 · 부호 반대 · 다름
+  //   3. 가장 크게 움직인 구분: 기여_1위(|기여| 1 · 2위 차가 0.005 미만이면 둘)에 들면 맞음
+  //      · 증감률이 가장 큰 구분을 고름(증감률 1위가 기여_1위에 없는 업종에서만 생김) · 다름
+  //   4. 그 구분의 기여: 고른 구분이 정답이면 그 구분, 아니면 기여_1위 첫 구분의 정확한 기여와 ±tolPp 이면 맞음
+  //      · 고른 구분이나 정답 구분의 증감률과 ±tolRate 이면 구분 증감률을 씀 · 부호 반대 · 다름
+  //   5. 줄어든 구분 수: 같으면 맞음 · 다름
+  var BI8_FIELDS = [
+    { key: "growth_total", label: "2. 전체 증감률", cats: ["맞음", "부호 반대", "다름"] },
+    { key: "top_seg", label: "3. 가장 크게 움직인 구분", cats: ["맞음", "증감률이 가장 큰 구분을 고름", "다름"] },
+    { key: "top_pp", label: "4. 그 구분의 기여", cats: ["맞음", "구분 증감률을 씀", "부호 반대", "다름"] },
+    { key: "n_down", label: "5. 줄어든 구분 수", cats: ["맞음", "다름"] }
+  ];
 
-  var MINUS_RE = new RegExp("[" + [0x2212, 0x2012, 0x2013, 0x2014, 0x2015, 0xFE63, 0xFF0D].map(function (c) { return String.fromCharCode(c); }).join("") + "]", "g");
-
-  // 사실표의 숫자 목록: [값, 억 원인지, 칸 이름]
-  function factList(f) {
-    var out = [];
-    out.push([f["이번_억"], true, "now"], [f["전년_대비"], false, "yoy"], [f["직전분기_대비"], false, "qoq"]);
-    f["구분별"].forEach(function (r, i) { out.push([r[1], true, "s" + i + "a"], [r[2], true, "s" + i + "b"], [r[3], false, "s" + i + "c"]); });
-    f["연령대"].forEach(function (r, i) { out.push([r[1], true, "g" + i + "a"], [r[2], false, "g" + i + "b"], [r[3], false, "g" + i + "c"]); });
-    f["분기_추이_억"].forEach(function (r, i) { out.push([r[1], true, "t" + i]); });
-    Object.keys(f["1분기_대비_2분기_증감률"]).forEach(function (y) { out.push([f["1분기_대비_2분기_증감률"][y], false, "q" + y]); });
+  // 구분 행: [구분, 작년_억, 이번_억, 변화_억, 증감률(소수 첫째), 기여(소수 둘째), 기여(정확), 증감률(정확)]
+  function bi8Judge(o, a, k) {
+    var seg = {}, out = {}, x;
+    a["구분"].forEach(function (r) { seg[r[0]] = r; });
+    x = o.growth_total;
+    var g = a["전체"][3];
+    out.growth_total = typeof x !== "number" ? "다름" : near(x, g, k.tolGrowth) ? "맞음" : (g !== 0 && near(x, -g, k.tolGrowth)) ? "부호 반대" : "다름";
+    var top = a["기여_1위"], picked = top.indexOf(o.top_seg) >= 0;
+    out.top_seg = picked ? "맞음" : o.top_seg === a["증감률_1위"] ? "증감률이 가장 큰 구분을 고름" : "다름";
+    var tgt = seg[picked ? o.top_seg : top[0]], tv = tgt[6];
+    x = o.top_pp;
+    if (typeof x !== "number") out.top_pp = "다름";
+    else if (near(x, tv, k.tolPp)) out.top_pp = "맞음";
+    else if ([seg[o.top_seg], tgt].some(function (r) { return r && near(x, r[7], k.tolRate); })) out.top_pp = "구분 증감률을 씀";
+    else if (tv !== 0 && near(x, -tv, k.tolPp)) out.top_pp = "부호 반대";
+    else out.top_pp = "다름";
+    out.n_down = o.n_down === a["줄어든_수"] ? "맞음" : "다름";
     return out;
   }
 
-  // 근거 글을 HTML 로: 사실표에 없는 숫자에 <mark>. 맞은 사실표 칸 이름은 hits 에 모음
-  //   부호는 보지 않음(예: "0.4% 감소"). 분기 코드 20241~20262, 연도 2024~2026,
-  //   '40대' · '2분기' · '1위' · '[4]'처럼 숫자 뒤에 단위가 붙은 것은 견주지 않음
-  function markEvidence(text, f, k, hits) {
-    var s = String(text || ""), norm = s.replace(MINUS_RE, "-"), facts = factList(f), out = "", last = 0, m;
-    var re = /[+-]?\d[\d,]*(\.\d+)?/g;
-    while ((m = re.exec(norm)) !== null) {
-      var raw = m[0].replace(/,+$/, ""), start = m.index, end = start + raw.length;
-      re.lastIndex = end;
-      var v = Number(raw.replace(/,/g, ""));
-      var after = norm.slice(end, end + 8), before = norm.slice(Math.max(0, start - 1), start);
-      var isInt = /^[+-]?[\d,]+$/.test(raw);
-      var skip = !isFinite(v) || before === "[" || /^\s*(대|분기|년|위|월|행|곳|개|번째|\])/.test(after) ||
-        (isInt && Math.abs(v) <= 4 && /^\s*(→|~|-|에서|과|와|,)\s*\d\s*분기/.test(after)) ||
-        (isInt && ((v >= 20241 && v <= 20262) || (v >= 2024 && v <= 2026)));
-      out += esc(s.slice(last, start));
-      var piece = esc(s.slice(start, end));
-      if (skip) out += piece;
-      else {
-        var found = facts.filter(function (x) {
-          var dv = Math.abs(Math.abs(v) - Math.abs(x[0]));
-          return dv <= k.tolFact + 1e-9 || (isInt && x[1] && dv <= k.tolEok + 1e-9);
-        });
-        if (found.length) { found.forEach(function (x) { hits[x[2]] = 1; }); out += piece; }
-        else out += "<mark>" + piece + "</mark>";
-      }
-      last = end;
+  MAKE.bi8 = function (d, j) {
+    var rows = rowsOf(j), tot = rows.length, ok = answersState === "ok", k = KEY[8] || {}, A = ANS["8"] || {};
+    var cnt = {}, all = 0, shape = { diff: 0, same: 0 };
+    BI8_FIELDS.forEach(function (f) { cnt[f.key] = {}; f.cats.forEach(function (c) { cnt[f.key][c] = 0; }); });
+    rows.forEach(function (o) {
+      var a = A[o.industry];
+      if (!ok || !a) return;
+      var r = bi8Judge(o, a, k), allOk = true;
+      BI8_FIELDS.forEach(function (f) { cnt[f.key][r[f.key]]++; if (r[f.key] !== "맞음") allOk = false; });
+      if (allOk) all++;
+      if (a["기여_1위"].indexOf(a["증감률_1위"]) < 0) shape.diff++; else shape.same++;
+    });
+    var h = '<div class="two"><div>' + typesHtml(j, 6);
+    h += '<div class="sec"><h3>낸 업종의 모양<small>정답 자료의 증감률 1위와 기여 1위</small></h3>';
+    if (!ok) h += '<div class="empty">정답 자료를 받지 못해 나눌 수 없습니다</div>';
+    else {
+      var smax = Math.max(shape.diff, shape.same);
+      h += '<div class="bars compact names">';
+      h += barRow("증감률 1위와 기여 1위가 다른 업종", "", shape.diff, tot, smax, "", "", "shape:diff");
+      h += barRow("둘이 같은 업종", "", shape.same, tot, smax, "", "", "shape:same");
+      h += "</div>";
     }
-    return out + esc(s.slice(last));
-  }
-
-  // 사실표 숫자는 모두 소수 첫째 자리로 (62.0 을 62 로 줄이지 않음)
-  function f1(v) { return typeof v === "number" ? v.toLocaleString("ko-KR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : esc(v); }
-  function sg(v) { return (v > 0 ? "+" : "") + f1(v); }
-  function fc(v, id, hits, signed) { return '<td class="' + (hits[id] ? "hit" : "") + '">' + (signed ? sg(v) : f1(v)) + "</td>"; }
-  function fb(v, id, hits, signed) { return '<b class="' + (hits[id] ? "hit" : "") + '">' + (signed ? sg(v) : f1(v)) + "</b>"; }
-
-  function factsHtml(f, hits) {
-    var h = '<div class="facts"><div class="fline">2026년 2분기 매출 ' + fb(f["이번_억"], "now", hits) + "억 원 · 전년 같은 분기 대비 " + fb(f["전년_대비"], "yoy", hits, 1) +
-      "% · 직전 분기 대비 " + fb(f["직전분기_대비"], "qoq", hits, 1) + "%</div>";
-    var y = f["1분기_대비_2분기_증감률"];
-    h += '<div class="fline">1분기 → 2분기 증감률(%): ' + Object.keys(y).map(function (k) { return k + "년 " + fb(y[k], "q" + k, hits, 1); }).join(" · ") + "</div>";
-    h += '<div class="ftabs"><table><tr><th>구분</th><th>작년(억)</th><th>이번(억)</th><th>증감률</th></tr>';
-    f["구분별"].forEach(function (r, i) { h += "<tr><th>" + esc(r[0]) + "</th>" + fc(r[1], "s" + i + "a", hits) + fc(r[2], "s" + i + "b", hits) + fc(r[3], "s" + i + "c", hits, 1) + "</tr>"; });
-    h += "</table><table><tr><th>연령대</th><th>매출(억)</th><th>매출 대비</th><th>연령합 대비</th></tr>";
-    f["연령대"].forEach(function (r, i) { h += "<tr><th>" + esc(r[0]) + "</th>" + fc(r[1], "g" + i + "a", hits) + fc(r[2], "g" + i + "b", hits) + fc(r[3], "g" + i + "c", hits) + "</tr>"; });
-    h += "</table></div>";
-    h += '<div class="fline small">분기 추이(억): ' + f["분기_추이_억"].map(function (r, i) { return r[0] + " " + fb(r[1], "t" + i, hits); }).join(" · ") + "</div>";
-    return h + "</div>";
-  }
+    h += '</div></div><div><h3>칸별 판정<small>업종별 정답 자료와 견줌 · 제출 ' + tot + "개</small></h3>";
+    if (!ok) h += '<div class="empty">정답 자료를 받지 못해 판정할 수 없습니다</div>';
+    else {
+      h += '<div class="judge">';
+      BI8_FIELDS.forEach(function (f) {
+        h += '<div class="jl">' + esc(f.label) + '</div><div class="chips">';
+        f.cats.forEach(function (c) { h += chip(c, cnt[f.key][c], c === "맞음" ? "ok" : c === "다름" ? "" : "mis", f.key + ":" + c); });
+        h += "</div>";
+      });
+      h += "</div>";
+      h += '<div class="bigline">다섯 칸 모두 맞음 <b data-stat="all8" data-n="' + all + '">' + all + "</b> / " + tot + '명 <span class="hint">업종과 칸 2~5. 결정 문장은 아래 문장 보기</span></div>';
+    }
+    return h + "</div></div>";
+  };
 
   SENT.bi8 = {
-    col: "AI문장", per: 2,
-    countLabel: function (pool) { return "카드 " + pool.length + "장 · 두 장씩 · 노란 숫자 = 사실표에서 찾지 못한 숫자"; },
+    col: "sentence", per: 3,
+    countLabel: SENT.bi4.countLabel,
     card: function (o) {
-      var f = answersState === "ok" && ANS["8"] ? ANS["8"][o["업종"]] : null, k = KEY[8] || { tolFact: 0.05, tolEok: 0.5 }, hits = {};
-      var season = false;
-      if (f && /급증|급감|폭발/.test(o["AI문장"] || "")) {
-        var ys = Object.keys(f["1분기_대비_2분기_증감률"]).map(function (y) { return f["1분기_대비_2분기_증감률"][y]; });
-        season = ys.every(function (x) { return x > 0; }) || ys.every(function (x) { return x < 0; });
-      }
-      var ev = f ? markEvidence(o["근거"], f, k, hits) : esc(o["근거"]);
-      var h = '<div class="sent card8"><div class="t">' + esc(o["업종"]) + '<span class="tag2 v">학생 판정: ' + esc(o["판정"]) + "</span>" + (season ? '<span class="tag2 warn">계절 확인</span>' : "") + "</div>";
-      h += '<div class="fl">AI 문장</div><div>' + esc(o["AI문장"]) + "</div>";
-      h += '<div class="fl">확인한 숫자</div><div>' + (o["근거"] ? ev : '<span class="hint">(비움)</span>') + "</div>";
-      h += '<div class="fl">고친 문장</div><div>' + (o["고친문장"] ? esc(o["고친문장"]) : '<span class="hint">(비움)</span>') + "</div>";
-      h += f ? factsHtml(f, hits) : '<div class="hint">' + (answersState === "ok" ? "사실표 없음" : "정답 자료를 받지 못해 사실표를 보일 수 없습니다") + "</div>";
-      return h + "</div>";
+      var dg = /[0-9]/.test(o.sentence);
+      var pp = typeof o.top_pp === "number" ? " · 기여 " + (o.top_pp > 0 ? "+" : "") + fmt(o.top_pp) + "%p" : "";
+      return '<div class="sent"><div class="t">' + esc(o.industry) + '<span class="tag2' + (dg ? "" : " warn") + '">' + (dg ? "숫자 있음" : "숫자 없음") + "</span></div>" + esc(o.sentence) +
+        '<div class="fl">고른 구분: ' + esc(o.top_seg) + pp + "</div></div>";
     }
   };
 

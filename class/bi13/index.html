@@ -371,7 +371,7 @@
       var list = window[f.source] || [];
       if (f.filter) h += '<input type="text" class="filter" id="flt-' + esc(f.key) + '" autocomplete="off" value="' + esc(dr["_filter_" + f.key] || "") + '" placeholder="이름 일부를 적으면 목록이 줄어듭니다" aria-label="' + esc(f.label) + ' 찾기">';
       h += '<select id="' + id + '" data-k="' + esc(f.key) + '" aria-label="' + esc(f.label) + '">' + optionsHtml(list, val, dr["_filter_" + f.key]) + "</select>";
-      h += '<div class="selname" id="sn-' + esc(f.key) + '">' + (val ? "고른 업종: " + esc(val) : "") + "</div>";
+      h += '<div class="selname" id="sn-' + esc(f.key) + '">' + (val ? "고른 " + esc(f.pick || "업종") + ": " + esc(val) : "") + "</div>";
     } else if (f.kind === "radio") {
       h += '<div class="pills" id="' + id + '">';
       (window[f.source] || []).forEach(function (x) {
@@ -447,7 +447,7 @@
     if (f.pos && !(n > 0)) return { n: n, err: "0보다 큰 수로 적으세요" };
     if (f.min !== undefined && n < f.min) return { n: n, err: f.min + " 이상으로 적으세요" };
     if (f.max !== undefined && n > f.max) return { n: n, err: f.max + " 이하로 적으세요" };
-    if (f.dec !== undefined && decimals(n) > f.dec) return { n: n, err: "소수 " + (f.dec === 1 ? "첫째" : f.dec + "째") + " 자리까지 적으세요" };
+    if (f.dec !== undefined && decimals(n) > f.dec) return { n: n, err: "소수 " + (["", "첫째", "둘째", "셋째"][f.dec] || f.dec + "째") + " 자리까지 적으세요" };
     return { n: n, err: "" };
   }
 
@@ -501,7 +501,7 @@
         });
       });
     } else if (d.type === "number") {
-      var nf = { key: "num", unit: d.unit };
+      var nf = { key: "num", unit: d.unit, dec: d.dec };
       var ne = $("f-num");
       if (ne) {
         ne.addEventListener("input", function () { dr.num = ne.value; saveDrafts(); clearMsg(); preview(d, nf); });
@@ -527,7 +527,7 @@
             if (d.zero === f.key) d.fields.forEach(function (g) { if (g.kind === "number" && g !== f) preview(d, g); });
           }
           if (f.kind === "text") textCount(f);
-          if (f.kind === "select") $("sn-" + f.key).textContent = el.value ? "고른 업종: " + el.value : "";
+          if (f.kind === "select") $("sn-" + f.key).textContent = el.value ? "고른 " + (f.pick || "업종") + ": " + el.value : "";
           if (d.mult && d.mult.indexOf(f.key) >= 0) multPreview(d);
         };
         el.addEventListener(f.kind === "select" ? "change" : "input", up);
@@ -567,7 +567,7 @@
       return { value: o.id, raw: label, label: label };
     }
     if (d.type === "number") {
-      var r = readNumber({ req: true }, dr.num, null);
+      var r = readNumber({ req: true, dec: d.dec }, dr.num, null);
       if (r.err) return { error: r.err === "비어 있습니다" ? "답을 적으세요." : r.err };
       return { value: r.n, raw: String(dr.num).trim(), label: fmtNum(r.n) + (d.unit ? " " + d.unit : "") };
     }
